@@ -26,7 +26,8 @@ export function del_session(item){
 
 //搜尋
 export function search(){
-    set_Storage('keyword',this.keyword);
+    let keyword = this.keyword.replace(/\s*/g,"")
+    set_Storage('keyword',keyword)
     if(window.location.href ==`${url()}/#/product_all`){
         location.reload()
     }else{

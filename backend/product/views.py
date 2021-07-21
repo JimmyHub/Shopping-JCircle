@@ -79,6 +79,11 @@ def products(request,keyword=None,personal=None,key1=None,key2=None,key3=None):
                 return JsonResponse(result)
             else:
                 #判斷是查詢特定類別 還是包含特定關鍵字商品
+                #如果Keyword 是空則返回無商品
+                if not keyword:
+                    result = {'code': 200, 'data': 'NoProduct'}
+                    return JsonResponse(result)
+                print(keyword)
                 products=ProductProfile.objects.filter(pkind=keyword)
                 if not products:
                     #若非特定類別,則是查詢包含特定關鍵字商品 
