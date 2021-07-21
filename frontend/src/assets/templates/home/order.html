@@ -1,0 +1,149 @@
+<div>
+    <div id="top">
+        <h1 @click='go_home()'>吉嗑就圓</h1>
+        <img src="@/assets/images/common/cat.png" @click='go_home()'>
+        <input type="text"placeholder="輸入搜尋內容" v-model='keyword'>
+        <button type="button"  v-on:click='search()'><b-icon icon="search"></b-icon></button>
+        <img src="@/assets/images/common/car.png" @click='go_cart()'>
+        <div>
+            <a href='#/info' ><p v-if="info" v-text='info.username'></p></a>
+            <a href="#/info"><img v-if="info" :src="info.avatar" style='width:20px'></a>
+            <a href="#"><p @click="logout()">退出</p></a>
+        </div>
+        <ul class='row'>
+            <li class='col-2' style="color:#CAFFFF;"></li>
+            <li class='col-2'><a href="#/index">首頁</a></li>
+            <li class='col-2'><a href="#/info">我的帳戶</a></li>
+            <li class='col-2'><a href="#/orders">我的訂單</a></li>
+            <li class='col-2'><a href="#/store" v-if='info && info.limit'>我的賣場</a></li>
+            <li class='col-2'style="color:#CAFFFF;"></li>
+        </ul>
+    </div>
+    <div id="middle">
+        <div id="bread">
+            <b-breadcrumb>
+                <b-breadcrumb-item active >我的訂單</b-breadcrumb-item>
+            </b-breadcrumb>
+        </div>
+        <div class="guild">
+            <b-nav card-header tabs fill v-if='!order'>
+                <b-nav-item  :active='isStatus ===0' @click='show(0)'>全部</b-nav-item>
+                <b-nav-item  :active='isStatus ===1' @click='show(1)'>待繳款</b-nav-item>
+                <b-nav-item  :active='isStatus ===2' @click='show(2)'>待出貨</b-nav-item>
+                <b-nav-item  :active='isStatus ===3' @click='show(3)'>已出貨</b-nav-item>
+                <b-nav-item  :active='isStatus ===4' @click='show(4)'>待取貨</b-nav-item>
+                <b-nav-item  :active='isStatus ===5' @click='show(5)'>完成</b-nav-item>
+            </b-nav>
+            <b-nav card-header tabs fill v-if='order'>
+                <b-nav-item  :active='isStatus ===0 ' @click='show(0)'>全部: {{ order.length }}</b-nav-item>
+                <b-nav-item  :active='isStatus ===1' @click='show(1)'>待繳款: {{ order1.length }}</b-nav-item>
+                <b-nav-item  :active='isStatus ===2' @click='show(2)'>待出貨: {{ order2.length }}</b-nav-item>
+                <b-nav-item  :active='isStatus ===3' @click='show(3)'>已出貨: {{ order3.length }}</b-nav-item>
+                <b-nav-item  :active='isStatus ===4' @click='show(4)'>待取貨: {{ order4.length }}</b-nav-item>
+                <b-nav-item  :active='isStatus ===5' @click='show(5)'>完成: {{ order5.length }}</b-nav-item>
+            </b-nav>
+        </div>
+        <b-container  id='orders_scan'>
+            <div v-if='!order'>
+                <div class="title">
+                    <p class="col-2">訂單編號</p>
+                    <p class="col-2">訂單狀態</p>
+                    <p class="col-3">訂單時間</p>
+                    <p class="col-2">商品內容</p>
+                    <p class="col-1">訂單金額</p>
+                    <p class="col-2"></p>
+                </div>
+            </div>
+            <div v-if='order'>
+                <div class="title">
+                    <p class="col-2">訂單編號</p>
+                    <p class="col-2">訂單狀態</p>
+                    <p class="col-3">訂單時間</p>
+                    <p class="col-2">商品內容</p>
+                    <p class="col-1">訂單金額</p>
+                    <p class="col-2"></p>
+                </div>
+                <div class="list" v-if='isStatus ===0' v-for='item in order'>
+                    <p class="col-2" >{{ item.num_list }}</p>
+                    <p class="col-2">{{ item.status_show }}</p>
+                    <p class="col-3">{{ item.num_time }}</p>
+                    <p class="col-2">{{ item.products_list }}</p>
+                    <p class="col-1">{{ item.money_total }}元</p>
+                    <p class="col-2">
+                        <b-button  href="#/order_detail" variant="outline-primary" size='sm' @click='orders_detail_0(item.list_id)'>詳細內容</b-button>
+                    </p>
+                </div>
+                <div class="list"  v-if='isStatus ===1' v-for='item in order1'>
+                    <p class="col-2" >{{ item.num_list }}</p>
+                    <p class="col-2">{{ item.status_show }}</p>
+                    <p class="col-3">{{ item.num_time }}</p>
+                    <p class="col-2">{{ item.products_list }}</p>
+                    <p class="col-1">{{ item.money_total }}元</p>
+                    <p class="col-2">
+                        <b-button  href="#/order_detail" variant="outline-primary" size='sm' @click='orders_detail_0(item.list_id)'>詳細內容</b-button>
+                    </p>
+                </div>
+                <div class="list" v-if='isStatus === 2' v-for='item in order2'>
+                    <p class="col-2" >{{ item.num_list }}</p>
+                    <p class="col-2">{{ item.status_show }}</p>
+                    <p class="col-3">{{ item.num_time }}</p>
+                    <p class="col-2">{{ item.products_list }}</p>
+                    <p class="col-1">{{ item.money_total }}元</p>
+                    <p class="col-2">
+                        <b-button  href="#/order_detail" variant="outline-primary" size='sm' @click='orders_detail_0(item.list_id)'>詳細內容</b-button>
+                    </p>
+                </div>
+                <div class="list" v-if='isStatus ===3' v-for='item in order3'>
+                    <p class="col-2" >{{ item.num_list }}</p>
+                    <p class="col-2">{{ item.status_show }}</p>
+                    <p class="col-3">{{ item.num_time }}</p>
+                    <p class="col-2">{{ item.products_list }}</p>
+                    <p class="col-1" >{{ item.money_total }}元</p>
+                    <p class="col-2">
+                        <b-button  href="#/order_detail" variant="outline-primary" size='sm' @click='orders_detail_0(item.list_id)'>詳細內容</b-button>
+                    </p>
+                </div>
+                <div class="list" v-if='isStatus ===4' v-for='item in order4'>
+                    <p class="col-2" >{{ item.num_list }}</p>
+                    <p class="col-2">{{ item.status_show }}</p>
+                    <p class="col-3">{{ item.num_time }}</p>
+                    <p class="col-2">{{ item.products_list }}</p>
+                    <p class="col-1" >{{ item.money_total }}元</p>
+                    <p class="col-2">
+                        <b-button  href="#/order_detail" variant="outline-primary" size='sm' @click='orders_detail_0(item.list_id)'>詳細內容</b-button>
+                    </p>
+                </div>
+                <div class="list" v-if='isStatus ===5' v-for='item in order5'>
+                    <p class="col-2" >{{ item.num_list }}</p>
+                    <p class="col-2">{{ item.status_show }}</p>
+                    <p class="col-3">{{ item.num_time }}</p>
+                    <p class="col-2">{{ item.products_list }}</p>
+                    <p class="col-1" >{{ item.money_total }}元</p>
+                    <p class="col-2">
+                        <b-button  href="#/order_detail" variant="outline-primary" size='sm' @click='order_detail_0(item.list_id)'>詳細內容</b-button>
+                    </p>
+                </div>
+            </div>            
+        </b-container>
+    </div>
+    <div id="bottom">
+        <div>
+            <p>© 2021年 JCircle 版權所有。</p>
+            <img src="@/assets/images/common/way.jpg" >
+            <ul>
+                <li>
+                    <img src="@/assets/images/common/fb.png" style="width:4%;">
+                    <p>Facebook</p>
+                </li>
+                <li>
+                    <img src="@/assets/images/common/ig.png" style="width:4%;">
+                    <p>Instagram</p>
+                </li>
+            </ul>
+            <div>
+                <p>APP 下載</p>
+                <img src="@/assets/images/common/QRcode.png" style="width:70px;" >
+            </div>
+        </div>
+    </div>
+</div>

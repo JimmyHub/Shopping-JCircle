@@ -1,0 +1,142 @@
+<div>
+	<div id="top">
+        <h1 @click='go_home()'>吉嗑就圓</h1>
+        <img src="@/assets/images/common/cat.png" @click='go_home()'>
+        <input type="text"placeholder="輸入搜尋內容" v-model='keyword'>
+        <button type="button"  v-on:click='search()'><b-icon icon="search"></b-icon></button>
+        <img src="@/assets/images/common/car.png" @click='go_cart()'>
+        <div v-if="info">
+            <a href='#/info' ><p v-if="info" v-text='info.username'></p></a>
+            <a href="#/info"><img v-if="info" :src="info.avatar" style='width:20px'></a>
+            <a href="#"><p @click="logout()">退出</p></a>
+        </div>
+        <div v-if="!info">
+            <a href="#/register"><p>註冊</p></a>
+            <a href="#/login"><p>登入</p></a>
+        </div>
+        <ul class='row'>
+            <li class='col-2' style="color:#CAFFFF;"></li>
+            <li class='col-2'><a href="#/index">首頁</a></li>
+            <li class='col-2'><a href="#/info">我的帳戶</a></li>
+            <li class='col-2'><a href="#/orders">我的訂單</a></li>
+            <li class='col-2'><a href="#/store" v-if='info && info.limit'>我的賣場</a></li>
+            <li class='col-2'style="color:#CAFFFF;"></li>
+        </ul>
+    </div>
+    <div id="middle">
+    	<div id="bread">
+            <b-breadcrumb>
+            	<b-breadcrumb-item href="#/orders" v-if='order.mode === 0'>我的訂單
+                </b-breadcrumb-item>
+                <b-breadcrumb-item href="#/store" v-if='order.mode === 1 '>我的賣場
+                </b-breadcrumb-item>
+                <b-breadcrumb-item active >訂單: {{ order.num_list }}
+                </b-breadcrumb-item>
+            </b-breadcrumb>
+        </div>
+        <form method="POST" accept-charset="UTF-8" action="https://payment-stage.ecpay.com.tw/Cashier/QueryTradeInfo/V5 " enctype="application/x-www-form-urlencoded ">
+            <b-button  v-if="checkShow" type="submit" variant="outline-primary" size='sm'
+            >查 詢 訂 單</b-button>
+        </form>
+        <div>
+            <table>
+                <tbody>
+                   <tr>
+                       <th>訂單編號:</th>
+                       <td id="num_list" >{{ order.num_list }}</td>
+                       <th>訂單時間:</th>
+                       <td>{{ order.num_time }}</td>
+                   </tr>
+                   <tr>
+                       <th>收件人:</th>
+                       <td>{{ order.gname }}</td>
+                       <th>地址:</th>
+                       <td>{{ order.address }}</td>
+                   </tr>
+                   <tr>
+                       <th>手機:</th>
+                       <td>{{ order.phone }}</td>
+                       <th>備註:</th>
+                       <td>{{ order.content }}</td>
+                   </tr>
+                   <tr>
+                       <th>付款方式:</th>
+                       <td>{{ order.payway }}</td>
+                       <th>訂單狀態:</th>
+                       <td>{{ order.status_show }}</td>
+                   </tr>
+                </tbody>
+            </table>
+        </div>
+        <b-container class='middle_msg'>
+            <div class="message_show" id='msg_show' >
+                <div class="message_msg" v-for="item in messages">
+                    <p>{{ item.msg_show }}</p>
+                    <p>{{ item.content }}</p>
+                </div>
+            </div>
+            <b-input-group class="message_input">
+                <b-form-input v-if='order.mode === 0' placeholder='請輸入要對賣家說的話' size="sm"
+                v-model='msg'></b-form-input>
+                <b-form-input v-if='order.mode === 1' placeholder='請輸入要對買家說的話' size="sm"
+                v-model='msg'></b-form-input>
+                <b-input-group-append  >
+                     <b-button  variant="outline-secondary" size='sm' style='margin-left: 3px;' 
+                     @click='send_msg(order.list_id)'>送出</b-button>
+                </b-input-group-append>
+            </b-input-group>
+        </b-container>
+    	<div class='cart_scan'>
+            <div class="title">
+                <p class="col-5">商品</p>
+                <p class="col-2">金額</p>
+                <p class="col-2">數量</p>
+                <p class="col-2">小記</p>
+            </div>
+            <div class="list" v-for='item in list'>
+                <p class="col-4" >{{ item.pname }}</p>
+                <img class="col-1"  :src='item.photo' >
+                <p class="col-2">{{ item.price }} 元</p>
+                <p class="col-2">{{ item.count }}</p>
+                <p class="col-2" >{{ item.item_total }} 元</p>
+            </div>
+        </div>
+        <div class='left_bot'>
+            <p>優惠:{{ order.bonus }}元</p>
+            <p>運費:{{ order.shipping }}元</p>
+            <p id='total' >總金額:{{ order.money_total }} 元</p>
+            <b-button  variant="outline-danger" size='sm' 
+            v-if='order.status === 1 && order.mode ===0' @click='delete_l(order.list_id)'>刪除</b-button>
+            <b-button  variant="outline-primary" size='sm' style='margin-left: 10px;' 
+            v-if='order.status === 1 && order.mode ===0' @click='next_status(order.list_id)'>已繳款</b-button>
+            <b-button  variant="outline-secondary" size='sm' style='margin-left: 10px;' 
+            v-if='order.status === 1 && order.mode ===1' @click='check_order(order.list_id)'>獲得驗證碼</b-button>
+            <b-button  variant="outline-primary" size='sm' style='margin-left: 5px;' 
+            v-if='order.status === 2 && order.mode ===1' @click='next_status(order.list_id)'>已出貨</b-button>
+            <b-button  variant="outline-primary" size='sm' style='margin-left: 5px;' 
+            v-if='order.status === 3 && order.mode ===1' @click='next_status(order.list_id)'>待取貨</b-button>
+            <b-button  variant="outline-primary" size='sm' style='margin-left: 5px;' 
+            v-if='order.status === 4 && order.mode ===0' @click='next_status(order.list_id)'>完成</b-button>
+        </div>
+    </div>
+    <div id="bottom">
+        <div>
+            <p>© 2021年 JCircle 版權所有。</p>
+            <img src="@/assets/images/common/way.jpg" >
+            <ul>
+                <li>
+                    <img src="@/assets/images/common/fb.png" style="width:4%;">
+                    <p>Facebook</p>
+                </li>
+                <li>
+                    <img src="@/assets/images/common/ig.png" style="width:4%;">
+                    <p>Instagram</p>
+                </li>
+            </ul>
+            <div>
+                <p>APP 下載</p>
+                <img src="@/assets/images/common/QRcode.png" style="width:70px;" >
+            </div>
+        </div>
+    </div>
+</div>

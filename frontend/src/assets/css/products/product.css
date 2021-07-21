@@ -1,0 +1,164 @@
+/*中間大區塊*/
+#middle{
+    width:1132px;
+    height:650px;
+    position:relative;
+    top:172px;
+    text-align:left;
+    padding:0;
+    margin:0 100px;
+    overflow:hidden;
+}
+/*麵包屑 在 common裡*/
+/*左邊種類區塊*/
+.left{
+    position:absolute;
+    top:50px;
+    left: 12px;
+    border: 1px solid gray;
+    width: 130px;
+    height: 500px;
+    background-color: #E8FFF5;
+    font-size: 20px;
+}
+/*分類項目*/
+.left>p{
+    text-align: center;
+    margin:0 0 10px 0;
+    
+}
+.left>p>a{
+    color: #444;
+    text-decoration:none;
+   
+}
+.left>p>a:hover{
+    color:#2828ff;
+}
+/*大分類*/
+.item{
+    background-color: #00CACA;
+    font-weight: 800;
+}
+
+/*中間個別顯示區塊*/
+.middle{
+    position:absolute;
+    top:81px;
+    left: 238px;
+    font-size: 18px;
+}
+/*圖片區*/
+.middle_l{
+    width: 200px;
+    height: 200px;
+    border: 3px solid gray;
+    border-radius: 10px;
+
+}
+/*圖片大小*/
+.middle_l>img{
+    margin-top: 12px;
+    margin-left: 16px;
+    width: 75%;
+}
+/*商品內容區*/
+.content{
+    width: 200px;
+    height: 150px;
+    margin-top: 31px;
+    border: 0px solid red;
+}
+
+/*商品資訊區*/
+.middle_r{
+    position:relative;
+    bottom:395px;
+    left: 314px;
+}
+
+.middle_r>p:nth-child(1){
+    font-size: 25px;
+    font-weight: 600;
+    margin-top: 0px;
+}
+.middle_r>p>span{
+    font-weight: 600;
+    margin-left: 25px;
+    font-size: 30px;
+    color: red;
+}
+
+.middle_r>p{
+    margin-top: 20px;
+}
+
+/*右邊 瀏覽紀錄/購物車區塊*/
+.right{
+    position:absolute;
+    top:50px;
+    right: 15px;
+    border: 1px solid gray;
+    width: 200px;
+    height: 500px;
+    background-color: #FCFCFC;
+    
+}
+
+.right>b-nav{
+    margin: 0 auto
+}
+/*購物車區塊*/
+.cart_record{
+   position:absolute;
+   top:47px;
+   right: 15px;
+   height: 400px;
+   text-align: center;
+   overflow: overlay;
+}
+/*瀏覽紀錄*/
+.record_item{
+    border: 1px solid #4F4F4F;
+    width: 144px;
+    height: 173px;
+    text-align: center;
+    margin-top: 5px;
+    margin-left: 2px;
+    border-radius: 5px;
+    display: inline-block;
+}
+/*購物車
+商品個別項目*/
+.cart_item{
+    border: 1px solid #4F4F4F;
+    width: 144px;
+    height: 150px;
+    text-align: center;
+    margin-top: 5px;
+    margin-left: 2px;
+    border-radius: 5px;
+    display: inline-block;
+}
+/*商品名稱區塊*/
+.cart_item>div:nth-child(2),.record_item>div:nth-child(2){
+    width: 120px;
+    height: 41px;
+    border: 0px solid gray;
+    margin-left: 15px;
+}
+/*商品個別圖片*/
+.cart_item>img,.record_item>img{
+    width: 47%;
+
+}
+/*商品項目內容*/
+.cart_item>div,.record_item>div{
+    margin-top: 2px;
+}
+/*購物車總和*/
+.cart_total{
+   position:absolute;
+   bottom:7px;
+   right: 23px;
+}

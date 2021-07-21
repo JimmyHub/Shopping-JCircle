@@ -1,0 +1,125 @@
+/*中間大區塊*/
+#middle{
+    width:1132px;
+    height:650px;
+    border:solid 0px red;
+    position:relative;
+    top:172px;
+    text-align:left;
+    padding:0;
+    margin:0 100px;
+    overflow:hidden;
+}
+/*麵包屑 在 common裡*/
+/*訂單管理*/
+/*標題*/
+.orders_title{
+    position:absolute;
+    top: 55px;
+    left: 160px;
+    font-size: 18px;
+    font-weight: 600;
+
+}
+
+/*訂單導覽*/
+.guild{
+    position:absolute;
+    top: 45px;
+    left: 350px;
+    width: 700px;
+    font-size: 18px;
+    font-weight: 600;
+    
+}
+/*訂單總覽*/
+#orders_scan{
+    position:absolute;
+    top: 88px;
+    left: 160px;
+    width: 900px;
+    height: 206px;
+    border: 3px solid #333;
+    overflow: overlay;
+    border-radius:3px;
+    text-align: center;
+    padding: 0;
+}
+
+
+/*訂單標題*/
+.title>p{
+    font-weight: 600;
+    margin: 0;
+}
+
+/*訂單總覽內容*/
+.list{
+    border-top: 2px solid gray;
+}
+.list:last-child{
+    border-bottom: 2px solid gray;
+}
+.title>p,.list>p{
+    display: inline-block;
+    margin: 0;
+}
+
+
+
+/*商品管理*/
+/*標題*/
+.products_title{
+    position:absolute;
+    top: 307px;
+    left: 160px;
+    font-size: 18px;
+    font-weight: 600;
+}
+/*商品總攬*/
+#products_scan{
+    position:absolute;
+    top: 334px;
+    left: 160px;
+    width: 900px;
+    height: 194px;
+    border: 3px solid #00CACA;
+    border-radius: 15px 0 0 15px;
+    overflow: overlay;
+}
+/*商品個別項目*/
+#products_scan>div{
+    border: 1px solid #4F4F4F;
+    width: 150px;
+    height: 180px;
+    text-align: center;
+    margin-top: 3px;
+    margin-left: 25px;
+    border-radius: 5px;
+    display: inline-block;
+
+}
+/*商品名稱區塊*/
+#products_scan>div>div:nth-child(2){
+    width: 120px;
+    height: 43px;
+    border: 0px solid gray;
+    margin-left: 15px;
+    font-weight: 600;
+}
+/*商品個別圖片*/
+#products_scan>div>img{
+    width: 60%;
+
+}
+/*商品項目內容*/
+#products_scan>div>div{
+    margin-top: 2px;
+}
+
+/*商品管理按鈕*/
+.btn_floor{
+    position:absolute;
+    bottom: 79px;
+    right: 73px;
+}

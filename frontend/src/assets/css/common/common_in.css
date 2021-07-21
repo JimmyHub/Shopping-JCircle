@@ -1,0 +1,147 @@
+
+/*網頁上方大區塊*/
+ul{
+    list-style:none;
+}
+
+#top{
+    border:solid 0px #666;
+    width:1500px;
+    height:150px;
+    position:absolute;
+    top:0;
+    left:10px;
+    background-color:#E8FFF5;
+    z-index:3;
+    margin: auto 0;
+    overflow:visible;
+    text-align: center;
+}
+/*店鋪名稱*/
+#top>h1{
+    position:absolute;
+    top: 51px;
+    left:300px;
+}
+/*店鋪圖案*/
+#top>img:nth-child(2){
+    position:absolute;
+    bottom: 16px;
+    left: 190px;
+    width:7%
+}
+/*搜尋列*/
+#top>input{
+    position:absolute;
+    bottom: 33px;
+    left:463px;
+    width:50%;
+    height:20%;
+}
+#top>button{
+    background-color:#FCFCFC;
+    position:absolute;
+    bottom: 35px;
+    left: 1183px;
+    width: 24px;
+    height: 25px;
+    padding:0;
+    z-index:3;
+}
+
+#top>img:nth-child(5){
+    position:absolute;
+    bottom:36px;
+    right:180px;
+    width:4%;
+}
+/*登入註冊超連結*/
+#top>a{
+    color: #666;
+    text-decoration:none;
+}
+#top>a:hover{
+    color:#2828ff;
+}
+#top>div>a>p,#top>div>a>img{
+    position:relative;
+    top: 19px;
+    left: 537px;
+    display:inline;
+    font-size:15px;
+    margin-right:7px;
+}
+#top>a>img{
+    border-radius: 50%;
+}
+/*網頁上方下部分導覽列*/
+#top>ul{
+    margin:0;
+    padding:0;
+}
+#top>ul>li{
+    position:relative;
+    top:122px;
+    margin:0 ;
+    float:left;
+    border:0px solid gray;
+    background-color:#00CACA;
+}
+#top>ul>li>a{
+    color: #000000;
+    text-decoration:none;
+}
+#top>ul>li>a:hover{
+    color:#2828ff;
+}
+
+/*網頁中段 麵包屑*/
+#bread{
+    position:absolute;
+    top:15px;
+    left: 149px;
+    font-size: 18px;
+}
+
+/*網頁下方大區塊*/
+
+#bottom{
+    position:absolute;
+    top:822px;
+    left: 10px;
+    border-top:1px solid gray;
+    width:1500px;
+    height:200px;
+    background-color:#F0F0F0;
+    text-align:center;
+}
+/*版權聲明*/
+#bottom>div>p{
+    position:absolute;
+    bottom:10px;
+    left:225px;
+    display:inline;
+}
+/*社群連結*/
+#bottom>div>img:nth-child(2){
+    position:absolute;
+    top:8px;
+    left:550px;
+    width:13%;
+}
+#bottom>div>ul{
+    position:absolute;
+    top:5px;
+    left:615px;
+}
+#bottom>div>ul>li{
+    margin-top:10px;
+}
+#bottom>div>ul>li>p{
+    display:inline;
+}
+#bottom>div>div{
+    position:absolute;
+    top:5px;
+    left:1150px;
+}

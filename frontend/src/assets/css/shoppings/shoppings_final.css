@@ -1,0 +1,77 @@
+/*中間大區塊*/
+#middle{
+    width:1132px;
+    height:650px;
+    position:relative;
+    top:172px;
+    text-align:left;
+    padding:0;
+    margin:0 100px;
+}
+/*要送去金流驗證的數據*/
+#middle>form{
+    position:absolute;
+    bottom: 80px;
+    right: -13px;
+}
+#middle>form>div{
+    display: none;
+}
+/*顯示出來的數據*/
+#middle>div>table{
+    position:absolute;
+    top:50px;
+    left: 59px;
+    width: 1000px;
+    font-size:20px;
+
+}
+#middle>div>table>tbody>tr>th{
+   text-align: right;
+}
+#middle>div>table>tbody>tr>td{
+    border:0px solid gray;
+    text-align:center;
+    padding:20px 0 15px 25px;
+    
+}
+/*下方購物車區 購物車內容區*/
+.cart_scan{
+    position:absolute;
+    bottom:80px;
+    left: 140px;
+    border: 3px solid #333;
+    width: 864px;
+    height: 228px;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 3px;
+    overflow: overlay;
+}
+/*購物車標題*/
+.title>p{
+    font-weight: 600;
+    margin: 0;
+}
+
+/*購物車內容*/
+.list{
+    border-top: 2px solid gray;
+}
+.list:last-child{
+    border-bottom: 2px solid gray;
+}
+.title>p,.list>p{
+    display: inline-block;
+    margin: 0;
+}
+
+.left_bot{
+    position:absolute;
+    bottom:130px;
+    right: -139px;
+    width: 200px;
+    border: 0px solid gray;
+    font-size: 15px;
+
+}

@@ -1,0 +1,102 @@
+<div>
+    <div id="top">
+        <h1 @click='go_home()'>吉嗑就圓</h1>
+        <img src="@/assets/images/common/cat.png" @click='go_home()'>
+        <input type="text"placeholder="輸入搜尋內容" v-model='keyword'>
+        <button type="button"  v-on:click='search()'><b-icon icon="search"></b-icon></button>
+        <img src="@/assets/images/common/car.png" @click='go_cart()'>
+        <div>
+            <a href='#/info' ><p v-if="info" v-text='info.username'></p></a>
+            <a href="#/info"><img v-if="info" :src="info.avatar" style='width:20px'></a>
+            <a href="#"><p @click="logout()">退出</p></a>
+        </div>
+        <ul class='row'>
+            <li class='col-2' style="color:#CAFFFF;"></li>
+            <li class='col-2'><a href="#/index">首頁</a></li>
+            <li class='col-2'><a href="#/info">我的帳戶</a></li>
+            <li class='col-2'><a href="#/orders">我的訂單</a></li>
+            <li class='col-2'><a href="#/store" v-if='info && info.limit'>我的賣場</a></li>
+            <li class='col-2'style="color:#CAFFFF;"></li>
+        </ul>
+    </div>
+    <div id="middle">
+        <div id="bread">
+            <b-breadcrumb>
+                <b-breadcrumb-item href="#/store">我的賣場</b-breadcrumb-item>
+                <b-breadcrumb-item active>商品上架</b-breadcrumb-item>
+            </b-breadcrumb>
+        </div>
+        <div id='products_scan' >
+            <div v-for='item in list'>
+                <img :src="item.pphoto" >
+                <div>{{ item.pname }}</div>
+                <div>商品金額: {{ item.pprice }} 元 </div>
+                <b-button variant="outline-secondary" style="margin-right:20px" size='sm' v-on:click='adjust_p(item.pid)'>修改</b-button>
+                <b-button variant="outline-danger" size='sm' v-on:click='delete_p(item.pid)'>刪除</b-button>
+            </div>
+        </div>
+        <div id='products_upload' >
+            <form action=""  method="post" enctype="multipart/form-data" class="photo">
+                <p >商品圖片</p>
+                <p style="width:150px; height:130px; border:1px solid gray; padding-top: 50px;">沒有圖片</p>
+                <input type="file" name="photo" id="photo" v-on:change="get_file">
+            </form>
+            <div class='pinfo'  >
+                <div class='row'>
+                    <label class='col-4'>商品名稱:</label>
+                    <input class='col-6' type="text" v-model="pname" placeholder="請輸入商品名稱"></input>
+                </div>
+                <div class='row'>
+                    <label class='col-4'>商品分類:</label>
+                    <input class='col-6' type="text" v-model="pkind" placeholder="請輸入商品分類"></input>
+                </div>
+                <div class='row'>
+                    <label class='col-4'>商品金額:</label>
+                    <input class='col-6' type="text" v-model="pprice" placeholder="請輸入商品金額"></input>
+                </div>
+                <div class='row'>
+                    <label class='col-4'>付款方式:</label>
+                    <b-form-group class='col-4'>
+                            <b-form-checkbox-group
+                                v-model="pway"
+                                :options="options"
+                                stacked
+                              ></b-form-checkbox-group>
+                    </b-form-group>
+                </div>
+                
+            </div>
+            <div class='pinfo2' >
+                <div class='row'>
+                    <label class='col-4'>商品內容</label>
+                    <textarea cols="50" rows="5" v-model="pcontent" placeholder="請輸入商品內容"></textarea>
+                </div>
+                <div class='row'>
+                    <div class="col-4"></div>
+                    <b-button  variant="outline-primary" size='sm' @click='upload()' >上傳商品</b-button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <div id="bottom">
+        <div>
+            <p>© 2021年 JCircle 版權所有。</p>
+            <img src="@/assets/images/common/way.jpg" >
+            <ul>
+                <li>
+                    <img src="@/assets/images/common/fb.png" style="width:4%;">
+                    <p>Facebook</p>
+                </li>
+                <li>
+                    <img src="@/assets/images/common/ig.png" style="width:4%;">
+                    <p>Instagram</p>
+                </li>
+            </ul>
+            <div>
+                <p>APP 下載</p>
+                <img src="@/assets/images/common/QRcode.png" style="width:70px;" >
+            </div>
+        </div>
+    </div>
+</div>

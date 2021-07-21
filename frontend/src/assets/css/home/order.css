@@ -1,0 +1,56 @@
+/*中間大區塊*/
+#middle{
+    width:1132px;
+    height:650px;
+    border:solid 0px red;
+    position:relative;
+    top:172px;
+    text-align:left;
+    padding:0;
+    margin:0 100px;
+    overflow:hidden;
+}
+/*麵包屑 在 common裡*/
+/*訂單管理*/
+/*訂單導覽*/
+.guild{
+    position:absolute;
+    top: 85px;
+    left: 350px;
+    width: 700px;
+    font-size: 18px;
+    font-weight: 600;
+    
+}
+/*訂單總覽*/
+#orders_scan{
+    position:absolute;
+    top: 130px;
+    left: 160px;
+    width: 900px;
+    height: 350px;
+    border: 3px solid #333;
+    overflow: overlay;
+    border-radius:3px;
+    text-align: center;
+    padding: 0;
+}
+
+
+/*訂單標題*/
+.title>p{
+    font-weight: 600;
+    margin: 0;
+}
+
+/*訂單總覽內容*/
+.list{
+    border-top: 2px solid gray;
+}
+.list:last-child{
+    border-bottom: 2px solid gray;
+}
+.title>p,.list>p{
+    display: inline-block;
+    margin: 0;
+}

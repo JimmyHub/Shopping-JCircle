@@ -1,0 +1,26 @@
+/*註冊頁面*/
+#middle{
+    width:1132px;
+    height:650px;
+    border:solid 0px red;
+    position:relative;
+    top:143px;
+    text-align:center;
+    padding:0;
+    margin:0 190px;
+    overflow:hidden;
+
+}
+#middle>img{
+    overflow:hidden;
+    }
+#middle>div{
+    height:360px;
+    position:absolute;
+    top:125px;
+    left: 391px;
+    border:solid 1px #666;
+    width:350px;
+    margin:0 auto ;
+    background-color:#FCFCFC;
+}

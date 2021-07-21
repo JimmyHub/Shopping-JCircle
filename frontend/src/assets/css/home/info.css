@@ -1,0 +1,72 @@
+/*註冊頁面*/
+#middle{
+    width:1132px;
+    height:650px;
+    border:solid 0px red;
+    position:relative;
+    top:172px;
+    text-align:left;
+    padding:0;
+    margin:0 100px;
+    overflow:hidden;
+}
+#middle>h4{
+    margin-top:50px;
+}
+
+/*麵包屑 在 common裡*/
+
+/*個人資料*/
+#middle>table{
+    margin-left:115px;
+    margin-top:98px;
+    font-size:20px;
+}
+#middle>table>tbody>tr>th{
+    border:0px solid red;
+    text-align:right;
+}
+#middle>table>tbody>tr>td{
+    border:0px solid gray;
+    text-align:center;
+    padding:20px 0 20px 30px;
+
+}
+#middle>table>tbody>tr>td:nth-child(4){
+    font-size: 15px;
+}
+#middle>table>tbody>tr:nth-child(3)>td:nth-child(4)>button{
+    position:absolute;
+    top:264px;
+    left: 565px;
+}
+/*個人頭像*/
+#middle>form{
+    position:absolute;
+    top:40px;
+    left:900px;
+    text-align:center;
+}
+#middle>form>input{
+    display:block;
+    margin-left:40px;
+}
+/*修改資料時顯示的輸入框*/
+.adjust{
+    font-size:10px;
+}
+
+.avatar>img{
+    width:100px;
+    border-radius:50%;
+
+}
+u{
+    color:#9D9D9D;
+}
+u:hover{
+    color:#000093;
+}
+
+
+

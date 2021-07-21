@@ -1,0 +1,76 @@
+/*中間大區塊*/
+#middle{
+    width:1132px;
+    height:650px;
+    position:relative;
+    top:172px;
+    text-align:left;
+    padding:0;
+    margin:0 100px;
+}
+/*麵包屑 在 common裡*/
+
+/*左邊 上傳商品圖片*/
+.left{
+    position:absolute;
+    top:104px;
+    left: 110px;
+    border: 0px solid #4F4F4F;
+    width: 150px;
+    text-align: center;
+
+}
+.left>form>p{
+    font-size: 20px;
+    font-weight: 600;
+    margin:10px 0;
+}
+.left>form>p>img{
+    width: 100%;
+}
+.left>form>input{
+    margin:10px -37px 20px 0px;
+}
+
+/* 中間 商品資料修改區*/
+#middle>table{
+    position:absolute;
+    top:95px;
+    left: 400px;
+    font-size: 20px;
+}
+#middle>table>tbody>tr>th{
+    border:0px solid red;
+    text-align:right;
+}
+#middle>table>tbody>tr>td{
+    border:0px solid gray;
+    text-align:center;
+    padding:20px;
+
+}
+#middle>table>tbody>tr>td:nth-child(3){
+    font-size: 15px;
+    margin-left: 20px;
+}
+.name{
+    width: 140px;
+}
+
+/*右邊 商品資內容修改區 */
+.right{
+    position:absolute;
+    top:73px;
+    right: -50px;
+    font-size: 18px;
+}
+.right>p:nth-child(1){
+    font-weight: 600;
+
+}
+.right>p:nth-child(2){
+    width: 216px;
+    height: 150px;
+    border: 2px solid gray;
+}
+
