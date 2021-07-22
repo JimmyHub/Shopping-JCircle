@@ -35,10 +35,15 @@
 #middle>table>tbody>tr>td:nth-child(4){
     font-size: 15px;
 }
+#middle>table>tbody>tr:nth-child(3)>td:nth-child(4){
+    position:absolute;
+    top:233px;
+    left: 556px;
+}
 #middle>table>tbody>tr:nth-child(3)>td:nth-child(4)>button{
     position:absolute;
-    top:264px;
-    left: 565px;
+    top:28px;
+    left: 175px;
 }
 /*個人頭像*/
 #middle>form{

@@ -7,7 +7,7 @@
     import { pinfo, adjust_p, upload_photo } from '@/api/products.js'
     //import { url, port } from '@/assets/js/set.js'
     import { url } from '@/assets/js/set.js'
-    import { get_Storage, get_session, go_home, go_cart, go_back, search, logout,} from'@/assets/js/often.js'
+    import { get_Storage, get_session, go_home, go_cart, go_floor, search, logout,} from'@/assets/js/often.js'
 
     export default{
         name:'product_adjust',
@@ -29,7 +29,7 @@
            }
         },
         methods:{
-            go_home,go_cart,go_back,search,logout,
+            go_home,go_cart,go_floor,search,logout,
             //修改商品內容
             adjust_pinfo(id){
                 let token = get_session('token')

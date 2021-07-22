@@ -72,7 +72,7 @@
            <h4 style="font-size:20px ;font-weight:600 ;">頭像</h4>
            <p class="avatar"><img v-if="info" :src="info.avatar"></p>
            <input type="file" name="avatar" id="avatar" v-on:change="get_file">
-           <button id="btn" @click='upload_av()' >上傳</button>
+           <b-button variant="outline-dark" id="btn" @click='upload_av()' size='sm' >上傳</b-button>
        </form>
 
    </div>
