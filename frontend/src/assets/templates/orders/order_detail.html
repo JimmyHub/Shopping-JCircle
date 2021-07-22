@@ -107,8 +107,6 @@
             <p id='total' >總金額:{{ order.money_total }} 元</p>
             <b-button  variant="outline-danger" size='sm' 
             v-if='order.status === 1 && order.mode ===0' @click='delete_l(order.list_id)'>刪除</b-button>
-            <b-button  variant="outline-primary" size='sm' style='margin-left: 10px;' 
-            v-if='order.status === 1 && order.mode ===0' @click='next_status(order.list_id)'>已繳款</b-button>
             <b-button  variant="outline-secondary" size='sm' style='margin-left: 10px;' 
             v-if='order.status === 1 && order.mode ===1' @click='check_order(order.list_id)'>獲得驗證碼</b-button>
             <b-button  variant="outline-primary" size='sm' style='margin-left: 5px;' 
