@@ -15,7 +15,7 @@ def products(request,keyword=None,personal=None,key1=None,key2=None,key3=None):
         #判斷是單獨查詢特定商品 還是整體商品
         if keyword == '0':
             #如果是請求整體商品資訊 
-            #判斷瀏覽是在個人賣場內部(personal_market=1) 還是 一般情況(personal_market=0)
+            #判斷瀏覽是在個人賣場內部(personal=1) 還是 一般情況(personal=0)
             if personal ==  '1' :
             #判斷是由 哪個賣場老闆發起請求
                 token = request.META.get('HTTP_AUTHORIZATION')
@@ -49,78 +49,76 @@ def products(request,keyword=None,personal=None,key1=None,key2=None,key3=None):
                 product_list.append(data)
             result = {'code': 200, 'data': product_list}
             return JsonResponse(result)
+        elif keyword =='record': :
+            #判斷是否請求瀏覽紀錄
+            key1_g = key1
+            key2_g = key2
+            key3_g = key3
+            if key1_g ==0:
+                if key2_g ==0:
+                    if key3_g ==0:
+                        result={'code':200,'data':'norecord'}
+                        return JsonResponse(result)
+            record_key=[key3,key2,key1]
+            list_record=[]
+            for i in record_key:
+               products=ProductProfile.objects.filter(id=i)
+               #如果沒有products 就跳過
+               if not products:
+                   continue
+               data={
+                    'pid':products[0].id,
+                    'pname': products[0].pname,
+                    'pphoto': str(products[0].pphoto),
+                    'pprice': products[0].pprice,
+               }
+               list_record.append(data)
+            result={'code':200,'data':list_record}
+            return JsonResponse(result)
         else:
-            #特定查詢情況
-            if keyword =='record':
-                #判斷是否請求瀏覽紀錄
-                key1_g = key1
-                key2_g = key2
-                key3_g = key3
-                if key1_g ==0:
-                    if key2_g ==0:
-                        if key3_g ==0:
-                            result={'code':200,'data':'norecord'}
-                            return JsonResponse(result)
-                record_key=[key3,key2,key1]
-                list_record=[]
-                for i in record_key:
-                   products=ProductProfile.objects.filter(id=i)
-                   #如果沒有products 就跳過
-                   if not products:
-                       continue
-                   data={
-                        'pid':products[0].id,
-                        'pname': products[0].pname,
-                        'pphoto': str(products[0].pphoto),
-                        'pprice': products[0].pprice,
-                   }
-                   list_record.append(data)
-                result={'code':200,'data':list_record}
+            #判斷是查詢特定類別 還是包含特定關鍵字商品
+            #如果Keyword 是空則返回無商品
+            if not keyword:
+                result = {'code': 200, 'data': 'NoProduct'}
                 return JsonResponse(result)
-            else:
-                #判斷是查詢特定類別 還是包含特定關鍵字商品
-                #如果Keyword 是空則返回無商品
-                if not keyword:
-                    result = {'code': 200, 'data': 'NoProduct'}
-                    return JsonResponse(result)
-                print(keyword)
-                products=ProductProfile.objects.filter(pkind=keyword)
+            print(keyword)
+            products=ProductProfile.objects.filter(pkind=keyword)
+            if not products:
+                #若非特定類別,則是查詢包含特定關鍵字商品 
+                products=ProductProfile.objects.filter(pname__contains=keyword)
+                #若非包含特定關鍵字商品,則是查詢特定商品
                 if not products:
-                    #若非特定類別,則是查詢包含特定關鍵字商品 
-                    products=ProductProfile.objects.filter(pname__contains=keyword)
-                    #若非包含特定關鍵字商品,則是查詢特定商品
-                    if not products:
-                        #判斷此時keyword 是不是數字 如果不是，就直接返回沒有此商品
-                        if keyword.isdigit():
-                            products = ProductProfile.objects.filter(id=keyword)
-                            if not products:
-                                result = {'code': 200, 'data': 'NoProduct'}
-                                return JsonResponse(result)
-                        else:
+                    #判斷此時keyword 是不是數字 如果不是，就直接返回沒有此商品
+                    if keyword.isdigit():
+                        products = ProductProfile.objects.filter(id=keyword)
+                        if not products:
                             result = {'code': 200, 'data': 'NoProduct'}
                             return JsonResponse(result)
-                        result={'code':200,'data':{'pid':products[0].id,
-                                               'pname': products[0].pname,
-                                               'pkind': products[0].pkind,
-                                              'pphoto': str(products[0].pphoto),
-                                            'pcontent': products[0].pcontent,
-                                              'pprice': products[0].pprice,
-                                                'pway': products[0].pway,}}
+                    else:
+                        result = {'code': 200, 'data': 'NoProduct'}
                         return JsonResponse(result)
-                product_list = []
-                for i in products:
-                    data = {
-                        'pid':i.id,
-                        'pname': i.pname,
-                        'pkind': i.pkind,
-                        'pphoto': str(i.pphoto),
-                        'pcontent': i.pcontent,
-                        'pprice': i.pprice,
-                        'pway': i.pway,
-                    }
-                    product_list.append(data)
-                result = {'code': 200, 'data': product_list}
-                return JsonResponse(result)
+                    result={'code':200,'data':{'pid':products[0].id,
+                                           'pname': products[0].pname,
+                                           'pkind': products[0].pkind,
+                                          'pphoto': str(products[0].pphoto),
+                                        'pcontent': products[0].pcontent,
+                                          'pprice': products[0].pprice,
+                                            'pway': products[0].pway,}}
+                    return JsonResponse(result)
+            product_list = []
+            for i in products:
+                data = {
+                    'pid':i.id,
+                    'pname': i.pname,
+                    'pkind': i.pkind,
+                    'pphoto': str(i.pphoto),
+                    'pcontent': i.pcontent,
+                    'pprice': i.pprice,
+                    'pway': i.pway,
+                }
+                product_list.append(data)
+            result = {'code': 200, 'data': product_list}
+            return JsonResponse(result)
     
     elif request.method =='POST':
         user=request.user
