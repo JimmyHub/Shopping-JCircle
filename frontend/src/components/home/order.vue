@@ -22,7 +22,7 @@
                 order5:[],
                 products_list:[],
                 status_show:[],
-                isStatus:0,
+                isStatus:1,
                 keyword:'',
             }
         },
@@ -63,8 +63,9 @@
                                 vm.order[j].products_list= `${vm.order[j].products[0]} * ${vm.order[j].products[1]} ...`
                                 for(var i=0;i<5;i++){
                                     if(vm.order[j].status == (i+1)){
-                                    vm.order[j].status_show=`${list_status[i]}${vm.order[j].status_time.slice(5,7)}/${vm.order[j].status_time.slice(8,10)}`
-                                    list_orders[i].push(vm.order[j]) 
+                                        list_orders[i].status = (i+1)
+                                        vm.order[j].status_show=`${list_status[i]}${vm.order[j].status_time.slice(5,7)}/${vm.order[j].status_time.slice(8,10)}`
+                                        list_orders[i].push(vm.order[j]) 
                                     }
                                 }
                             }
@@ -73,6 +74,7 @@
                             vm.order3=list_orders[2]
                             vm.order4=list_orders[3]
                             vm.order5=list_orders[4]
+                            vm.order.all=[vm.order1,vm.order2,vm.order3,vm.order4,vm.order5]  
                         }
                     }   
                 })

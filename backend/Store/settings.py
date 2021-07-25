@@ -23,8 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'e7g-0mn6bk(t*493e&r!^0oq8s9a+&6kxfd2$y4dfg0r53vcpq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = False
-DEBUG = True
+DEBUG = False
+#DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -131,8 +131,16 @@ STATICFILES_DIRS = (
     PurePosixPath(BASE_DIR).joinpath('static'),
 )
 
-CORS_ORIGIN_ALLOW_ALL=True
+CORS_ORIGIN_ALLOW_ALL=False
+#CORS_ORIGIN_ALLOW_ALL=True
 
+#表示在跨域請求中 允許對瀏覽器cookie進行操作
+CORS_ALLOW_CREDENTIALS = True 
+CORS_ORIGIN_WHITELIST  =(
+    'http://3.139.67.121',
+    'http://www.jcircle.com',
+    'http://127.0.0.1:8080'
+)
 CORS_ALLOW_METHODS = (
     'DELETE',
     'GET',

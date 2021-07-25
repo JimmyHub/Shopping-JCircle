@@ -8,6 +8,7 @@ import json
 # Create your views here.
 @login_check('GET','POST','PUT','DELETE')
 def orders(request,keyword=None,mode=None):
+    #訂單瀏覽
     if request.method=='GET':
         #獲取訂單資料(不包含商品資料)
         if keyword == None:
@@ -66,7 +67,7 @@ def orders(request,keyword=None,mode=None):
             }
             result={'code':200,'data':data}
             return JsonResponse(result)
-    
+    #訂單創立   
     elif request.method=='POST':
         json_str=request.body
         if not json_str:
@@ -168,7 +169,7 @@ def orders(request,keyword=None,mode=None):
             return JsonResponse(result)
         result={'code':200,'data':{'number':num_list}}
         return JsonResponse(result) 
-
+    #訂單更改
     elif request.method=='PUT':
         json_str=request.body
         if not json_str:
@@ -191,7 +192,7 @@ def orders(request,keyword=None,mode=None):
         orders[0].save()
         result={'code':200,'data':'ok'}
         return JsonResponse(result)
-
+    #訂單刪除
     elif request.method=='DELETE':
         if keyword == None:
             result={'code':400,'error':'please give me keyword of list'}

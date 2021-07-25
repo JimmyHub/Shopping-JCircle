@@ -66,9 +66,7 @@ def login(request):
             result={'code':400,'error':'please enter username.'}
             return JsonResponse(result)
         pwd=json_obj.get('pwd')
-        print(pwd)
         if not pwd:
-            print('no pwd')
             result={'code':400,'error':'please enter password.'}
             return JsonResponse(result)
         #將資料跟數據庫資料進行比對

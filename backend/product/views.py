@@ -11,6 +11,7 @@ key='a123456'
 
 @login_check('POST','PUT','DELETE')
 def products(request,keyword=None,personal=None,key1=None,key2=None,key3=None):
+    #商品瀏覽
     if request.method == 'GET':
         #判斷是單獨查詢特定商品 還是整體商品
         if keyword == '0':
@@ -49,7 +50,8 @@ def products(request,keyword=None,personal=None,key1=None,key2=None,key3=None):
                 product_list.append(data)
             result = {'code': 200, 'data': product_list}
             return JsonResponse(result)
-        elif keyword =='record': :
+        elif keyword =='record':
+            #特定查詢情況
             #判斷是否請求瀏覽紀錄
             key1_g = key1
             key2_g = key2
@@ -119,7 +121,7 @@ def products(request,keyword=None,personal=None,key1=None,key2=None,key3=None):
                 product_list.append(data)
             result = {'code': 200, 'data': product_list}
             return JsonResponse(result)
-    
+    #商品上架
     elif request.method =='POST':
         user=request.user
         if not user:

@@ -16,6 +16,7 @@ import json
 
 @login_check('GET','POST','DELETE')
 def orderlists(request,keyword=None,mode=None):
+    #訂單商品瀏覽
     if request.method=='GET':
         #訂單商品資料獲取
         if keyword == None:
@@ -56,7 +57,7 @@ def orderlists(request,keyword=None,mode=None):
                     list_products.append(dic_per)
         result={'code': 200 ,'data': list_products }
         return JsonResponse(result)
-
+    #訂單商品創立
     elif request.method=='POST':
         json_str=request.body
         if not json_str:
@@ -107,7 +108,7 @@ def orderlists(request,keyword=None,mode=None):
             return JsonResponse(result)
         result={'code':200,'data':list_p[0].id}
         return JsonResponse(result)
-
+    #訂單商品刪除
     elif request.method=='DELETE':
         if keyword == None:
             result={'code':400,'error':'please give me keyword of list'}

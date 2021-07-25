@@ -7,6 +7,7 @@ from .models import ShoppingList
 key='a123456'
 @login_check('GET','POST','PUT','DELETE')
 def shoppingcarts(request,keyword=None):
+    #購物車瀏覽
     if request.method =='GET':
         user = request.user
         if not user:
@@ -31,7 +32,7 @@ def shoppingcarts(request,keyword=None):
             data.append(dic_cart)
         result={'code':200,'data':data}
         return JsonResponse(result)
-
+    #購物車加入
     elif request.method =='POST':
         user = request.user
         if not user:
@@ -67,7 +68,7 @@ def shoppingcarts(request,keyword=None):
             return JsonResponse(result)
         result={'code':200}
         return JsonResponse(result)
-    
+    #購物車修改
     elif request.method =='PUT':
         user = request.user
         if not user:
@@ -93,7 +94,7 @@ def shoppingcarts(request,keyword=None):
         carts[0].save()
         result={'code':200}
         return JsonResponse(result)
-
+    #購物車刪除
     elif request.method =='DELETE':
         user = request.user
         if not user:

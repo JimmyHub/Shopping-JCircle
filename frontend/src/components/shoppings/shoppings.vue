@@ -21,20 +21,20 @@
         },
         methods:{
             go_home,go_cart,product_detail,search,logout,
-            count_change(lid,count){
+            count_change(pid,count){
                 let token = get_session('token')
                 let data={
                     'count':count
                 }
                 //商品數量修改
-                shoppingcart_change(lid,JSON.stringify(data),token).then((response)=>{
+                shoppingcart_change(pid,JSON.stringify(data),token).then((response)=>{
                     if(response.data.code == 200){
                         this.list.list_total=0
                         for(var i=0;i<this.list.length;i++){
                             this.list[i].item_total = this.list[i].price * this.list[i].count
                             this.list.list_total+=this.list[i].item_total
-                            if(this.list[i].list_id == lid){
-                                let total = document.getElementById(String(lid))
+                            if(this.list[i].list_id == pid){
+                                let total = document.getElementById(String(pid))
                                 total.innerText = String(this.list[i].item_total) + '元'
                             }
                         }
@@ -47,9 +47,9 @@
                 })
             },
             //刪除購物車商品
-            delete_l(sid){
+            delete_l(pid){
                 let token = get_session('token')
-                shoppingcart_delete(sid,token).then((response)=>{
+                shoppingcart_delete(pid,token).then((response)=>{
                     if(response.data.code == 200){
                         alert('刪除成功')
                         location.reload()

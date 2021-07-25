@@ -10,6 +10,7 @@ from tools.tokens import login_check,make_token
 key='a123456'
 @login_check('PUT','GET')
 def users(request):
+    #帳號資料瀏覽
     if request.method == 'GET':
         auser = request.user
         if not auser:

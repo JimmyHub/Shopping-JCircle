@@ -125,8 +125,8 @@
                                 }
                             }
                             //優惠計算
-                            vm.list.bonus_total += vm.list.bonus_20*20-Math.floor(vm.list.bonus_20/2)*1.6*20
-                            vm.list.bonus_total += vm.list.bonus_25*25-Math.floor(vm.list.bonus_25/2)*1.6*25
+                            vm.list.bonus_total += Math.round(vm.list.bonus_20*20-Math.floor(vm.list.bonus_20/2)*1.6*20)
+                            vm.list.bonus_total += Math.round(vm.list.bonus_25*25-Math.floor(vm.list.bonus_25/2)*1.6*25)
                             vm.list.list_total -=  vm.list.bonus_total
                             vm.list.list_total +=  vm.list.shipping
                             //訂單成立時間

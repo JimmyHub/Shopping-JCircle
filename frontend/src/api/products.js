@@ -46,7 +46,7 @@ export function adjust_p(keyword,data,token){
 
 //刪除商品
 export function delete_p(keyword,token){
-    return axios.delete(`${url()}${port()}/v1/products/${keyword}/delete`,{
+    return axios.delete(`${url()}${port()}/v1/products/${keyword}/1`,{
         headers:{
             "AUTHORIZATION":token
         }
