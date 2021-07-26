@@ -54,6 +54,9 @@ def users(request):
         if not password:
             result={'code':400,'error':'please give me password'}
             return JsonResponse(result)
+        if len(password)<5:
+            reult={'code':400,'error':'please give me over 5 words (password)'}
+            return JsonResponse(reult)
         password2 = json_obj.get('pwd2')
         if password2 != password:
             result = {'code':400,'error':'please enter same code'}
@@ -62,6 +65,9 @@ def users(request):
         if not phone :
             result ={'code':400,'error':'please give me phone number'}
             return JsonResponse(result)
+        if len(phone) != 10:
+            reult={'code':400,'error':'please give me correct numder'}
+            return JsonResponse(reult)
         email = json_obj.get('email')
         if not email:
             result = {'code':400,'error':'please give me email'}
