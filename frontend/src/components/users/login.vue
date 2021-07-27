@@ -13,14 +13,38 @@
             return{
                 username:'',
                 password:'',
-                keyword:''
+                keyword:'',
+                nError:'',
+                p1Error:'',
+                isCheck:false,
             }
         },
         methods:{
             go_home,search,
             //登入
             submit(){
-                if (this.username !== null && this.password !== null){
+                //用戶名稱驗證
+                if(this.username == ''){
+                    this.nError = 'n_empty'
+                }else if(this.username.length < 5){
+                    this.nError = 'n_form'
+                }else{
+                    this.nError=''
+                }
+                //密碼驗證
+                if(this.password ==''){
+                    this.p1Error = 'p1_empty'
+                }else if(this.password.length < 5){
+                    this.p1Error = 'p1_form'
+                }else{
+                    this.p1Error=''
+                }
+                //確認驗證都沒有問題
+                if(this.nError== '' && this.p1Error==''){
+                    this.isCheck=true
+                }
+                //無錯誤情況下才可以發出請求
+                if(this.isCheck){
                     let data={
                         'username':this.username,
                         'pwd':this.password

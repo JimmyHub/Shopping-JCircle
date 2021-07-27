@@ -16,51 +16,72 @@
                 phone:'',
                 email:'',
                 keyword:'',
+                nError:'',
+                p1Error:'',
+                p2Error:'',
+                phError:'',
+                emError:'',
+                isCheck:false,
             }
         },
         methods:{
             go_home,search,
             //註冊
             register(){
-                let data={
-                    'username':this.username,
-                    'pwd1':this.password1,
-                    'pwd2':this.password2,
-                    'phone':this.phone,
-                    'email':this.email
+                //用戶名稱驗證
+                if(this.username == ''){
+                    this.nError = 'n_empty'
+                }else if(this.username.length < 5){
+                    this.nError = 'n_form'
+                }else{
+                    this.nError=''
                 }
-                let check = 0
-                let list_check=[this.username,this.password1,this.password2,this.phone,this.email]
-                let list_item=['用戶名','密碼','第二次密碼','電話','信箱']
+                //密碼驗證
+                if(this.password1 ==''){
+                    this.p1Error = 'p1_empty'
+                }else if(this.password1.length < 5){
+                    this.p1Error = 'p1_form'
+                }else{
+                    this.p1Error=''
+                }
+                //再次輸入密碼驗證
+                if(this.password2 ==''){
+                    this.p2Error = 'p2_empty'
+                }else if(this.password1 != this.password2){
+                    this.p2Error = 'p2_form'
+                }else{
+                    this.p2Error=''
+                }
+                //電話驗證
+                if(this.phone ==''){
+                    this.phError = 'ph_empty'
+                }else if(this.phone.length !=10){
+                    this.phError = 'ph_form'
+                }else{
+                    this.phError=''
+                }
+                //信箱驗證
                 var isEmail = /^\w+@\w+[-.]\w+/
-                for(var i=0;i<list_check.length;i++){
-                    if(list_check[i] ==''){
-                        alert(`請輸入 ${list_item[i]}`)
-                        check+=1
-                    }else{
-                        if(3>i){
-                            if(list_check[i].length < 5){
-                                alert(`請輸入更長的${list_item[i]}`)
-                                check+=1
-                            }
-                        }else if(i == 3){
-                                if(list_check[i].length != 10 ){
-                                alert(`請輸入正確的${list_item[i]}號碼`)
-                                check+=1
-                            }
-                        }else if(i == 4){
-                                if(!isEmail.test(this.email)){
-                                alert(`請輸入正確的${list_item[i]}格式`)
-                                check+=1
-                            }
-                        }
+                if(this.email ==''){
+                    this.emError = 'em_empty'
+                }else if(!isEmail.test(this.email)){
+                    this.emError = 'em_form'
+                }else{
+                    this.emError=''
+                }
+                //確認驗證都沒有問題
+                if(this.nError== '' && this.p1Error=='' &&this.p2Error=='' && this.phError=='' && this.emError==''){
+                    this.isCheck=true
+                }
+                //無錯誤情況下才可以發出請求
+                if(this.isCheck){
+                    let data={
+                        'username':this.username,
+                        'pwd1':this.password1,
+                        'pwd2':this.password2,
+                        'phone':this.phone,
+                        'email':this.email
                     }
-                }
-                if(this.password1 != this.password2){
-                    alert('兩次密碼輸入不一致,請重新輸入')
-                    check+=1
-                }
-                if(check == 0){
                     reg(JSON.stringify(data)).then((response) =>{
                         if(response.data.code == 200){
                             alert(response.data.data.username+'註冊成功')

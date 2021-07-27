@@ -13,7 +13,7 @@
         <div class='row'>
             <div class='col'></div>
             <div class='col'></div>
-            <h3 class='col-12'>用戶註冊</h3>
+            <h4 class='col-12'>用戶註冊</h4>
             <b-form class='col'>
                 <b-input-group class="mb-2" size="sm">
                     <b-input-group-prepend is-text>
@@ -21,30 +21,40 @@
                     </b-input-group-prepend>
                     <b-input v-model='username' placeholder='請輸入用戶名'></b-input>
                 </b-input-group>
+                <div v-if='nError ==="n_empty"' style='color: red; font-size: 10px; margin-top:-8px'>請輸入用戶名</div>
+                <div v-if='nError ==="n_form"' style='color: red; font-size: 10px; margin-top:-8px'>請輸入5位以上的用戶名</div>
                 <b-input-group class="mb-2" size="sm">
                     <b-input-group-prepend is-text>
                         <b-icon icon="lock"></b-icon>
                     </b-input-group-prepend>
-                    <b-input type="password" v-model='password1' placeholder='請輸入5~10位數密碼'></b-input>  
+                    <b-input type="password" v-model='password1' placeholder='請輸入5位數以上的密碼'></b-input>  
                 </b-input-group>
+                <div v-if='p1Error ==="p1_empty"' style='color: red; font-size: 10px; margin-top:-8px'>請輸入密碼</div>
+                <div v-if='p1Error ==="p1_form"' style='color: red; font-size: 10px; margin-top:-8px'>請輸入5位以上的密碼</div>
                 <b-input-group class="mb-2" size="sm">
                     <b-input-group-prepend is-text>
                         <b-icon icon="lock-fill"></b-icon>
                     </b-input-group-prepend>
-                    <b-input type="password"  v-model='password2' placeholder='再次輸入密碼'></b-input>  
+                    <b-input type="password"  v-model='password2' placeholder='再次輸入密碼'></b-input>
                 </b-input-group>
+                <div v-if='p2Error ==="p2_empty"' style='color: red; font-size: 10px; margin-top:-8px'>請再次輸入密碼</div>
+                <div v-if='p2Error ==="p2_form"' style='color: red; font-size: 10px; margin-top:-8px'>兩次密碼輸入不相同</div>
                 <b-input-group class="mb-2" size="sm">
                     <b-input-group-prepend is-text>
                         <b-icon icon="telephone-fill"></b-icon>
                     </b-input-group-prepend>
-                    <b-input type="text"  v-model='phone' placeholder='09XX-XXX-XXX'></b-input>  
+                    <b-input type="text"  v-model='phone' placeholder='09XX-XXX-XXX'></b-input>
                 </b-input-group>
+                <div v-if='phError ==="ph_empty"' style='color: red; font-size: 10px; margin-top:-8px'>請輸入電話</div>
+                <div v-if='phError ==="ph_form"' style='color: red; font-size: 10px; margin-top:-8px'>請輸入正確格式</div>
                 <b-input-group class="mb-2" size="sm">
                     <b-input-group-prepend is-text>
                         <b-icon icon="envelope"></b-icon>
                     </b-input-group-prepend>
-                    <b-input type="email"  v-model='email' placeholder='for@example.tw'></b-input>  
+                    <b-input type="email"  v-model='email' placeholder='for@example.tw'></b-input>
                 </b-input-group>
+                <div v-if='emError ==="em_empty"' style='color: red; font-size: 10px; margin-top:-8px'>請輸入信箱</div>
+                <div v-if='emError ==="em_form"' style='color: red; font-size: 10px; margin-top:-8px'>請輸入正確格式</div>
                 <b-button variant="outline-primary " @click="register()">提交</b-button>
             </b-form>
         </div>
