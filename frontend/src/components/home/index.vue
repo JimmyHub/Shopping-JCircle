@@ -50,10 +50,9 @@
             let personal = '0'
             //獲取瀏覽紀錄
             let list_key = get_Storage('list_key').split(',')
-            let key1 =list_key[0]
-            let key2 =list_key[1]
-            let key3 =list_key[2]
-            await Promise.all([index(token),pinfo(keyword,personal,token),precord(key1,key2,key3,token),shoppingcart_show(token)]).then(([indexResponse,pinfoResponse,precordResponse,cartResponse]) =>{
+            let record = `${list_key[2]}&${list_key[1]}&${list_key[0]}`
+            let pattern = 'all'
+            await Promise.all([index(token),pinfo(keyword,pattern,personal,token),precord("record",record,token),shoppingcart_show(token)]).then(([indexResponse,pinfoResponse,precordResponse,cartResponse]) =>{
                 next( vm=>{
                     //用戶資料請求
                     if(indexResponse.data.code ==200){

@@ -28,6 +28,7 @@ export function del_session(item){
 export function search(){
     let keyword = this.keyword.replace(/\s*/g,"")
     set_Storage('keyword',keyword)
+    set_Storage('pattern','search')
     if(window.location.href ==`${url()}/#/product_all`){
         location.reload()
     }else{
@@ -57,6 +58,16 @@ export function go_back(){
 //前往瀏覽商品
 export function go_products_all(kind){
     set_Storage('keyword',kind)
+    if(kind == '0'){
+        set_Storage('pattern','all')
+    }else{
+        set_Storage('pattern','search')
+    }
+    if(window.location.href ==`${url()}/#/product_all`){
+        location.reload()
+    }else{
+        window.location.href='#/product_all'
+    }
 }
 
 //前往購物車
@@ -71,6 +82,7 @@ export function go_floor(){
 //前往商品詳細內容
 export function product_detail(pid){
     set_Storage('keyword',pid)
+    set_Storage('pattern','search')
     let num=0
     //從localStorage取道的值為str, 要轉換成陣列
     let record_key = get_Storage('list_key').split(',')

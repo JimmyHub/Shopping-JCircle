@@ -38,8 +38,9 @@
             let token = get_session('token')
             let keyword = '0'
             let personal = '1'
+            let pattern ='all'
             if(token){
-                await Promise.all([info(token),pinfo(keyword,personal,token),orders(keyword,1,token)]).then(([infoResponse,pinfoResponse,orderResponse]) =>{
+                await Promise.all([info(token),pinfo(keyword,pattern,personal,token),orders(keyword,1,token)]).then(([infoResponse,pinfoResponse,orderResponse]) =>{
                     next( vm=>{
                         //用戶資料請求
                         if(infoResponse.data.code == 200){

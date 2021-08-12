@@ -10,11 +10,11 @@ from orderlist.models import OrderList
 key='a123456'
 
 @login_check('POST','PUT','DELETE')
-def products(request,keyword=None,personal=None,key1=None,key2=None,key3=None):
+def products(request,keyword=None,pattern=None,personal=None,record=None):
     #商品瀏覽
     if request.method == 'GET':
         #判斷是單獨查詢特定商品 還是整體商品
-        if keyword == '0':
+        if pattern == 'all':
             #如果是請求整體商品資訊 
             #判斷瀏覽是在個人賣場內部(personal=1) 還是 一般情況(personal=0)
             if personal ==  '1' :
@@ -50,34 +50,34 @@ def products(request,keyword=None,personal=None,key1=None,key2=None,key3=None):
                 product_list.append(data)
             result = {'code': 200, 'data': product_list}
             return JsonResponse(result)
-        elif keyword =='record':
+        elif pattern =='record':
             #特定查詢情況
             #判斷是否請求瀏覽紀錄
-            key1_g = key1
-            key2_g = key2
-            key3_g = key3
-            if key1_g ==0:
-                if key2_g ==0:
-                    if key3_g ==0:
-                        result={'code':200,'data':'norecord'}
-                        return JsonResponse(result)
-            record_key=[key3,key2,key1]
+            list_key=record.split("&")
+            no_key= 0
             list_record=[]
-            for i in record_key:
-               products=ProductProfile.objects.filter(id=i)
-               #如果沒有products 就跳過
-               if not products:
-                   continue
-               data={
+            for i in list_key:
+                if i == '0':
+                    no_key +=1
+                    continue
+                else:
+                    products=ProductProfile.objects.filter(id=int(i))
+                    if not products:
+                        continue
+                    data={
                     'pid':products[0].id,
                     'pname': products[0].pname,
                     'pphoto': str(products[0].pphoto),
                     'pprice': products[0].pprice,
-               }
-               list_record.append(data)
-            result={'code':200,'data':list_record}
-            return JsonResponse(result)
-        else:
+                    }
+                    list_record.append(data)
+            if no_key == 3:
+                result={'code':200,'data':'norecord'}
+                return JsonResponse(result)
+            else:
+                result={'code':200,'data':list_record}
+                return JsonResponse(result)
+        elif pattern =='search':
             #判斷是查詢特定類別 還是包含特定關鍵字商品
             #如果Keyword 是空則返回無商品
             if not keyword:
@@ -107,6 +107,7 @@ def products(request,keyword=None,personal=None,key1=None,key2=None,key3=None):
                                           'pprice': products[0].pprice,
                                             'pway': products[0].pway,}}
                     return JsonResponse(result)
+            #若是包含特定類別商品 或是包含特定關鍵字的商品
             product_list = []
             for i in products:
                 data = {

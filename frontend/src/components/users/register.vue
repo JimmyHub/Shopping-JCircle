@@ -72,6 +72,8 @@
                 //確認驗證都沒有問題
                 if(this.nError== '' && this.p1Error=='' &&this.p2Error=='' && this.phError=='' && this.emError==''){
                     this.isCheck=true
+                }else{
+                    this.isCheck=false
                 }
                 //無錯誤情況下才可以發出請求
                 if(this.isCheck){
@@ -80,10 +82,11 @@
                         'pwd1':this.password1,
                         'pwd2':this.password2,
                         'phone':this.phone,
-                        'email':this.email
+                        'email':this.email,
                     }
                     reg(JSON.stringify(data)).then((response) =>{
                         if(response.data.code == 200){
+                            console.log('here')
                             alert(response.data.data.username+'註冊成功')
                             set_session('username',response.data.data.username)
                             set_session('token',response.data.data.token)

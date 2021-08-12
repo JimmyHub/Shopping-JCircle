@@ -77,7 +77,8 @@
             let token = get_session('token')
             let keyword = get_Storage('keyword')
             let personal='0'
-            await Promise.all([info(token),pinfo(keyword,personal,token)]).then(([infoResponse,pinfoResponse]) =>{
+            let pattern= 'search'
+            await Promise.all([info(token),pinfo(keyword,pattern,personal,token)]).then(([infoResponse,pinfoResponse]) =>{
                 next( vm=>{
                 //用戶資料請求
                     if(infoResponse.data.code ==200){

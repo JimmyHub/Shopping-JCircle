@@ -1,16 +1,16 @@
 import axios from 'axios'
 import { url, port } from '@/assets/js/set.js'
 //瀏覽紀錄
-export function precord(pattern,record,token){
-	return axios.get(`${url()}${port()}/v1/products/0/${pattern}/0/${record}`,{
+export function precord(key1,key2,key3,token){
+	return axios.get(`${url()}${port()}/v1/products/record/0/${key1}/${key2}/${key3}`,{
 		headers:{
 			"AUTHORIZATION":token
 		}
 	})
 }
 //獲取商品資料
-export function pinfo(keyword,pattern,personal,token){
-	return axios.get(`${url()}${port()}/v1/products/${keyword}/${pattern}/${personal}/0`,{
+export function pinfo(keyword,personal,token){
+	return axios.get(`${url()}${port()}/v1/products/${keyword}/${personal}`,{
 		headers:{
 			"AUTHORIZATION":token
 		}

@@ -9,7 +9,7 @@
     import { shoppingcart_show } from '@/api/shoppings.js'
     //import { url, port } from '@/assets/js/set.js'
     import { url } from '@/assets/js/set.js'
-    import { set_Storage, get_Storage, get_session, go_home, go_cart, product_detail, search, logout } from'@/assets/js/often.js'
+    import { set_Storage, get_Storage, get_session, go_home, go_cart,go_products_all, product_detail, search, logout } from'@/assets/js/often.js'
 
     export default{
         name:'product_all',
@@ -24,12 +24,7 @@
             }
         },
         methods:{
-            go_home,go_cart,product_detail,search,logout,
-            //同一種類商品顯示
-            products(kind){
-                set_Storage('keyword',kind)
-                location.reload()
-            },
+            go_home,go_cart,go_products_all,product_detail,search,logout,
             //切換 購物車/瀏覽紀錄
             cart_show(){
                 this.isCart = true
@@ -49,11 +44,9 @@
             let keyword =  get_Storage('keyword')
             let personal = '0'
             let list_key = get_Storage('list_key').split(',')
-            let key1 =list_key[0]
-            let key2 =list_key[1]
-            let key3 =list_key[2]
-
-            await Promise.all([index(token),pinfo(keyword,personal,token),precord(key1,key2,key3,token),shoppingcart_show(token)]).then(([indexResponse,pinfoResponse,precordResponse,cartResponse]) =>{
+            let record = `${list_key[2]}&${list_key[1]}&${list_key[0]}`
+            let pattern = get_Storage('pattern')
+            await Promise.all([index(token),pinfo(keyword,pattern,personal,token),precord("record",record,token),shoppingcart_show(token)]).then(([indexResponse,pinfoResponse,precordResponse,cartResponse]) =>{
                 next( vm=>{
                     //用戶資料請求
                     if(indexResponse.data.code ==200){
