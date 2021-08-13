@@ -68,11 +68,9 @@
             }
             let token = get_session('token')
             let list_key = get_Storage('list_key').split(',')
-            let key1 =list_key[0]
-            let key2 =list_key[1]
-            let key3 =list_key[2]
+            let record = `${list_key[2]}&${list_key[1]}&${list_key[0]}`
             if(token){
-                await Promise.all([info(token),shoppingcart_show(token),precord(key1,key2,key3,token)]).then(([infoResponse,cartResponse,precordResponse])=>{
+                await Promise.all([info(token),shoppingcart_show(token),precord("record",record,token)]).then(([infoResponse,cartResponse,precordResponse])=>{
                     next(vm =>{ 
                         //用戶資料請求
                         if(infoResponse.data.code == 200){

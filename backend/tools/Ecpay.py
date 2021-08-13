@@ -19,6 +19,7 @@ HashKey="5294y06JbISpM5x9"
 #IV加尾吧
 HashIV="v77hoKGq4kWxNNIS"
 ClientBackURL="http://www.jcircle.ml/#/orders"
+OrderResultURL="http://www.jcircle.ml/#/orders"
 #CheckMacValue 驗證碼生成
 def check_encode(origin):
     # 1.urlencode
@@ -62,8 +63,8 @@ def ecpay_jc(list_id):
     ItemName='jCircle商品一組'
     ReturnURL="http://www.jcircle.ml/api/v1/CheckMacValue/"+str(list_id)
     check_origin="HashKey=%s&ChoosePayment=%s&ClientBackURL=%s&EncryptType=%d&ItemName=" \
-                 "%s&MerchantID=%s&MerchantTradeDate=%s&MerchantTradeNo=%s&PaymentType=%s&ReturnURL=" \
-                 "%s&TotalAmount=%d&TradeDesc=%s&HashIV=%s"%(HashKey,ChoosePayment,ClientBackURL,EncryptType,ItemName,MerchantID,MerchantTradeDate,MerchantTradeNo,PaymentType,ReturnURL,TotalAmount,TradeDesc,HashIV)
+                 "%s&MerchantID=%s&MerchantTradeDate=%s&MerchantTradeNo=%s&OrderResultURL=%s&PaymentType=%s&ReturnURL=" \
+                 "%s&TotalAmount=%d&TradeDesc=%s&HashIV=%s"%(HashKey,ChoosePayment,ClientBackURL,EncryptType,ItemName,MerchantID,MerchantTradeDate,MerchantTradeNo,OrderResultURL,PaymentType,ReturnURL,TotalAmount,TradeDesc,HashIV)
     CheckMacValue = check_encode(check_origin)
     return CheckMacValue
 
@@ -97,7 +98,7 @@ def CheckMacValue(request,list_id):
                     result={'code':400,'error':'please give me data'}
                     return JsonResponse(result)
                 try:
-                    orders[0].status +=1
+                    orders[0].status =1
                     orders[0].save() 
                 except:
                     result={'code':500,'error':'System is busy'}

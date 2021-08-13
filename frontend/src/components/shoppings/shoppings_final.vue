@@ -61,6 +61,7 @@
                             vm.order=ordersResponse.data.data
                             vm.order.url=`http://www.jcircle.ml/api/v1/CheckMacValue/${vm.order.list_id}`
                             vm.order.url_c=`http://www.jcircle.ml/#/orders`
+                            vm.order.url_o=`http://www.jcircle.ml/#/orders`
                             vm.order.num_time= `${vm.order.num_time.slice(0,10)} ${vm.order.num_time.slice(11,19)}`
                         }
                         //訂單商品資料請求
