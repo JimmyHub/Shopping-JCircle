@@ -44,6 +44,7 @@
                 set_Storage('list_key',list_orgin)
             }
             //登入狀態獲得
+            set_Storage('pattern','all')
             let token = get_session('token')
             //獲取商品資料用 參數
             let keyword =  '0'
@@ -51,7 +52,7 @@
             //獲取瀏覽紀錄
             let list_key = get_Storage('list_key').split(',')
             let record = `${list_key[2]}&${list_key[1]}&${list_key[0]}`
-            let pattern = 'all'
+            let pattern = get_Storage('pattern')
             await Promise.all([index(token),pinfo(keyword,pattern,personal,token),precord("record",record,token),shoppingcart_show(token)]).then(([indexResponse,pinfoResponse,precordResponse,cartResponse]) =>{
                 next( vm=>{
                     //用戶資料請求
@@ -138,7 +139,7 @@
                     }
                     if(precordResponse.data.code == 200){
                         vm.record=precordResponse.data.data
-                        if(vm.record == 'norecode'){
+                        if(vm.record == 'norecord'){
                             vm.record=''
                         }else{
                             for(var r=0;r<vm.record.length;r++){

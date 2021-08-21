@@ -119,7 +119,7 @@
                     //瀏覽紀錄請求
                     if(precordResponse.data.code == 200){
                         vm.record=precordResponse.data.data
-                        if(vm.record == 'norecode'){
+                        if(vm.record == 'norecord'){
                             vm.record=''
                         }else{
                             for(var r=0;r<vm.record.length;r++){
