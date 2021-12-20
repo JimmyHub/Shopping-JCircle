@@ -83,7 +83,7 @@ def login(request):
             return JsonResponse(result)
         token_login=make_token(name)
         print(token_login)
-        result={'code':200,'data':{'username':name,'token':token_login}}
+        result={'code':200,'data':{'username':name,'token':token_login.decode()}}
         return JsonResponse(result)
     else:
         result={'code':405,'error':'This is not correct way.'}

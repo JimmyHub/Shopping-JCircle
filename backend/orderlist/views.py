@@ -35,7 +35,7 @@ def orderlists(request,keyword=None,mode=None):
         for i in products:
             #賣場詳細訂單商品顯示
             if mode == '1':
-                if i.sales.name == request.user.name:
+                if i.product.sales.name == request.user.name:
                     dic_per_s={
                         'pname':i.product.pname,
                         'id':i.product.id,
@@ -75,38 +75,33 @@ def orderlists(request,keyword=None,mode=None):
             result={'code':400,'error':'please give products'}
             return JsonResponse(result)
         #訂單編號
-        num_list = json_obj.get('num_list')
-        if not num_list:
-            result={'code':400,'error':'please give number of list'}
+        list_num = json_obj.get('list_num')
+        if not list_num:
+            result={'code':400,'error':'please give number of order'}
             return JsonResponse(result)
-        list_p = OrdersFiles.objects.filter(num_list=num_list)
+        list_p = OrdersFiles.objects.filter(num_list=list_num)
         if not list_p:
             result={'code':410,'error':'This list does not exist'}
-            return JsonResponse(result)
-         
-        #商品販售人id
-        sales = json_obj.get('sales')
-        if not sales:
-            result={'code':400,'error':'please give sales'}
             return JsonResponse(result) 
         #購物車商品id
         list_id = json_obj.get('list_id')
         if not list_id:
             result={'code':400,'error':'please give list_id'}
             return JsonResponse(result)
+        
+        #將商品加入購物車之後，把購物車的內容刪除
         try:
             for i in range(len(counts)):
                 OrderList.objects.create(count=counts[i],
                                          product_id=products[i],
-                                         num_list_id=list_p[0].id,
-                                         sales_id=sales[i])
-            for j in list_id:
-                shoppingcart=ShoppingList.objects.filter(id=j)
+                                         num_list_id=list_num,)
+            for sid in list_id:
+                shoppingcart=ShoppingList.objects.filter(id=sid)
                 shoppingcart.delete()
         except:
             result={'code':500,'error':'System is busy'}
             return JsonResponse(result)
-        result={'code':200,'data':list_p[0].id}
+        result={'code':200,'data':list_num}
         return JsonResponse(result)
     #訂單商品刪除
     elif request.method=='DELETE':
@@ -128,7 +123,7 @@ def orderlists(request,keyword=None,mode=None):
                 #mode = 0 表示是在結帳時退回上一頁 刪除清單 要加回購物車
                 if mode == '0':
                     try:
-                        ShoppingList.objects.create(price=i.product.pprice,
+                        ShoppingList.objects.create(
                                                     count=i.count,
                                                     product_id=i.product.id,
                                                     user_id=i.num_list.buyer.name)

@@ -22,12 +22,12 @@
         methods:{
             go_home,go_cart,go_back,search,logout,
             //返回上一頁時 要刪除已經創立的訂單
-            delete_l(list_id){
+            delete_l(order_num){
                 let token = get_session('token')
                 let mode = get_Storage('mode')
-                porders_del(list_id,mode,token).then((response)=>{
+                porders_del(order_num,mode,token).then((response)=>{
                     if(response.data.code ==200){
-                        orders_del(list_id,token).then((response)=>{
+                        orders_del(order_num,token).then((response)=>{
                             if(response.data.code == 200){
                                 window.history.go(-1)
                             }else{
@@ -42,10 +42,10 @@
         },
         async beforeRouteEnter(to,from,next){
             let token = get_session('token')
-            let num = get_Storage('list_id')
+            let num_list = get_Storage('num_list')
             let mode = get_Storage('mode')
             if(token){
-                await Promise.all([info(token),orders(num,mode,token),porders(num,mode,token)]).then(([infoResponse,ordersResponse,pordersResponse])=>{
+                await Promise.all([info(token),orders(num_list,mode,token),porders(num_list,mode,token)]).then(([infoResponse,ordersResponse,pordersResponse])=>{
                     next(vm =>{ 
                         //用戶資料請求
                         if(infoResponse.data.code == 200){
@@ -59,7 +59,8 @@
                         //訂單資料請求
                         if(ordersResponse.data.code == 200){
                             vm.order=ordersResponse.data.data
-                            vm.order.url=`http://www.jcircle.ml/api/v1/CheckMacValue/${vm.order.list_id}`
+                            vm.order.order_num = vm.order.num_list.slice(7,13)
+                            vm.order.url=`http://www.jcircle.ml/api/v1/CheckMacValue/${vm.order.order_num}`
                             vm.order.url_c=`http://www.jcircle.ml/#/orders`
                             vm.order.url_o=`http://www.jcircle.ml/#/orders`
                             vm.order.num_time= `${vm.order.num_time.slice(0,10)} ${vm.order.num_time.slice(11,19)}`

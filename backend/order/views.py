@@ -25,13 +25,12 @@ def orders(request,keyword=None,mode=None):
                 list_g=OrdersFiles.objects.filter(buyer=request.user.name)
             list_orders=[]
             for i in list_g:
-                products = OrderList.objects.filter(num_list_id=i.id)
-                if not products:
+                products_inOder = OrderList.objects.filter(num_list_id=i.num_list)
+                if not products_inOder:
                     result={'code':410,'error':'Something must be wrong'}
                     return JsonResponse(result)
-                item=(products[0].product.pname,products[0].count)
+                item=(products_inOder[0].product.pname,products_inOder[0].count)
                 data={
-                    'list_id':i.id,
                     'num_list':'jCircle'+str(i.num_list),
                     'num_time':i.num_time,
                     'status':i.status,
@@ -44,12 +43,12 @@ def orders(request,keyword=None,mode=None):
             return JsonResponse(result)
         else:
             #訂單資料詳細顯示
-            list_g= OrdersFiles.objects.filter(id=keyword)
+            
+            list_g= OrdersFiles.objects.filter(num_list=keyword)
             if not list_g:
                 result={'code':410,'error':'This list does not exist'}
                 return JsonResponse(result)
             data={
-                'list_id':list_g[0].id,
                 'num_list':'jCircle'+str(list_g[0].num_list),
                 'num_time':list_g[0].num_time,
                 'status':list_g[0].status,
@@ -63,7 +62,7 @@ def orders(request,keyword=None,mode=None):
                 'shipping':list_g[0].shipping,
                 'money_total':list_g[0].money_total,
                 'item':'jCircle商品一組',
-                'CheckMacValue': ecpay_jc(list_g[0].id)
+                'CheckMacValue': ecpay_jc(list_g[0].num_list)
             }
             result={'code':200,'data':data}
             return JsonResponse(result)
@@ -75,14 +74,14 @@ def orders(request,keyword=None,mode=None):
             return JsonResponse(result)
         json_obj=json.loads(json_str)
         #訂單編號
-        num_list = json_obj.get('number')
-        if not num_list:
+        list_num = json_obj.get('list_num')
+        if not list_num:
             result={'code':400,'error':'please give number of list'}
             return JsonResponse(result)
         #訂單時間
-        num_time = json_obj.get('num_time')
-        if not num_time:
-            result={'code':400,'error':'please give num_time'}
+        list_time = json_obj.get('list_time')
+        if not list_time:
+            result={'code':400,'error':'please give time of list'}
             return JsonResponse(result)
         #訂單狀態
         status = json_obj.get('status')
@@ -150,8 +149,8 @@ def orders(request,keyword=None,mode=None):
             return JsonResponse(result)
         try:
             OrdersFiles.objects.create(
-                num_list=num_list,
-                num_time=num_time, 
+                num_list=list_num,
+                num_time=list_time, 
                 status=int(status),
                 gname=gname,
                 address=address,
@@ -167,7 +166,7 @@ def orders(request,keyword=None,mode=None):
         except:
             result={'code':500,'error':'System is busy'}
             return JsonResponse(result)
-        result={'code':200,'data':{'number':num_list}}
+        result={'code':200,'data':{'list_num':list_num}}
         return JsonResponse(result) 
     #訂單更改
     elif request.method=='PUT':
@@ -180,11 +179,12 @@ def orders(request,keyword=None,mode=None):
         if not keyword:
             result={'code':400,'error':'please give me keyword'}
             return JsonResponse(result)                
-        orders = OrdersFiles.objects.filter(id=keyword)
+        orders = OrdersFiles.objects.filter(num_list=keyword)
         if not orders:
             result={'code':410,'error':'Something must be wrong'}
             return JsonResponse(result)
         try:
+            #將訂單狀態往下修改一個
             orders[0].status+=1
         except:
             result={'code':500,'error':'System is busy'}
@@ -197,7 +197,7 @@ def orders(request,keyword=None,mode=None):
         if keyword == None:
             result={'code':400,'error':'please give me keyword of list'}
             return JsonResponse(result)
-        orders = OrdersFiles.objects.filter(id=keyword)
+        orders = OrdersFiles.objects.filter(num_list=keyword)
         if not orders:
             result={'code':410,'error':'Something must be wrong'}
             return JsonResponse(result)

@@ -44,12 +44,12 @@ def check_encode(origin):
     return e
 
 #驗證碼生成  前置數據生成
-def ecpay_jc(list_id):
+def ecpay_jc(list_num):
     #透過order id 從現有OrdersFiles 數據庫 拿數據出來
-    if not list_id:
-        result={'code':400,'error':'please give me data'}
+    if not list_num:
+        result={'code':400,'error':'please give me list_num'}
         return JsonResponse(result)
-    orders= OrdersFiles.objects.filter(id=list_id)
+    orders= OrdersFiles.objects.filter(num_list=list_num)
     if not orders:
         result={'code':410,'error':'This list does not exist'}
         return JsonResponse(result)
@@ -57,11 +57,13 @@ def ecpay_jc(list_id):
         ChoosePayment="Credit"
     elif orders[0].payway == 2:
         ChoosePayment="BARCODE"
-    MerchantTradeNo ="jCircle"+str(orders[0].num_list)
+    #透過API獲得參數數值後，根據參數查找資料庫的數據，直接用資料庫內查到的值作替代
+    list_num_db = orders[0].num_list
+    MerchantTradeNo ="jCircle"+str(list_num_db)
     MerchantTradeDate=orders[0].num_time[0:10]+' '+orders[0].num_time[11:19]
     TotalAmount=orders[0].money_total 
     ItemName='jCircle商品一組'
-    ReturnURL="http://www.jcircle.ml/api/v1/CheckMacValue/"+str(list_id)
+    ReturnURL="http://www.jcircle.ml/api/v1/CheckMacValue/"+ str(list_num_db)
     check_origin="HashKey=%s&ChoosePayment=%s&ClientBackURL=%s&EncryptType=%d&ItemName=" \
                  "%s&MerchantID=%s&MerchantTradeDate=%s&MerchantTradeNo=%s&OrderResultURL=%s&PaymentType=%s&ReturnURL=" \
                  "%s&TotalAmount=%d&TradeDesc=%s&HashIV=%s"%(HashKey,ChoosePayment,ClientBackURL,EncryptType,ItemName,MerchantID,MerchantTradeDate,MerchantTradeNo,OrderResultURL,PaymentType,ReturnURL,TotalAmount,TradeDesc,HashIV)
@@ -70,17 +72,16 @@ def ecpay_jc(list_id):
 
 
 #訂單繳費成立回調
-def CheckMacValue(request,list_id):
+def CheckMacValue(request,list_num):
     if request.method =="POST":
-        if not list_id:
-            result={'code':400,'error':'please give me data'}
+        if not list_num:
+            result={'code':400,'error':'please give me list_num'}
             return JsonResponse(result)
         list_item=['MerchantID','MerchantTradeNo','PaymentDate','PaymentType','PaymentTypeChargeFee','RtnCode','RtnMsg','SimulatePaid','StoreID','TradeAmt','TradeDate','TradeNo']
         check_origin='HashKey=%s&CustomField1=&CustomField2=&CustomField3=&CustomField4=&'%HashKey
         for i in range(len(list_item)):
             get = request.POST.get(list_item[i],'')
             if i == len(list_item)-1:
-                #check_origin += list_item[i]+'='+str(get)
                 check_origin += list_item[i]+'='+str(get)+("&HashIV=%s"%HashIV)
             else:
                 check_origin += list_item[i]+'='+str(get)+"&"
@@ -93,7 +94,7 @@ def CheckMacValue(request,list_id):
         if RtnCode == "1" :
             print('交易成功')
             if CheckMac_get == CheckMacValue_o:
-                orders=OrdersFiles.objects.filter(id=list_id)
+                orders=OrdersFiles.objects.filter(num_list=list_num)
                 if not orders:
                     result={'code':400,'error':'please give me data'}
                     return JsonResponse(result)
@@ -112,15 +113,15 @@ def CheckMacValue(request,list_id):
         return JsonResponse(result)  
 
 #訂單創建成立查詢
-def orderCheck(request,keyword):
+def orderCheck(request,list_num):
     if not keyword:
         result={'code':400,'error':'please give me list number'}
         return JsonResponse(result)
-    orders = OrdersFiles.objects.filter(id=keyword)
+    orders = OrdersFiles.objects.filter(num_list=list_num)
     if not orders:
         result={'code':410,'error':'This order don`t exist'}
         return JsonResponse(result)
-    MerchantTradeNo = "jCircle"+str(orders[0].num_list)
+    MerchantTradeNo = "jCircle"+orders[0].num_list
     time_now=math.floor(time.time())
     check_origin="HashKey=%s&MerchantID=%s&MerchantTradeNo=%s&TimeStamp=%d&HashIV=%s"%(HashKey,MerchantID,MerchantTradeNo,time_now,HashIV)
     CheckMacValue = check_encode(check_origin)

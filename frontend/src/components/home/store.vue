@@ -79,6 +79,7 @@
                                 let list_orders=[[],[],[],[],[]]
                                 for(var j=0;j<vm.order.length;j++){
                                     vm.order[j].products_list= `${vm.order[j].products[0]} * ${vm.order[j].products[1]} ...`
+                                    vm.order[j].order_num = vm.order[j].num_list.slice(7,13)
                                     for(var i=0;i<5;i++){
                                         if(vm.order[j].status == (i+1)){
                                             list_orders[i].status = (i+1)

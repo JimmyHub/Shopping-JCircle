@@ -25,7 +25,7 @@ def shoppingcarts(request,keyword=None):
                 'pid':i.product.id,
                 'pkind':i.product.pkind,
                 'pphoto':str(i.product.pphoto),
-                'price':i.price,
+                'price':i.product.pprice,
                 'count':i.count,
                 'sales':i.product.sales.name
             }
@@ -50,22 +50,30 @@ def shoppingcarts(request,keyword=None):
             result={'code':400,'error':'please give data'}
             return JsonResponse(result)
         json_obj=json.loads(json_str)
-        price = int(json_obj.get('price'))
-        if not price:
-            result={'code':400,'error':'please give data'}
-            return JsonResponse(result)
         count = int(json_obj.get('count'))
         if not count:
             result={'code':400,'error':'please give data'}
             return JsonResponse(result)
-        try:
-            ShoppingList.objects.create(price=price,
-                                        count=count,
-                                        product=products[0],
-                                        user=user)
-        except:
-            result={'code':500,'error':'System is busy'}
-            return JsonResponse(result)
+        #判斷購物車內是否已經有此商品,有的話 將數量加上
+        product_exsist = ShoppingList.objects.filter(product_id=keyword)
+        if product_exsist:
+            try:
+                old_count = product_exsist[0].count
+                product_exsist[0].count = old_count + count
+            except:
+                result={'code':500,'error':'System is busy'}
+                return JsonResponse(result)
+            product_exsist[0].save()
+        #若購物車內還沒有此商品就加入購物車
+        else:
+            try:
+                ShoppingList.objects.create(
+                                            count=count,
+                                            product=products[0],
+                                            user=user)
+            except:
+                result={'code':500,'error':'System is busy'}
+                return JsonResponse(result)
         result={'code':200}
         return JsonResponse(result)
     #購物車修改

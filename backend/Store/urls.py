@@ -30,8 +30,8 @@ urlpatterns=[
     url(r'v1/orders',include('order.urls')),
     url(r'v1/orderlists',include('orderlist.urls')),
     url(r'v1/messages',include('message.urls')),
-    url(r'v1/CheckMacValue/(?P<list_id>[\w]{1,11})',Ecpay.CheckMacValue),
-    url(r'v1/orderCheck/(?P<keyword>[\w]{1,11})',Ecpay.orderCheck)
+    url(r'v1/CheckMacValue/(?P<list_num>[\w]{1,11})',Ecpay.CheckMacValue),
+    url(r'v1/orderCheck/(?P<list_num>[\w]{1,11})',Ecpay.orderCheck)
 ]
 #生成媒體資源路由
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

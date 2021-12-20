@@ -33,16 +33,9 @@
                 <b-breadcrumb-item active>{{ list.pname }}</b-breadcrumb-item>
             </b-breadcrumb>
         </div>
-    	<div class='left'>
-            <p class='item'><a href="#/product_all" v-on:click='go_products_all("0")'>全部</a></p>
-            <p><a href="#/product_all" v-on:click='go_products_all("茶類")'>茶類</a></p>
-            <p><a href="#/product_all" v-on:click='go_products_all("汽水")'>汽水</a></p>
-            <p><a href="#/product_all" v-on:click='go_products_all("氣泡水")'>氣泡水</a></p>
-            <p></p>
-            <p><a href="#/product_all" v-on:click='go_products_all("泡麵")'>泡麵</a></p>
-            <p><a href="#/product_all" v-on:click='go_products_all("雞胸肉")'>雞胸肉</a></p>
-            <p> </p>
-            <p> </p>
+        <div class='left'>
+            <p class='item'>分類</p>
+            <p v-for='kind in list_kind'  v-if='list_kind.length !== 1 '><a href="#/product_all" v-on:click='go_products_all(kind)'>{{ kind }}</a></p>
         </div>
     	<div class='middle'>
     		<div>
@@ -58,7 +51,7 @@
                 <b-form-spinbutton  wrap min="1" v-model='number' placeholder='1'></b-form-spinbutton>
                 <p style='font-weight: 600;'>付款方式</p>
     			<p v-if='list' v-text='list.pway'></p>
-    			<b-button href="#" variant="outline-primary" size='sm' v-on:click='add_cart(list.pprice)'>加入購物車</b-button>
+    			<b-button href="#" variant="outline-primary" size='sm' v-on:click='add_cart()'>加入購物車</b-button>
     		</div>
     	</div>
         <b-container class='right'>

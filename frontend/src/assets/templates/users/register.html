@@ -43,7 +43,7 @@
                     <b-input-group-prepend is-text>
                         <b-icon icon="telephone-fill"></b-icon>
                     </b-input-group-prepend>
-                    <b-input type="text"  v-model='phone' placeholder='09XX-XXX-XXX'></b-input>
+                    <b-input type="text"  v-model='phone' placeholder='請輸入10位號碼(不含符號)'></b-input>
                 </b-input-group>
                 <div v-if='phError ==="ph_empty"' style='color: red; font-size: 10px; margin-top:-8px'>請輸入電話</div>
                 <div v-if='phError ==="ph_form"' style='color: red; font-size: 10px; margin-top:-8px'>請輸入正確格式</div>

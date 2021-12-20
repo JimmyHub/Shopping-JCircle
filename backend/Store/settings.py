@@ -38,14 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user','corsheaders','product',
-    'shoppingcart','order','message','orderlist'
+    'user','corsheaders',
+    'product','shoppingcart','order','message','orderlist'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-     'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -81,7 +81,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'store',
-        'USER':'',
+        'USER':'root',
         'PASSWORD':'',
         'HOST':'127.0.0.1',
         'PORT':3306,
@@ -139,7 +139,8 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST  =(
     'http://3.139.67.121',
     'http://www.jcircle.com',
-    'http://127.0.0.1:8080'
+    'http://127.0.0.1:8080',
+    'http://localhost:8080'
 )
 CORS_ALLOW_METHODS = (
     'DELETE',

@@ -25,17 +25,17 @@
         methods:{
             go_home, go_cart, search, logout,
             //獲取金流訂單驗證碼
-            check_order(list_id){
+            check_order(order_num){
                 let token = get_session('token')
                 this.checkShow=true
-                check_list(list_id,token).then((response)=>{
+                check_list(order_num,token).then((response)=>{
                     if(response.data.code==200){
                         let check=response.data.data
                         let form = document.getElementsByTagName('form')[0]
                         let html_ = `<div style="display:none">
                                         <input  type="text" name="CheckMacValue" value='${check.check}'>
                                         <input  type="text" name="MerchantID" value="2000132">
-                                        <input  type="text"   name="MerchantTradeNo" value='${this.order.num_list}'>
+                                        <input  type="text"   name="MerchantTradeNo" value='${this.order.order_num}'>
                                         <input  type="text"  name="TimeStamp"  value='${check.time}'>
                                     </div>`
                         form.innerHTML += html_ 
@@ -45,12 +45,12 @@
                 })
             },
             //刪除訂單(在是客戶情況下 且 未繳款 才會顯示此功能)
-            delete_l(list_id){
+            delete_l(order_num){
                 let token = get_session('token')
                 let mode = '1'
-                porders_del(list_id,mode,token).then((response)=>{
+                porders_del(order_num,mode,token).then((response)=>{
                     if(response.data.code ==200){
-                        orders_del(list_id,token).then((response)=>{
+                        orders_del(order_num,token).then((response)=>{
                             if(response.data.code == 200){
                                 alert('刪除成功!')
                                 window.history.go(-1)
@@ -64,10 +64,10 @@
                 })
             },
             //控制訂單狀態
-            next_status(list_id){
+            next_status(order_num){
                 let token = get_session('token')
                 let data={
-                    'keyword':list_id
+                    'keyword':order_num
                 }
                 orders_status(JSON.stringify(data),token).then((response)=>{
                     if(response.data.code ==200){
@@ -84,12 +84,12 @@
                 })
             },
             //訂單留言發送訊息用
-            send_msg(list_id){
+            send_msg(order_num){
                 let token = get_session('token')
                 let data={
                     'content':this.msg
                 }
-                let keyword = list_id
+                let keyword = order_num
                 msgs_send(keyword,JSON.stringify(data),token).then((response)=>{
                     if(response.data.code ==200 ){
                         let msg = document.getElementById('msg_show')
@@ -109,15 +109,14 @@
         },
         async beforeRouteEnter(to,from,next){
             let token =get_session('token')
-            let num = get_Storage('list_id')
+            let num_list = get_Storage('num_list')
             let mode = get_Storage('mode')
             if(token){
-                await Promise.all([info(token),orders(num,mode,token),porders(num,mode,token),msgs(num,token)]).then(([infoResponse,orderResponse,pordersResponse,msgsResponse])=>{
+                await Promise.all([info(token),orders(num_list,mode,token),porders(num_list,mode,token),msgs(num_list,token)]).then(([infoResponse,orderResponse,pordersResponse,msgsResponse])=>{
                     next(vm =>{ 
                         //用戶資料請求
                         if(infoResponse.data.code == 200){
                             vm.info = infoResponse.data.data
-                            console.log(vm.info)
                             if(vm.info.avatar){
                                 vm.info.avatar = `${url()}/media/${vm.info.avatar}`
                             }else{
@@ -128,6 +127,7 @@
                         if(orderResponse.data.code==200){
                             vm.order= orderResponse.data.data
                             //根據不同訂單狀態 改變顯示資料 
+                            vm.order.order_num = vm.order.num_list.slice(7,13)
                             for(var i=0;i<5;i++){
                                 if(vm.order.status == (i+1)){
                                     let list_status=['待繳款 ','待出貨 ','已出貨 ','待取貨 ','完成 ']

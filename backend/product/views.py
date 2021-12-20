@@ -13,10 +13,10 @@ key='a123456'
 def products(request,keyword=None,pattern=None,personal=None,record=None):
     #商品瀏覽
     if request.method == 'GET':
-        #判斷是單獨查詢特定商品 還是整體商品
+        #透過 pattern 判斷是單獨查詢特定商品 還是整體商品
         if pattern == 'all':
             #如果是請求整體商品資訊 
-            #判斷瀏覽是在個人賣場內部(personal=1) 還是 一般情況(personal=0)
+            #判斷瀏覽是在個人賣場內部(personal=1) 還是 一般用戶情況(personal=0)
             if personal ==  '1' :
             #判斷是由 哪個賣場老闆發起請求
                 token = request.META.get('HTTP_AUTHORIZATION')
@@ -34,7 +34,7 @@ def products(request,keyword=None,pattern=None,personal=None,record=None):
                     #賣場老闆發起請求 則是在賣場中瀏覽自己賣場的情況
                     products=ProductProfile.objects.filter(sales=username)
             else:
-                #在一般情況下瀏覽商品的情況
+            #在一般用戶情況下瀏覽商品
                 products = ProductProfile.objects.all()
             product_list = []
             for i in products:
@@ -50,9 +50,9 @@ def products(request,keyword=None,pattern=None,personal=None,record=None):
                 product_list.append(data)
             result = {'code': 200, 'data': product_list}
             return JsonResponse(result)
-        elif pattern =='record':
-            #特定查詢情況
-            #判斷是否請求瀏覽紀錄
+        
+        #透過 pattern 判斷是否請求瀏覽紀錄
+        elif pattern =='record':           
             list_key=record.split("&")
             no_key= 0
             list_record=[]
@@ -77,16 +77,17 @@ def products(request,keyword=None,pattern=None,personal=None,record=None):
             else:
                 result={'code':200,'data':list_record}
                 return JsonResponse(result)
-        elif pattern =='search':
-            #判斷是查詢特定類別 還是包含特定關鍵字商品
-            #如果Keyword 是空則返回無商品
+        
+        #透過 pattern 判斷是查詢特定類別 還是包含特定關鍵字商品      
+        elif pattern =='search':    
+            #如果Keyword 是空則返回無商品       
             if not keyword:
                 result = {'code': 200, 'data': 'NoProduct'}
                 return JsonResponse(result)
             print(keyword)
             products=ProductProfile.objects.filter(pkind=keyword)
+            #若非特定類別,則是查詢包含特定關鍵字商品 
             if not products:
-                #若非特定類別,則是查詢包含特定關鍵字商品 
                 products=ProductProfile.objects.filter(pname__contains=keyword)
                 #若非包含特定關鍵字商品,則是查詢特定商品
                 if not products:
@@ -122,6 +123,18 @@ def products(request,keyword=None,pattern=None,personal=None,record=None):
                 product_list.append(data)
             result = {'code': 200, 'data': product_list}
             return JsonResponse(result)
+        #透過 pattern 判斷是否查詢所有類別
+        elif pattern =='allkind':
+            products = ProductProfile.objects.all()
+            list_kind =[]
+            for i in products:
+                data ={
+                    'pkind':i.pkind
+                }
+                list_kind.append(data)
+            result = {'code':200 , 'data':list_kind }
+            return JsonResponse(result)
+
     #商品上架
     elif request.method =='POST':
         user=request.user

@@ -89,7 +89,7 @@ def users(request):
             result={'code':500,'error':'Server is busy'}
             return JsonResponse(result)
         token = make_token(name)
-        result = {'code': 200,'data': {'username': name,'token': token}}
+        result = {'code': 200,'data': {'username': name}}
         return JsonResponse(result)
 
     #修改個人資料

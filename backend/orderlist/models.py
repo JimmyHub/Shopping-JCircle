@@ -8,6 +8,5 @@ class OrderList(models.Model):
     count = models.IntegerField(verbose_name='商品數量') 
     product=models.ForeignKey(ProductProfile,on_delete=models.CASCADE)
     num_list=models.ForeignKey(OrdersFiles,on_delete=models.CASCADE)
-    sales = models.ForeignKey(UserProfile,on_delete=models.CASCADE)
     class Meta:
         db_table='orderlists'

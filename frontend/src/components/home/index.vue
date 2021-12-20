@@ -43,8 +43,8 @@
                 let list_orgin =[0,0,0]
                 set_Storage('list_key',list_orgin)
             }
-            //登入狀態獲得
             set_Storage('pattern','all')
+            //登入狀態獲得
             let token = get_session('token')
             //獲取商品資料用 參數
             let keyword =  '0'
@@ -101,6 +101,9 @@
                             }
                             //商品隨機顯示(每15秒 變動一次)
                             vm.list_show_time = window.setInterval(() =>{
+                                if(vm.list.length < 5){
+                                    clearTimeout(vm.list_show_time)
+                                }
                                 vm.list_show=[0,0,0,0]
 
                                 let array_in=random_get2(vm.list.length,4)
@@ -118,6 +121,21 @@
                                     clearTimeout(vm.list_show_time)
                                 }
                             } , 15000)
+
+                            //商品欄顯示種類
+                            vm.list_kind =[]
+                            for(var k=0;k<vm.list.length;k++){
+                                let count_exist = 0
+                                for(var lk=0;lk<vm.list_kind.length;lk++){
+                                    if(vm.list_kind[lk] !== vm.list[k].pkind){
+                                        count_exist = count_exist + 1
+                                    }
+                                }
+                                if(count_exist == vm.list_kind.length){
+                                    vm.list_kind[k] =  vm.list[k].pkind
+                                }
+                            }
+                            vm.list_kind.splice(0,0,'全部')
                         }else{
                             vm.list=''
                         }

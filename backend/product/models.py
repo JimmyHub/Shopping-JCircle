@@ -4,7 +4,7 @@ from user.models import UserProfile
 
 
 class ProductProfile(models.Model):
-    pname = models.CharField(verbose_name='商品名稱',max_length=30)
+    pname = models.CharField(verbose_name='商品名稱',max_length=50)
     pkind = models.CharField(verbose_name='商品種類',max_length=30)
     pphoto = models.ImageField(verbose_name='商品圖片',upload_to='product/')
     pcontent = models.TextField(verbose_name='商品內容')

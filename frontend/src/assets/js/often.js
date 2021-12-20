@@ -58,12 +58,15 @@ export function go_back(){
 //前往瀏覽商品
 export function go_products_all(kind){
     set_Storage('keyword',kind)
-    if(kind == '0'){
+    console.log(kind)
+    if(kind == '全部'){
         set_Storage('pattern','all')
     }else{
         set_Storage('pattern','search')
     }
     if(window.location.href ==`${url()}/#/product_all`){
+        location.reload()
+    }else if(window.location.href ==`http://localhost:8080/#/product_all` ){
         location.reload()
     }else{
         window.location.href='#/product_all'
@@ -110,12 +113,12 @@ export function product_detail(pid){
 }
 
 //賣場 前往訂單詳細內容
-export function orders_detail_1(num){
-    set_Storage('list_id',num)
+export function orders_detail_1(num_list){
+    set_Storage('num_list',num_list)
     set_Storage('mode',1)
 }
 //客戶 前往訂單詳細內容
-export function orders_detail_0(num){
-    set_Storage('list_id',num)
+export function orders_detail_0(num_list){
+    set_Storage('num_list',num_list)
     set_Storage('mode',0)
 }
