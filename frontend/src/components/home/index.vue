@@ -142,15 +142,17 @@
                     }
                     //獲取購物車資料
                     if(cartResponse.data.code ==200){
-                        vm.cart = cartResponse.data.data
-                        vm.cart.cart_total=0
-                        for(var c=0;c<vm.cart.length;c++){
-                            if(vm.cart[c].pphoto){
-                                vm.cart[c].pphoto = `${url()}/media/${vm.cart[c].pphoto}`
-                            }else{
-                                vm.cart[c].pphoto =`${url()}/media/product/a.jpg`
+                        if(cartResponse.data.data !== []){
+                            vm.cart = cartResponse.data.data
+                            vm.cart.cart_total=0
+                            for(var c=0;c<vm.cart.length;c++){
+                                if(vm.cart[c].pphoto){
+                                    vm.cart[c].pphoto = `${url()}/media/${vm.cart[c].pphoto}`
+                                }else{
+                                    vm.cart[c].pphoto =`${url()}/media/product/a.jpg`
+                                }
+                                vm.cart.cart_total += vm.cart[c].count * vm.cart[c].price
                             }
-                            vm.cart.cart_total += vm.cart[c].count * vm.cart[c].price
                         }
                     }else{
                         vm.cart.cart_total=0

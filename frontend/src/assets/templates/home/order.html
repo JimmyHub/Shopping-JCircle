@@ -61,7 +61,7 @@
                     <p class="col-1">訂單金額</p>
                     <p class="col-2"></p>
                 </div>
-                <div  v-for='order in order.all'>
+                <div v-for='order in order.all'>
                     <div class="list" v-for='item in order' v-if='isStatus === order.status' >
                         <p class="col-2" >{{ item.num_list }}</p>
                         <p class="col-2">{{ item.status_show }}</p>

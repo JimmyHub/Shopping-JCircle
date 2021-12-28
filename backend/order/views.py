@@ -14,36 +14,38 @@ def orders(request,keyword=None,mode=None):
         if keyword == None:
             result={'code':400,'error':'please give me keyword of list'}
             return JsonResponse(result)
-        #mode = 0 > 訂單總攬獲取
+        #keyword = 0 > 訂單總攬獲取
         if keyword == '0':
-            #補存一個賣家sales
             #賣場總覽獲取
             if mode == '1':
-                list_g=OrdersFiles.objects.filter(sales=request.user.name)
+                list_g=OrdersFiles.objects.filter(sales_id=request.user.name)
             #個人總覽獲取
             elif mode =='0':
-                list_g=OrdersFiles.objects.filter(buyer=request.user.name)
-            list_orders=[]
-            for i in list_g:
-                products_inOder = OrderList.objects.filter(num_list_id=i.num_list)
-                if not products_inOder:
-                    result={'code':410,'error':'Something must be wrong'}
-                    return JsonResponse(result)
-                item=(products_inOder[0].product.pname,products_inOder[0].count)
-                data={
-                    'num_list':'jCircle'+str(i.num_list),
-                    'num_time':i.num_time,
-                    'status':i.status,
-                    'status_time':i.status_time,
-                    'money_total':i.money_total,
-                    'products':item
-                }
-                list_orders.append(data)
-            result={'code':200,'data':list_orders}
-            return JsonResponse(result)
+                list_g=OrdersFiles.objects.filter(buyer_id=request.user.name)
+            if list_g:
+                list_orders=[]
+                for i in list_g:
+                    products_inOder = OrderList.objects.filter(num_list_id=i.num_list)
+                    if not products_inOder:
+                        result={'code':410,'error':'Something must be wrong'}
+                        return JsonResponse(result)
+                    item=(products_inOder[0].product.pname,products_inOder[0].count)
+                    data={
+                        'num_list':'jCircle'+str(i.num_list),
+                        'num_time':i.num_time,
+                        'status':i.status,
+                        'status_time':i.status_time,
+                        'money_total':i.money_total,
+                        'products':item
+                    }
+                    list_orders.append(data)
+                result={'code':200,'data':list_orders}
+                return JsonResponse(result)
+            else:
+                result = {'code':200, 'data':'noorders'}
+                return JsonResponse(result)
         else:
             #訂單資料詳細顯示
-            
             list_g= OrdersFiles.objects.filter(num_list=keyword)
             if not list_g:
                 result={'code':410,'error':'This list does not exist'}

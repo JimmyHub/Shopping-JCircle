@@ -74,7 +74,7 @@
             </b-nav>
             <div v-if="isCart" >
                 <div class='cart_record'>
-                    <div v-for='item in cart' class='cart_item' @click='product_detail(item.pid)'>
+                    <div v-for='item in cart' class='cart_item' @click='product_detail(item.pid)' v-if='cart'>
                         <img :src="item.pphoto">
                         <div v-model='pname'>{{ item.pname }}</div>
                         <div style="font-size:15px">金額/數量: {{ item.price }} 元/{{ item.count }} </div>

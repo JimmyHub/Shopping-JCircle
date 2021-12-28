@@ -1,0 +1,35 @@
+//小窗
+        <div class='left'  v-for='kind in list_kind'  v-if='list_kind.length !== 1 ' >
+            <p><a href="#/product_all" v-on:click='go_products_all(kind)'>{{ kind }}</a></p>
+        </div>
+
+
+<b-container class='right'>
+    <b-nav card-header tabs fill>
+        <b-nav-item v-if='info' :active='isCart'  @mousemove='cart_show()' id='record_cart'>購物車</b-nav-item>
+        <b-nav-item :active='!isCart' id='record' @mousemove='record_show()'>瀏覽紀錄</b-nav-item>
+    </b-nav>
+    <div v-if="isCart" >
+        <div class='cart_record' id='crecord'>
+            <div v-for='item in cart' class='cart_item' @click='product_detail(item.pid)'>
+                <img :src="item.pphoto">
+                <div v-model='pname'>{{ item.pname }}</div>
+                <div style="font-size:15px">金額/數量: {{ item.price }} 元/{{ item.count }} </div>
+            </div>
+        </div>
+        <div class="cart_total">
+            <p id="ctotal" style="margin:5px 0 0 0; display: inline ;">總金額: {{ cart.cart_total }}元</p>
+            <b-button href="#/shoppings_checkout" variant="outline-primary" style="margin-left:5px"size='sm'>結帳</b-button>
+        </div>
+    </div>
+    <div v-if='!isCart'>
+        <div class='cart_record'>
+            <div v-for='item in record' class='record_item' v-on:click='product_detail(item.pid)'>
+                <img :src="item.pphoto">
+                <div v-model='pname'>{{ item.pname }}</div>
+                <div style="font-size:15px">金額{{ item.pprice }}元</div>
+                <b-button href="#/product" variant="outline-primary"size='sm' @click='product_detail(item.pid)'>詳細資料</b-button>
+            </div>
+        </div>
+    </div>
+</b-container>

@@ -176,7 +176,7 @@ def products(request,keyword=None,pattern=None,personal=None,record=None):
             ProductProfile.objects.create(pname=pname,
                                           pkind=pkind,
                                           pcontent=pcontent,
-                                          pprice=pprice,
+                                          pprice=int(pprice),
                                           pway=int(pway),
                                           sales_id=user.name)
         except:

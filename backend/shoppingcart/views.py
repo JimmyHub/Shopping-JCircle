@@ -27,7 +27,7 @@ def shoppingcarts(request,keyword=None):
                 'pphoto':str(i.product.pphoto),
                 'price':i.product.pprice,
                 'count':i.count,
-                'sales':i.product.sales.name
+                #'sales':i.product.sales.name
             }
             data.append(dic_cart)
         result={'code':200,'data':data}
