@@ -1,6 +1,6 @@
 from . import views
-from django.conf.urls import url
+from django.urls import path
 
 urlpatterns=[
-     url(r'^/(?P<keyword>\w+)$',views.shoppingcarts),
+     path('/<int:keyword>',views.ShoppingView.as_view()),
 ]

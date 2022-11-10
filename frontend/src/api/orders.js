@@ -51,7 +51,7 @@ export function checkout_list(data,token){
 
 }
 
-/*查詢金流網站訂單是否成立  keyword = 訂單編號 */ 
+/*查詢金流網站訂單是否成立*/
 export function check_list(keyword,token){
      return axios.post(`${url()}${port()}/v1/orderCheck/${keyword}`,{
           headers:{
@@ -85,7 +85,7 @@ export function orders_status(data,token){
 }
 
 /*DELETE*/
-/*訂單刪除 keyword = num_list*/
+/*訂單刪除*/
 export function orders_del(keyword,token){
      return axios.delete(`${url()}${port()}/v1/orders/${keyword}/2`,{
           headers:{
@@ -94,7 +94,7 @@ export function orders_del(keyword,token){
     })
 
 }
-/*訂單商品刪除 keyword = num_list*/
+/*訂單商品刪除*/
 export function porders_del(keyword,mode,token){
      return axios.delete(`${url()}${port()}/v1/orderlists/${keyword}/${mode}`,{
           headers:{

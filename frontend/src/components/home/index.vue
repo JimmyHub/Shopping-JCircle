@@ -19,6 +19,7 @@
                list:[],
                cart:[],
                record:[],
+               list_show:[],
                isCart:false,
                keyword:'',
             }
@@ -43,8 +44,8 @@
                 let list_orgin =[0,0,0]
                 set_Storage('list_key',list_orgin)
             }
-            set_Storage('pattern','all')
             //登入狀態獲得
+            set_Storage('pattern','all')
             let token = get_session('token')
             //獲取商品資料用 參數
             let keyword =  '0'
@@ -85,7 +86,7 @@
                                 vm.list_id[i]=vm.list[i].pid
                             }
                             //商品隨機顯示(一開始)
-                            vm.list_show=[0,0,0,0]
+                            vm.list_show=new Array(vm.list_id.length)
                             //隨機產生要顯示的 4個商品位置
                             let array_in=random_get2(vm.list.length,4)
                             for(var li=0;li<vm.list.length;li++){
@@ -99,12 +100,10 @@
                                     }
                                 } 
                             }
+
                             //商品隨機顯示(每15秒 變動一次)
                             vm.list_show_time = window.setInterval(() =>{
-                                if(vm.list.length < 5){
-                                    clearTimeout(vm.list_show_time)
-                                }
-                                vm.list_show=[0,0,0,0]
+                                vm.list_show=new Array(vm.list_id.length)
 
                                 let array_in=random_get2(vm.list.length,4)
                                 for(var li=0;li<vm.list.length;li++){
@@ -121,38 +120,21 @@
                                     clearTimeout(vm.list_show_time)
                                 }
                             } , 15000)
-
-                            //商品欄顯示種類
-                            vm.list_kind =[]
-                            for(var k=0;k<vm.list.length;k++){
-                                let count_exist = 0
-                                for(var lk=0;lk<vm.list_kind.length;lk++){
-                                    if(vm.list_kind[lk] !== vm.list[k].pkind){
-                                        count_exist = count_exist + 1
-                                    }
-                                }
-                                if(count_exist == vm.list_kind.length){
-                                    vm.list_kind[k] =  vm.list[k].pkind
-                                }
-                            }
-                            vm.list_kind.splice(0,0,'全部')
                         }else{
                             vm.list=''
                         }
                     }
                     //獲取購物車資料
                     if(cartResponse.data.code ==200){
-                        if(cartResponse.data.data !== []){
-                            vm.cart = cartResponse.data.data
-                            vm.cart.cart_total=0
-                            for(var c=0;c<vm.cart.length;c++){
-                                if(vm.cart[c].pphoto){
-                                    vm.cart[c].pphoto = `${url()}/media/${vm.cart[c].pphoto}`
-                                }else{
-                                    vm.cart[c].pphoto =`${url()}/media/product/a.jpg`
-                                }
-                                vm.cart.cart_total += vm.cart[c].count * vm.cart[c].price
+                        vm.cart = cartResponse.data.data
+                        vm.cart.cart_total=0
+                        for(var c=0;c<vm.cart.length;c++){
+                            if(vm.cart[c].pphoto){
+                                vm.cart[c].pphoto = `${url()}/media/${vm.cart[c].pphoto}`
+                            }else{
+                                vm.cart[c].pphoto =`${url()}/media/product/a.jpg`
                             }
+                            vm.cart.cart_total += vm.cart[c].count * vm.cart[c].price
                         }
                     }else{
                         vm.cart.cart_total=0

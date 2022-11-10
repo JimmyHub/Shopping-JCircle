@@ -5,7 +5,7 @@
 
 <script type="text/javascript">
     import { index } from '@/api/home.js'
-    import { pinfo, precord ,pkind_all} from '@/api/products.js'
+    import { pinfo, precord } from '@/api/products.js'
     import { shoppingcart_show } from '@/api/shoppings.js'
     //import { url, port } from '@/assets/js/set.js'
     import { url } from '@/assets/js/set.js'
@@ -19,7 +19,6 @@
                 list:[],
                 cart:[],
                 record:[],
-                origin_kind:[],
                 keyword:'',        
                 isCart:false,
             }
@@ -47,7 +46,7 @@
             let list_key = get_Storage('list_key').split(',')
             let record = `${list_key[2]}&${list_key[1]}&${list_key[0]}`
             let pattern = get_Storage('pattern')
-            await Promise.all([index(token),pinfo(keyword,pattern,personal,token),pkind_all(token),precord("record",record,token),shoppingcart_show(token)]).then(([indexResponse,pinfoResponse,pkindResponse,precordResponse,cartResponse]) =>{
+            await Promise.all([index(token),pinfo(keyword,pattern,personal,token),precord("record",record,token),shoppingcart_show(token)]).then(([indexResponse,pinfoResponse,precordResponse,cartResponse]) =>{
                 next( vm=>{
                     //用戶資料請求
                     if(indexResponse.data.code ==200){
@@ -76,26 +75,10 @@
                                     vm.list[i].pphoto = `${url()}/media/product/a.jpg`
                                 }
                             }
-                            //set_Storage('pattern','pkind_all')
-                        }
-                    }
-                    //商品分類請求
-                    if(pkindResponse.data.code ==200){
-                        vm.origin_kind = pkindResponse.data.data
-                        //商品欄顯示種類
-                        vm.list_kind =[]
-                        for(var k=0;k<vm.origin_kind.length;k++){
-                            let count_exist = 0
-                            for(var lk=0;lk<vm.list_kind.length;lk++){
-                                if(vm.list_kind[lk] !== vm.origin_kind[k].pkind){
-                                    count_exist = count_exist + 1
-                                }
-                            }
-                            if(count_exist == vm.list_kind.length){
-                                vm.list_kind[k] =  vm.origin_kind[k].pkind
+                            if(keyword == '0'){
+                                vm.list[0].pkind="全部"
                             }
                         }
-                        vm.list_kind.splice(0,0,'全部')
                     }
                     //購物車資料請求
                     if(cartResponse.data.code ==200){
@@ -118,6 +101,7 @@
                         if(vm.record == 'norecord'){
                             vm.record=''
                         }else{
+                            console.log(vm.record)
                             for(var r=0;r<vm.record.length;r++){
                                 if(vm.record[r].pphoto){
                                     vm.record[r].pphoto = `${url()}/media/${vm.record[r].pphoto}`

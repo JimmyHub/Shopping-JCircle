@@ -1,8 +1,12 @@
-from django.conf.urls import url
+from django.urls import path
+
 from . import views
 from tools import tokens
+
+
 urlpatterns=[
-    url(r'^/login$',tokens.login),
-    url(r'^/avatar$',views.user_avatar),
-    url(r'^/',views.users),
+    path('/login',tokens.login),
+    path('/',views.UsersView.as_view()),
+    path('/avatar', views.UserAvatarView.as_view()),
+
 ]

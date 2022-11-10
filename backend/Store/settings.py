@@ -10,11 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -24,10 +23,9 @@ SECRET_KEY = 'e7g-0mn6bk(t*493e&r!^0oq8s9a+&6kxfd2$y4dfg0r53vcpq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-#DEBUG = True
+# DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -38,8 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user','corsheaders',
-    'product','shoppingcart','order','message','orderlist'
+    'user', 'corsheaders',
+    'product', 'shoppingcart', 'order', 'message', 'orderlist', 'rest_framework', 'drf_yasg'
 ]
 
 MIDDLEWARE = [
@@ -47,7 +45,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -58,7 +56,7 @@ ROOT_URLCONF = 'Store.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [PurePosixPath(BASE_DIR).joinpath('templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,7 +71,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Store.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -81,13 +78,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'store',
-        'USER':'root',
-        'PASSWORD':'',
-        'HOST':'127.0.0.1',
-        'PORT':3306,
+        'USER': 'root',
+        'PASSWORD': 'jimmy41708',
+        'HOST': '127.0.0.1',
+        'PORT': 3306,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -107,7 +103,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -121,22 +116,14 @@ USE_L10N = True
 
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    #C:\Users\88697\Desktop\共用python\專案\PJ_Shoppingcart\Store\static
-    PurePosixPath(BASE_DIR).joinpath('static'),
-)
-
-CORS_ORIGIN_ALLOW_ALL=False
-#CORS_ORIGIN_ALLOW_ALL=True
-
-#表示在跨域請求中 允許對瀏覽器cookie進行操作
-CORS_ALLOW_CREDENTIALS = True 
-CORS_ORIGIN_WHITELIST  =(
+# CORS_ORIGIN_ALLOW_ALL=False
+CORS_ORIGIN_ALLOW_ALL = True
+# 表示在跨域請求中 允許對瀏覽器cookie進行操作
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = (
     'http://3.139.67.121',
     'http://www.jcircle.com',
     'http://127.0.0.1:8080',
@@ -161,13 +148,12 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
 )
-#結尾是否自動補上/
+# 結尾是否自動補上/
 
-APPEND_SLASH=False
+APPEND_SLASH = False
 MEDIA_URL = '/media/'
-#媒體資源存放的 服務器目錄
-MEDIA_ROOT = PurePosixPath(BASE_DIR).joinpath('media/')
+# 媒體資源存放的 服務器目錄
+MEDIA_ROOT = Path('/').joinpath(BASE_DIR, 'media/')
 
-SESSION_COOKIE_AGE = 60 *60 *24 *7 *2
-SESSION_EXPIRE_AT_BROWSER_CLOSE =False
-
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 2
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False

@@ -1,20 +1,24 @@
-from django.http import JsonResponse
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from user.models import UserProfile
+from django.http import JsonResponse, HttpResponse
+from rest_framework.generics import GenericAPIView
 import jwt
+
+from user.models import UserProfile
+from user.serializers import UserSerializer
+from tools.tokens import auth_swagger_wrapper
+import json
 key='a123456'
 
-def index(request):
-    if request.method == 'GET':
+
+class IndexView(GenericAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserSerializer
+    @auth_swagger_wrapper('','')
+    def get(self,request):
         token = request.META.get('HTTP_AUTHORIZATION')
-        print(token)
         if token == "null":
-            print(token)
             result={'code':200,'data':'nouser'}
             return JsonResponse(result)
         else:
-            print(token,'1')    
             try:
                 token_de=jwt.decode(token,key,algorithms=['HS256'])
             except jwt.ExpiredSignatureError as e :
@@ -25,8 +29,8 @@ def index(request):
             if not auser:
                 result={'code':410,'error':'This user do not exist !'}
                 return JsonResponse(result)
-            if auser[0].name:
-                username = auser[0].name
+            if auser[0].username:
+                username = auser[0].username
                 avatar = str(auser[0].avatar)
                 limit= auser[0].limit
                 result={'code':200,'data':{"username":username,

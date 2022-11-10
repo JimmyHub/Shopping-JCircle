@@ -5,6 +5,7 @@ from user.models import UserProfile
 # Create your models here.
 
 class OrderList(models.Model):
+    id = models.AutoField(primary_key=True)
     count = models.IntegerField(verbose_name='商品數量') 
     product=models.ForeignKey(ProductProfile,on_delete=models.CASCADE)
     num_list=models.ForeignKey(OrdersFiles,on_delete=models.CASCADE)

@@ -4,7 +4,7 @@
 
 <script type="text/javascript">
     import { index } from '@/api/home.js'
-    import { pinfo, precord ,pkind_all } from '@/api/products.js'
+    import { pinfo, precord } from '@/api/products.js'
     import { shoppingcart_add, shoppingcart_show} from '@/api/shoppings.js'
     //import { url, port } from '@/assets/js/set.js'
     import { url } from '@/assets/js/set.js'
@@ -33,12 +33,14 @@
                 this.isCart = false
             },
             //將商品加入購物車
-            add_cart(){
+            add_cart(price_get){
                 let pid = get_Storage('keyword')
                 let token = get_session('token')
+                let price = price_get
                 let count = this.number
                 let data={
                     'count':count,
+                    'price':price
                 }
                 if(token){
                     shoppingcart_add(pid,JSON.stringify(data),token).then((response)=>{
@@ -66,7 +68,7 @@
             let list_key = get_Storage('list_key').split(',')
             let record = `${list_key[2]}&${list_key[1]}&${list_key[0]}`
             let pattern = get_Storage('pattern')
-            await Promise.all([index(token),pinfo(keyword,pattern,personal,token),pkind_all(token),precord("record",record,token),shoppingcart_show(token)]).then(([indexResponse,pinfoResponse,pkindResponse,precordResponse,cartResponse]) =>{
+            await Promise.all([index(token),pinfo(keyword,pattern,personal,token),precord("record",record,token),shoppingcart_show(token)]).then(([indexResponse,pinfoResponse,precordResponse,cartResponse]) =>{
                 next( vm=>{
                     //用戶資料請求
                     if(indexResponse.data.code ==200){
@@ -97,25 +99,7 @@
                         }else if(vm.list.pway == 3){
                             vm.list.pway ='線上付款\n'
                             vm.list.pway+='超商繳費'
-                        }
-                    }
-                    //商品分類請求
-                    if(pkindResponse.data.code ==200){
-                        vm.origin_kind = pkindResponse.data.data
-                        //商品欄顯示種類
-                        vm.list_kind =[]
-                        for(var k=0;k<vm.origin_kind.length;k++){
-                            let count_exist = 0
-                            for(var lk=0;lk<vm.list_kind.length;lk++){
-                                if(vm.list_kind[lk] !== vm.origin_kind[k].pkind){
-                                    count_exist = count_exist + 1
-                                }
-                            }
-                            if(count_exist == vm.list_kind.length){
-                                vm.list_kind[k] =  vm.origin_kind[k].pkind
-                            }
-                        }
-                        vm.list_kind.splice(0,0,'全部')
+                        }  
                     }
                     //購物車資料請求
                     if(cartResponse.data.code ==200){

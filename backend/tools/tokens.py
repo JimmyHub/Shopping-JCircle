@@ -2,9 +2,12 @@ import hashlib
 import json
 
 import jwt,time
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from user.models import UserProfile
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 key='a123456'
 def make_token(username,expire=3600*24):
     #生成token 返回給前端
@@ -12,11 +15,32 @@ def make_token(username,expire=3600*24):
     limit_time=now+expire
     payload={'username':username,'exp':limit_time}
     return jwt.encode(payload,key,algorithm='HS256')
+# '我是 login_check 的摘要'
+# '我是 login_check 的說明'
+
+class OK:
+    def __init__(self):
+        pass
+
+def auth_swagger_wrapper(summary,description):
+    return swagger_auto_schema(
+        operation_summary=summary,
+        operation_description=description,
+        manual_parameters=[
+            openapi.Parameter(
+                name='HTTP_AUTHORIZATION',
+                required=True,
+                in_=openapi.IN_HEADER,
+                type=openapi.TYPE_STRING,
+            )
+        ]
+    )
 
 def login_check(*method):
     # 判斷是否有登錄
     def _login_check(func):
-        def wrapper(request,*args,**kwargs):
+        def wrapper(obj,*args,**kwargs):
+            request = obj.request
             #判斷 請求方法是否為標記中的方法
             if request.method not in method:
                 return func(request, *args, **kwargs)
@@ -38,6 +62,8 @@ def login_check(*method):
                 result = {'code':401,'error':'please login'}
                 return JsonResponse(result)
             name = token_de['username']
+            print('name:',name)
+            # print(request.session.values())
             users = UserProfile.objects.filter(name=name)
             #判斷解密出來的user是否存在數據庫中
             if not users:
@@ -81,10 +107,21 @@ def login(request):
         if auser.password != p_get:
             result={'code':400,'error':'The password is wrong'}
             return JsonResponse(result)
-        token_login=make_token(name)
-        print(token_login)
-        result={'code':200,'data':{'username':name,'token':token_login.decode()}}
+        token_login=make_token(name).decode()
+
+        request.session['user'] = {
+                'username':name,
+                'token':token_login  #紀錄當前用戶id
+            }
+        # print(request.session.values())
+        result={'code':200,'data':{'username':name,'token':token_login}}
+        # res = JsonResponse(result)
+
+        # res = HttpResponse(json.dumps(result))
         return JsonResponse(result)
+        # res.set_cookie('username', name)
+        # return res
+
     else:
         result={'code':405,'error':'This is not correct way.'}
         return JsonResponse(result)

@@ -4,7 +4,7 @@
 
 <script type="text/javascript">
     import { info } from '@/api/users.js'
-    import { orders,orders_status, orders_del, porders, porders_del, msgs, msgs_send, check_list } from '@/api/orders.js'
+    import { orders,orders_status, orders_del, porders, porders_del, check_list } from '@/api/orders.js'
     //import { url, port } from '@/assets/js/set.js'
     import { url } from '@/assets/js/set.js'
     import { get_Storage, get_session, go_home, go_cart, search, logout} from'@/assets/js/often.js'
@@ -17,7 +17,7 @@
                 list:[],
                 order:[],
                 messages:[],
-                msg:'',
+                //msg:'',
                 keyword:null,
                 checkShow:false,
             }
@@ -25,17 +25,17 @@
         methods:{
             go_home, go_cart, search, logout,
             //獲取金流訂單驗證碼
-            check_order(order_num){
+            check_order(list_id){
                 let token = get_session('token')
                 this.checkShow=true
-                check_list(order_num,token).then((response)=>{
+                check_list(list_id,token).then((response)=>{
                     if(response.data.code==200){
                         let check=response.data.data
                         let form = document.getElementsByTagName('form')[0]
                         let html_ = `<div style="display:none">
                                         <input  type="text" name="CheckMacValue" value='${check.check}'>
                                         <input  type="text" name="MerchantID" value="2000132">
-                                        <input  type="text"   name="MerchantTradeNo" value='${this.order.order_num}'>
+                                        <input  type="text"   name="MerchantTradeNo" value='${this.order.num_list}'>
                                         <input  type="text"  name="TimeStamp"  value='${check.time}'>
                                     </div>`
                         form.innerHTML += html_ 
@@ -45,12 +45,12 @@
                 })
             },
             //刪除訂單(在是客戶情況下 且 未繳款 才會顯示此功能)
-            delete_l(order_num){
+            delete_l(list_id){
                 let token = get_session('token')
                 let mode = '1'
-                porders_del(order_num,mode,token).then((response)=>{
+                porders_del(list_id,mode,token).then((response)=>{
                     if(response.data.code ==200){
-                        orders_del(order_num,token).then((response)=>{
+                        orders_del(list_id,token).then((response)=>{
                             if(response.data.code == 200){
                                 alert('刪除成功!')
                                 window.history.go(-1)
@@ -64,10 +64,10 @@
                 })
             },
             //控制訂單狀態
-            next_status(order_num){
+            next_status(list_id){
                 let token = get_session('token')
                 let data={
-                    'keyword':order_num
+                    'keyword':list_id
                 }
                 orders_status(JSON.stringify(data),token).then((response)=>{
                     if(response.data.code ==200){
@@ -84,12 +84,12 @@
                 })
             },
             //訂單留言發送訊息用
-            send_msg(order_num){
+            /*send_msg(list_id){
                 let token = get_session('token')
                 let data={
                     'content':this.msg
                 }
-                let keyword = order_num
+                let keyword = list_id
                 msgs_send(keyword,JSON.stringify(data),token).then((response)=>{
                     if(response.data.code ==200 ){
                         let msg = document.getElementById('msg_show')
@@ -105,18 +105,21 @@
                         alert('發送訊息失敗,原因:'+response.data.error)
                     }
                 })
-            }
+            }*/
         },
         async beforeRouteEnter(to,from,next){
             let token =get_session('token')
-            let num_list = get_Storage('num_list')
+            let num = get_Storage('list_id')
             let mode = get_Storage('mode')
             if(token){
-                await Promise.all([info(token),orders(num_list,mode,token),porders(num_list,mode,token),msgs(num_list,token)]).then(([infoResponse,orderResponse,pordersResponse,msgsResponse])=>{
+                await Promise.all([info(token),orders(num,mode,token),porders(num,mode,token)]).then(([infoResponse,orderResponse,pordersResponse])=>{
+
+                /*await Promise.all([info(token),orders(num,mode,token),porders(num,mode,token),msgs(num,token)]).then(([infoResponse,orderResponse,pordersResponse,msgsResponse])=>{*/
                     next(vm =>{ 
                         //用戶資料請求
                         if(infoResponse.data.code == 200){
                             vm.info = infoResponse.data.data
+                            console.log(vm.info)
                             if(vm.info.avatar){
                                 vm.info.avatar = `${url()}/media/${vm.info.avatar}`
                             }else{
@@ -127,7 +130,6 @@
                         if(orderResponse.data.code==200){
                             vm.order= orderResponse.data.data
                             //根據不同訂單狀態 改變顯示資料 
-                            vm.order.order_num = vm.order.num_list.slice(7,13)
                             for(var i=0;i<5;i++){
                                 if(vm.order.status == (i+1)){
                                     let list_status=['待繳款 ','待出貨 ','已出貨 ','待取貨 ','完成 ']
@@ -153,7 +155,7 @@
                                 vm.list[l].item_total = vm.list[l].price * vm.list[l].count
                             }
                         }
-                        if(msgsResponse.data.code ==200){
+                        /*if(msgsResponse.data.code ==200){
                             vm.messages=msgsResponse.data.data
                             if(vm.messages == 'norecord'){
                                 vm.messages=''
@@ -162,7 +164,7 @@
                                     vm.messages[m].msg_show=`${vm.messages[m].user}(${vm.messages[m].con_time.slice(0,10)} ${vm.messages[m].con_time.slice(11,19)}):`
                                 }
                             }
-                        }
+                        }*/
                     })   
                 })
             }else{

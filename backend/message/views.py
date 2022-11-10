@@ -41,8 +41,8 @@ def messages(request,keyword=None):
             return JsonResponse(result)
         try:
             MessageRecord.objects.create(content=content,
-            	                         user_id=request.user.name,
-            	                         num_list_id=keyword)
+                                         user_id=request.user.username,
+                                         num_list_id=keyword)
         except:
             result={'code':500,'error':'System is busy'}
             return JsonResponse(result)
@@ -53,7 +53,7 @@ def messages(request,keyword=None):
         fresh_msg={
             'content':new_msg[0].content,
             'con_time':new_msg[0].content_time,
-            'user':new_msg[0].user.name,
+            'user':new_msg[0].user.username,
         }
         result={'code':200,'data':fresh_msg}
         return JsonResponse(result) 	
