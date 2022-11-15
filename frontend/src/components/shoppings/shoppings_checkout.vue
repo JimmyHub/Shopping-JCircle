@@ -49,7 +49,7 @@
                     'sales':this.list[0].sales
                 }
                 checkout(JSON.stringify(data),token).then((response)=>{
-                    if(response.data.code == 200){
+                    if(response.data.code < 400){
                         let list_id=[]
                         let counts=[]
                         let products=[]
@@ -68,7 +68,7 @@
                             'sales':sales,
                         }
                         checkout_list(JSON.stringify(data_l),token).then((response)=>{
-                            if(response.data.code == 200){
+                            if(response.data.code < 400){
                                 set_Storage('list_id',response.data.data)
                                 set_Storage('mode',0)
                                 window.location.href="#/shoppings_final"
@@ -88,7 +88,7 @@
                 await Promise.all([info(token),shoppingcart_show(token)]).then(([infoResponse,cartResponse])=>{
                     next(vm =>{ 
                         //用戶資料請求
-                        if(infoResponse.data.code == 200){
+                        if(infoResponse.data.code < 400){
                             vm.info = infoResponse.data.data
                             if(vm.info.avatar){
                                 vm.info.avatar = `${url()}/media/${vm.info.avatar}`
@@ -97,7 +97,7 @@
                             }
                         }
                         //購物車資料請求
-                        if(cartResponse.data.code == 200){
+                        if(cartResponse.data.code < 400){
                             vm.list=cartResponse.data.data
                             vm.list.list_total=0
                             vm.list.bonus_20=0

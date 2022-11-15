@@ -19,7 +19,7 @@ export function info(token){
 }
 
 export function info_change(data,token){
-    return axios.put(`${url()}${port()}/v1/users/`,data,{
+    return axios.patch(`${url()}${port()}/v1/users/`,data,{
         headers:{
             "AUTHORIZATION":token
         }

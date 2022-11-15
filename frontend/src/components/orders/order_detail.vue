@@ -29,7 +29,7 @@
                 let token = get_session('token')
                 this.checkShow=true
                 check_list(list_id,token).then((response)=>{
-                    if(response.data.code==200){
+                    if(response.data.code< 400){
                         let check=response.data.data
                         let form = document.getElementsByTagName('form')[0]
                         let html_ = `<div style="display:none">
@@ -49,7 +49,7 @@
                 let token = get_session('token')
                 let mode = '1'
                 porders_del(list_id,mode,token).then((response)=>{
-                    if(response.data.code ==200){
+                    if(response.data.code < 400){
                         orders_del(list_id,token).then((response)=>{
                             if(response.data.code == 200){
                                 alert('刪除成功!')
@@ -70,7 +70,7 @@
                     'keyword':list_id
                 }
                 orders_status(JSON.stringify(data),token).then((response)=>{
-                    if(response.data.code ==200){
+                    if(response.data.code < 400){
                         let mode =get_Storage('mode')
                         if(mode =='0'){
                             alert("已經通知賣家囉，敬請稍後")
@@ -117,7 +117,7 @@
                 /*await Promise.all([info(token),orders(num,mode,token),porders(num,mode,token),msgs(num,token)]).then(([infoResponse,orderResponse,pordersResponse,msgsResponse])=>{*/
                     next(vm =>{ 
                         //用戶資料請求
-                        if(infoResponse.data.code == 200){
+                        if(infoResponse.data.code < 400){
                             vm.info = infoResponse.data.data
                             console.log(vm.info)
                             if(vm.info.avatar){
@@ -127,7 +127,7 @@
                             }
                         }
                         //訂單資料請求
-                        if(orderResponse.data.code==200){
+                        if(orderResponse.data.code< 400){
                             vm.order= orderResponse.data.data
                             //根據不同訂單狀態 改變顯示資料 
                             for(var i=0;i<5;i++){
@@ -144,7 +144,7 @@
                             vm.order.mode=parseInt(mode)
                         }
                         //商品資料請求
-                        if(pordersResponse.data.code == 200 ){
+                        if(pordersResponse.data.code < 400 ){
                             vm.list= pordersResponse.data.data
                             for(var l=0;l<vm.list.length;l++){
                                 if(vm.list[l].photo){

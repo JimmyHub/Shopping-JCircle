@@ -46,7 +46,7 @@
                     'pway':pway,
                 } 
                 adjust_p(keyword,JSON.stringify(data),token).then((response)=>{
-                    if(response.data.code == 200){
+                    if(response.data.code < 400){
                         alert('修改成功')
                         location.reload()
                     }else{
@@ -64,7 +64,7 @@
                 let formData = new FormData()
                 formData.append('photo',this.file[0])
                 upload_photo(pid,formData,token).then((response) =>{   
-                    if(response.data.code == 200){
+                    if(response.data.code < 400){
                         alert('上傳成功')
                         location.reload()
                     }else{
@@ -81,7 +81,7 @@
             await Promise.all([info(token),pinfo(keyword,pattern,personal,token)]).then(([infoResponse,pinfoResponse]) =>{
                 next( vm=>{
                 //用戶資料請求
-                    if(infoResponse.data.code ==200){
+                    if(infoResponse.data.code < 400){
                         vm.info= infoResponse.data.data
                         if(vm.info.avatar){
                             vm.info.avatar =`${url()}/media/${vm.info.avatar}`
@@ -90,7 +90,7 @@
                         }
                     }
                 //商品資料請求
-                    if(pinfoResponse.data.code == 200){
+                    if(pinfoResponse.data.code < 400){
                         vm.list= pinfoResponse.data.data
                         if(vm.list.pphoto){
                             vm.list.pphoto = `${url()}/media/${vm.list.pphoto}`

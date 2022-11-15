@@ -59,12 +59,12 @@
                     }
                 }
                 info_change(JSON.stringify(data_dic),token).then((response) => {
-                    if(response.data.code == 200){
+                    if(response.data.code < 400){
                         alert('修改成功')
                         location.reload()
                     }else{
                         alert('修改失敗,原因:'+response.data.error)
-                        location.reload()
+                        // location.reload()
                     }
                 })
             },
@@ -78,13 +78,13 @@
                 console.log(formData)
                 let token = get_session('token')
                 avatar_change(formData,token).then((response) =>{
-                    if(response.data.code ==200){
+                    if(response.data.code < 400){
                         alert('上傳成功')
                         location.reload()
 
                     }else{
                         alert('上傳失敗,原因:'+response.data.error)
-                        location.reload()
+                        // location.reload()
                     }
                 })
             }
@@ -94,13 +94,13 @@
             if(token){
                 //用戶資料請求
                 info(token).then(response => {
-                    if(response.data.code ==200){
+                    if(response.data.code < 400){
                         //response.data.data
                         next(vm => {
                             vm.info = response.data.data
                             console.log(vm.info)
                             if(vm.info.avatar){
-                                vm.info.avatar =`${url()}/media/${vm.info.avatar}`
+                                vm.info.avatar =`${url()}8000${vm.info.avatar}`
                             }else{
                                 vm.info.avatar = `${url()}/media/avatar/a.jpg`
                             }     

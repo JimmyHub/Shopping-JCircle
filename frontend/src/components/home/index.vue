@@ -57,7 +57,7 @@
             await Promise.all([index(token),pinfo(keyword,pattern,personal,token),precord("record",record,token),shoppingcart_show(token)]).then(([indexResponse,pinfoResponse,precordResponse,cartResponse]) =>{
                 next( vm=>{
                     //用戶資料請求
-                    if(indexResponse.data.code ==200){
+                    if(indexResponse.data.code < 400){
                         if(indexResponse.data.data == 'nouser'){
                             console.log('nouser')
                             vm.info=''
@@ -71,7 +71,7 @@
                         }   
                     }
                     //商品資料請求
-                    if(pinfoResponse.data.code == 200){
+                    if(pinfoResponse.data.code < 400){
                         if(pinfoResponse.data.data !== []){
                             vm.list= pinfoResponse.data.data
                             vm.list_id=[]
@@ -125,7 +125,7 @@
                         }
                     }
                     //獲取購物車資料
-                    if(cartResponse.data.code ==200){
+                    if(cartResponse.data.code < 400){
                         vm.cart = cartResponse.data.data
                         vm.cart.cart_total=0
                         for(var c=0;c<vm.cart.length;c++){
@@ -139,7 +139,7 @@
                     }else{
                         vm.cart.cart_total=0
                     }
-                    if(precordResponse.data.code == 200){
+                    if(precordResponse.data.code < 400){
                         vm.record=precordResponse.data.data
                         if(vm.record == 'norecord'){
                             vm.record=''

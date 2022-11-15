@@ -85,7 +85,7 @@
                         'email':this.email,
                     }
                     reg(JSON.stringify(data)).then((response) =>{
-                        if(response.data.code == 200){
+                        if(response.data.code < 400){
                             console.log('here')
                             alert(response.data.data.username+'註冊成功')
                             set_session('username',response.data.data.username)

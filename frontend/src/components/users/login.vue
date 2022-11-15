@@ -50,7 +50,7 @@
                         'pwd':this.password
                     }
                     login(JSON.stringify(data)).then((response)=>{
-                        if(response.data.code == 200){
+                        if(response.data.code < 400){
                             set_session('username',response.data.data.username)
                             set_session('token',response.data.data.token)
                             set_session('loglevel:webpack-dev-server','SILENT')
