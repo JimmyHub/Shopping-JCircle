@@ -57,6 +57,7 @@ def request_response(response_schema_dict, query=True):
         if query:
             @functools.wraps(func)
             @swagger_auto_schema(
+                # request_body=request_schema,
                 responses=response_schema_dict,
                 manual_parameters=[
                     openapi.Parameter(

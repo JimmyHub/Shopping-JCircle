@@ -43,7 +43,7 @@
                 await Promise.all([info(token),pinfo(keyword,pattern,personal,token),orders(keyword,1,token)]).then(([infoResponse,pinfoResponse,orderResponse]) =>{
                     next( vm=>{
                         //用戶資料請求
-                        if(infoResponse.data.code == 200){
+                        if(infoResponse.data.code < 400){
                             vm.info= infoResponse.data.data
                             if(vm.info.avatar){
                                 vm.info.avatar = `${url()}/media/${vm.info.avatar}`
@@ -52,7 +52,7 @@
                             }
                         }
                         //商品資料請求
-                        if(pinfoResponse.data.code == 200){
+                        if(pinfoResponse.data.code < 400){
                             if(pinfoResponse.data.data){
                                 vm.list= pinfoResponse.data.data
                                 for(var l=0;l<vm.list.length;l++){
@@ -68,7 +68,7 @@
                             }
                         }
                         //訂單資料請求
-                        if(orderResponse.data.code==200){
+                        if(orderResponse.data.code< 400){
                             vm.order= orderResponse.data.data
                             if(vm.order == 'noorders'){
                                 vm.order=''

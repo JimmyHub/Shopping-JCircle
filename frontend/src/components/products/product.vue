@@ -44,7 +44,7 @@
                 }
                 if(token){
                     shoppingcart_add(pid,JSON.stringify(data),token).then((response)=>{
-                        if(response.data.code == 200){
+                        if(response.data.code < 400){
                             alert('成功加入購物車')
                             location.reload()
                         }else{
@@ -71,7 +71,7 @@
             await Promise.all([index(token),pinfo(keyword,pattern,personal,token),precord("record",record,token),shoppingcart_show(token)]).then(([indexResponse,pinfoResponse,precordResponse,cartResponse]) =>{
                 next( vm=>{
                     //用戶資料請求
-                    if(indexResponse.data.code ==200){
+                    if(indexResponse.data.code < 400){
                         if(indexResponse.data.data == 'nouser'){
                             vm.info=''
                         }else{
@@ -84,7 +84,7 @@
                         }
                     }
                     //商品資料請求
-                    if(pinfoResponse.data.code == 200){
+                    if(pinfoResponse.data.code < 400){
                         vm.list= pinfoResponse.data.data
                         if(vm.list.pphoto){
                             vm.list.pphoto = `${url()}/media/${vm.list.pphoto}`
@@ -102,7 +102,7 @@
                         }  
                     }
                     //購物車資料請求
-                    if(cartResponse.data.code ==200){
+                    if(cartResponse.data.code < 400){
                         vm.cart = cartResponse.data.data
                         vm.cart.cart_total=0
                         for(var c=0;c<vm.cart.length;c++){
@@ -117,7 +117,7 @@
                         vm.cart.cart_total=0
                     }
                     //瀏覽紀錄請求
-                    if(precordResponse.data.code == 200){
+                    if(precordResponse.data.code < 400){
                         vm.record=precordResponse.data.data
                         if(vm.record == 'norecord'){
                             vm.record=''

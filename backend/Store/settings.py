@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,8 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'e7g-0mn6bk(t*493e&r!^0oq8s9a+&6kxfd2$y4dfg0r53vcpq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-# DEBUG = True
+# DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -154,6 +154,12 @@ APPEND_SLASH = False
 MEDIA_URL = '/media/'
 # 媒體資源存放的 服務器目錄
 MEDIA_ROOT = Path('/').joinpath(BASE_DIR, 'media/')
-
+STATIC_URL = '/static/'
+if DEBUG:
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static')
+    ]
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 2
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False

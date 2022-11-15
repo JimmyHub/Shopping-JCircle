@@ -26,9 +26,9 @@
                 let token = get_session('token')
                 let mode = get_Storage('mode')
                 porders_del(list_id,mode,token).then((response)=>{
-                    if(response.data.code ==200){
+                    if(response.data.code < 400){
                         orders_del(list_id,token).then((response)=>{
-                            if(response.data.code == 200){
+                            if(response.data.code < 400){
                                 window.history.go(-1)
                             }else{
                                 alert('刪除失敗，原因:'+response.data.error)
@@ -48,7 +48,7 @@
                 await Promise.all([info(token),orders(num,mode,token),porders(num,mode,token)]).then(([infoResponse,ordersResponse,pordersResponse])=>{
                     next(vm =>{ 
                         //用戶資料請求
-                        if(infoResponse.data.code == 200){
+                        if(infoResponse.data.code < 400){
                             vm.info = infoResponse.data.data
                             if(vm.info.avatar){
                                 vm.info.avatar = `${url()}/media/${vm.info.avatar}`
@@ -57,7 +57,7 @@
                             }
                         }
                         //訂單資料請求
-                        if(ordersResponse.data.code == 200){
+                        if(ordersResponse.data.code < 400){
                             vm.order=ordersResponse.data.data
                             vm.order.url=`http://www.jcircle.ml/api/v1/CheckMacValue/${vm.order.list_id}`
                             vm.order.url_c=`http://www.jcircle.ml/#/orders`
@@ -65,7 +65,7 @@
                             vm.order.num_time= `${vm.order.num_time.slice(0,10)} ${vm.order.num_time.slice(11,19)}`
                         }
                         //訂單商品資料請求
-                        if(pordersResponse.data.code == 200 ){
+                        if(pordersResponse.data.code < 400 ){
                             vm.list= pordersResponse.data.data
                             for(var i=0;i<vm.list.length;i++){
                                 if(vm.list[i].photo){

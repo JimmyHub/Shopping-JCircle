@@ -28,7 +28,7 @@
                 }
                 //商品數量修改
                 shoppingcart_change(pid,JSON.stringify(data),token).then((response)=>{
-                    if(response.data.code == 200){
+                    if(response.data.code < 400){
                         this.list.list_total=0
                         for(var i=0;i<this.list.length;i++){
                             this.list[i].item_total = this.list[i].price * this.list[i].count
@@ -50,7 +50,7 @@
             delete_l(pid){
                 let token = get_session('token')
                 shoppingcart_delete(pid,token).then((response)=>{
-                    if(response.data.code == 200){
+                    if(response.data.code < 400){
                         alert('刪除成功')
                         location.reload()
                     }else{
@@ -73,7 +73,7 @@
                 await Promise.all([info(token),shoppingcart_show(token),precord("record",record,token)]).then(([infoResponse,cartResponse,precordResponse])=>{
                     next(vm =>{ 
                         //用戶資料請求
-                        if(infoResponse.data.code == 200){
+                        if(infoResponse.data.code < 400){
                             vm.info = infoResponse.data.data
                             if(vm.info.avatar){
                                 vm.info.avatar = `${url()}/media/${vm.info.avatar}`
@@ -82,7 +82,7 @@
                             }
                         }
                         //購物車資料請求
-                        if(cartResponse.data.code == 200){
+                        if(cartResponse.data.code < 400){
                             vm.list=cartResponse.data.data
                             vm.list.list_total=0
                             for(var i=0;i<vm.list.length;i++){
@@ -98,7 +98,7 @@
                             vm.list.list_total=0
                         }
                         //瀏覽紀錄請求
-                        if(precordResponse.data.code == 200){
+                        if(precordResponse.data.code < 400){
                             vm.record=precordResponse.data.data
                             if(vm.record == 'norecord'){
                                 vm.record=''

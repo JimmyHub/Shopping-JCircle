@@ -41,7 +41,7 @@
             await Promise.all([info(token),orders(keyword,0,token)]).then(([infoResponse,orderResponse]) =>{
                 next( vm=>{
                     //用戶資料請求
-                    if(infoResponse.data.code == 200){
+                    if(infoResponse.data.code < 400){
                         vm.info= infoResponse.data.data
                         if(vm.info.avatar){
                             vm.info.avatar = `${url()}/media/${vm.info.avatar}`
@@ -50,7 +50,7 @@
                         }
                     }
                     //訂單資料請求
-                    if(orderResponse.data.code==200){
+                    if(orderResponse.data.code< 400){
                         vm.order= orderResponse.data.data
                         if(vm.order == 'noorders'){
                             vm.order=''

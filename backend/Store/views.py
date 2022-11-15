@@ -25,7 +25,7 @@ class IndexView(GenericAPIView):
                 result={'code':401,'error':'please login one more time!'}
                 return JsonResponse(result)
             username_de=token_de['username']
-            auser = UserProfile.objects.filter(name=username_de)
+            auser = UserProfile.objects.filter(username=username_de)
             if not auser:
                 result={'code':410,'error':'This user do not exist !'}
                 return JsonResponse(result)
