@@ -1,5 +1,5 @@
 <div>
-   <div id="top">
+    <div id="top">
         <h1 @click='go_home()'>吉嗑就圓</h1>
         <img src="@/assets/images/common/cat.png" @click='go_home()'>
         <input type="text"placeholder="輸入搜尋內容" v-model='keyword'>
@@ -22,7 +22,7 @@
             <li class='col-2'><a href="#/store" v-if='info && info.limit'>我的賣場</a></li>
             <li class='col-2'style="color:#CAFFFF;"></li>
         </ul>
-   </div>
+    </div>
     <div id="middle">
         <div id="bread">
             <b-breadcrumb>
@@ -31,16 +31,11 @@
             </b-breadcrumb>
         </div>
         <div class='left'>
-            <p class='item'><a href="#/product_all" v-on:click='go_products_all("0")'>全部</a></p>
-            <p><a href="#/product_all" v-on:click='go_products_all("茶類")'>茶類</a></p>
-            <p><a href="#/product_all" v-on:click='go_products_all("汽水")'>汽水</a></p>
-            <p><a href="#/product_all" v-on:click='go_products_all("氣泡水")'>氣泡水</a></p>
-            <p></p>
-            <p><a href="#/product_all" v-on:click='go_products_all("泡麵")'>泡麵</a></p>
-            <p><a href="#/product_all" v-on:click='go_products_all("雞胸肉")'>雞胸肉</a></p>
-            <p></p>
-            <p></p>
+            <p class='item'>分類</p>
+            <p v-for='kind in list_kind'  v-if='list_kind.length !== 1 '><a href="#/product_all" v-on:click='go_products_all(kind)'>{{ kind }}</a></p>
         </div>
+
+
         <div class="middle">
             <b-carousel  class='activity_scan'
                 id="carousel-fade"
@@ -64,11 +59,11 @@
                 ></b-carousel-slide>
             </b-carousel>
             <div class="products_scan">
-                <div v-for='item in list_show'  v-if='list_show[0] !==0'>
-                    <img :src="item.pphoto">
-                    <div v-model='pname'>{{ item.pname }}</div>
-                    <div>商品金額: {{ item.pprice }} 元 </div>
-                    <b-button href="#/product" variant="outline-secondary" style="margin-top:5px"size='sm' v-on:click='product_detail(item.pid)'>詳細內容</b-button>
+                <div v-for='item in list_show'  v-if='item.pname'>
+                    <img :src="item.pphoto" >
+                    <div v-model='pname' >{{ item.pname }}</div>
+                    <div >商品金額: {{ item.pprice }} 元 </div>
+                    <b-button href="#/product" variant="outline-secondary" style="margin-top:5px"size='sm' v-on:click='product_detail(item.pid)' >詳細內容</b-button>
                 </div>
             </div>
         </div>
@@ -100,10 +95,9 @@
                     </div>
                 </div>
             </div>
-            
         </b-container>
     </div>
-   <div id="bottom">
+    <div id="bottom">
         <div>
             <p>© 2021年 JCircle 版權所有。</p>
             <img src="@/assets/images/common/way.jpg" >

@@ -16,7 +16,14 @@ export function pinfo(keyword,pattern,personal,token){
 		}
 	})
 }
-
+//獲取商品種類
+export function pkind_all(token){
+	return axios.get(`${url()}${port()}/v1/products/0/allkind/0/0`,{
+		headers:{
+			"AUTHORIZATION":token
+		}
+	})
+}
 //上傳商品
 export function upload_p(data,token){
 	return axios.post(`${url()}${port()}/v1/products/0/1`,data,{
