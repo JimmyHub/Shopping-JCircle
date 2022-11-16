@@ -64,7 +64,7 @@
                         location.reload()
                     }else{
                         alert('修改失敗,原因:'+response.data.error)
-                        // location.reload()
+                        location.reload()
                     }
                 })
             },
@@ -84,7 +84,7 @@
 
                     }else{
                         alert('上傳失敗,原因:'+response.data.error)
-                        // location.reload()
+                        location.reload()
                     }
                 })
             }

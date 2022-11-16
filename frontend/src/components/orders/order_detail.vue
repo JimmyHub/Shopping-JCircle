@@ -119,7 +119,6 @@
                         //用戶資料請求
                         if(infoResponse.data.code < 400){
                             vm.info = infoResponse.data.data
-                            console.log(vm.info)
                             if(vm.info.avatar){
                                 vm.info.avatar = `${url()}/media/${vm.info.avatar}`
                             }else{
@@ -129,7 +128,7 @@
                         //訂單資料請求
                         if(orderResponse.data.code< 400){
                             vm.order= orderResponse.data.data
-                            //根據不同訂單狀態 改變顯示資料 
+                            //根據不同訂單狀態 改變顯示資料
                             for(var i=0;i<5;i++){
                                 if(vm.order.status == (i+1)){
                                     let list_status=['待繳款 ','待出貨 ','已出貨 ','待取貨 ','完成 ']
@@ -164,7 +163,7 @@
                                     vm.messages[m].msg_show=`${vm.messages[m].user}(${vm.messages[m].con_time.slice(0,10)} ${vm.messages[m].con_time.slice(11,19)}):`
                                 }
                             }
-                        }*/
+                        }
                     })   
                 })
             }else{

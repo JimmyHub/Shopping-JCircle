@@ -1,5 +1,5 @@
 
-export function random_get(array,times){
+/*export function random_get(array,times){
     //array 要取亂數的目標陣列 times 取亂數的次數
     let array_r=[]
     let array_g=[]
@@ -14,20 +14,20 @@ export function random_get(array,times){
         }
     }
     return array_g
-}
+}*/
 
 export function random_get2(length,times){
     //array 要取亂數的目標陣列 times 取亂數的次數
      let array_r=[]
      if(length >0 ){
-        if(length<times){
-            times = length
-        }
         for(var i=0;i<length;i++){
             array_r[i]=i
         }
         //產生亂數之後檢查是否有相同的數字
         let array_g=[]
+        if(length < 4 ){
+            times = length
+        }
         while(array_g.length<times){
             let num=Math.floor(Math.random()*length)
             if(array_r[num] != undefined){
@@ -37,7 +37,6 @@ export function random_get2(length,times){
         }
         return array_g
      }else{
-
         return array_r
      }
 
@@ -67,35 +66,4 @@ export function random_get2(length,times){
       array_g[i] = num
     }
     return array_g;*/
-}
-
-
-export function check_code(num_list){
-    let HashKey="5294y06JbISpM5x9"
-    let HashIV="v77hoKGq4kWxNNIS"
-    let MerchantID= "2000132"
-    let MerchantTradeNo=num_list
-    let time = Math.floor(Date.now())
-    let origin="HashKey="+HashKey+"&MerchantID="+MerchantID+"&MerchantTradeNo="+MerchantTradeNo+"&TimeStamp="+time+"&HashIV="+HashIV
-    let a = encodeURI(origin)
-    // 2.替換成.net code
-    let str02 = ''
-    for(var s=0;s<a.length;s++){
-        if(a[s] =='/'){
-            str02+="%2f"
-        }else{
-            str02+=a[s]
-        }
-    }
-    let b = str02.replace('%20', '+')
-    // 3.轉換成小寫
-    let c = b.toLowerCase()
-    // 4.進行 SHA256緊湊
-    let sha256 = require("js-sha256").sha256
-    let d= sha256(c)
-    // 5.轉成大寫
-    let e = d.toUpperCase()
-    console.log(e)
-    return {'code':e,'time':time}
-
 }

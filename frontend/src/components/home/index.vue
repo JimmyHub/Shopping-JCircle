@@ -120,6 +120,21 @@
                                     clearTimeout(vm.list_show_time)
                                 }
                             } , 15000)
+
+                            //商品欄顯示種類
+                            vm.list_kind =[]
+                            for(var k=0;k<vm.list.length;k++){
+                                let count_exist = 0
+                                for(var lk=0;lk<vm.list_kind.length;lk++){
+                                    if(vm.list_kind[lk] !== vm.list[k].pkind){
+                                        count_exist = count_exist + 1
+                                    }
+                                }
+                                if(count_exist == vm.list_kind.length){
+                                    vm.list_kind[k] =  vm.list[k].pkind
+                                }
+                            }
+                            vm.list_kind.splice(0,0,'全部')
                         }else{
                             vm.list=''
                         }

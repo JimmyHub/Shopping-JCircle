@@ -34,8 +34,8 @@
             checkout(){
                 let token = get_session('token')
                 let data={
-                    'number':this.list.list_num,
-                    'num_time':this.list.list_time,
+                    'list_num':this.list.list_num,
+                    'list_time':this.list.list_time,
                     'status':1,
                     'gname':this.gname,
                     'address':this.address,
@@ -49,27 +49,24 @@
                     'sales':this.list[0].sales
                 }
                 checkout(JSON.stringify(data),token).then((response)=>{
-                    if(response.data.code < 400){
+                    if(response.data.code == 200){
                         let list_id=[]
                         let counts=[]
                         let products=[]
-                        let sales=[]
                         for(var c=0;c<this.list.length;c++){
                             list_id[c]=this.list[c].list_id
                             counts[c]=this.list[c].count
                             products[c]=this.list[c].pid
-                            sales[c]=this.list[c].sales
                         }
                         let data_l={
                             'list_id':list_id, 
                             'counts':counts,
                             'products':products,
-                            'num_list':response.data.data.number,
-                            'sales':sales,
+                            'list_num':response.data.data.list_num,
                         }
                         checkout_list(JSON.stringify(data_l),token).then((response)=>{
-                            if(response.data.code < 400){
-                                set_Storage('list_id',response.data.data)
+                            if(response.data.code == 200){
+                                set_Storage('num_list',response.data.data)
                                 set_Storage('mode',0)
                                 window.location.href="#/shoppings_final"
                             }else{
@@ -88,7 +85,7 @@
                 await Promise.all([info(token),shoppingcart_show(token)]).then(([infoResponse,cartResponse])=>{
                     next(vm =>{ 
                         //用戶資料請求
-                        if(infoResponse.data.code < 400){
+                        if(infoResponse.data.code == 200){
                             vm.info = infoResponse.data.data
                             if(vm.info.avatar){
                                 vm.info.avatar = `${url()}/media/${vm.info.avatar}`
@@ -97,7 +94,7 @@
                             }
                         }
                         //購物車資料請求
-                        if(cartResponse.data.code < 400){
+                        if(cartResponse.data.code == 200){
                             vm.list=cartResponse.data.data
                             vm.list.list_total=0
                             vm.list.bonus_20=0
@@ -105,7 +102,8 @@
                             vm.list.bonus_total=0
                             vm.list.bonus_kind=''
                             vm.list.shipping=60
-                            vm.list.list_num = 115101+ parseInt(vm.list[0].list_id)
+                            //訂單編號 : 115101 + 購物車內商品 存在購物車資料表商品的ID 
+                            vm.list.list_num = 155101+ parseInt(vm.list[0].list_id)
                             for(var i=0;i<vm.list.length;i++){
                                 if(vm.list[i].pphoto){
                                     vm.list[i].pphoto =`${url()}/media/${vm.list[i].pphoto}`
