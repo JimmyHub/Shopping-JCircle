@@ -5,6 +5,7 @@ from django.db import transaction
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
+
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
@@ -35,18 +36,19 @@ def trycatch(func):
         try:
             with transaction.atomic():
                 return func(*args, **kwargs)
+
         except ValidationError as ve:
             ve_res = make_validationerror_msg(ve.__dict__['detail'],[])
-            result = {'status': status.HTTP_400_BAD_REQUEST, 'message': f'{" ,".join(ve_res)}'}
+            result = {'status': status.HTTP_400_BAD_REQUEST, 'error': f'{" ,".join(ve_res)}'}
             return Response(data=result)
 
         except KeyError as ke:
             result = {'status': status.HTTP_400_BAD_REQUEST,
-                      'message': f'The word {ke} you passed in request maybe be wrong or your serializer maybe wrong'}
+                      'error': f'The word {ke} you passed in request maybe be wrong or your serializer maybe wrong'}
             return Response(data=result)
 
         except Exception as e:
-            result = {'status': status.HTTP_400_BAD_REQUEST, 'message': f'{e}'}
+            result = {'status': status.HTTP_400_BAD_REQUEST, 'error': f'{e}'}
             return Response(data=result)
 
     return wrapper

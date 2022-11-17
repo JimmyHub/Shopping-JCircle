@@ -1,14 +1,18 @@
 import json
 import jwt
-from django.http import JsonResponse, Http404
+from django.forms import model_to_dict
+from django.http import JsonResponse
 from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.generics import GenericAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from tools.tokens import login_check,auth_swagger_wrapper
+from rest_framework.response import Response
+from tools.tokens import login_check, auth_swagger_wrapper
 from orderlist.models import OrderList
 
 from .models import ProductProfile
-from .serializers import ProductSerializer
-from rest_framework.generics import GenericAPIView
+from .serializers import ProductBaseSerializer, ProductSerializer
+from rest_framework.viewsets import GenericViewSet
 from django.db import transaction
 from rest_framework.parsers import (
     FormParser,
@@ -16,11 +20,18 @@ from rest_framework.parsers import (
 )
 from drf_yasg import openapi
 
-key='a123456'
-# get_serializer
+from Store.decorator import allmethods, trycatch, request_response
+from Store.tool import get_json_data, get_serializer_data
+
+from Store.authentication import TokenExAuthentication
+
+key = 'a123456'
+
+@allmethods(trycatch)
 class ProductView(GenericAPIView):
     queryset = ProductProfile.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = ProductBaseSerializer
+
     # @swagger_auto_schema(
     #     operation_summary='我是 GET 的摘要',
     #     operation_description='我是 GET 的說明',
@@ -71,8 +82,7 @@ class ProductView(GenericAPIView):
                     'pphoto': str(i.pphoto),
                     'pcontent': i.pcontent,
                     'pprice': i.pprice,
-                    'pway': i.pway,
-                    'sales': i.sales
+                    'sales': i.sales_id
                 }
                 product_list.append(data)
                 # print(i._state.adding)
@@ -135,8 +145,7 @@ class ProductView(GenericAPIView):
                                                     'pkind': products[0].pkind,
                                                     'pphoto': str(products[0].pphoto),
                                                     'pcontent': products[0].pcontent,
-                                                    'pprice': products[0].pprice,
-                                                    'pway': products[0].pway, }}
+                                                    'pprice': products[0].pprice,}}
                     return JsonResponse(result)
             # 若是包含特定類別商品 或是包含特定關鍵字的商品
             product_list = []
@@ -148,7 +157,6 @@ class ProductView(GenericAPIView):
                     'pphoto': str(i.pphoto),
                     'pcontent': i.pcontent,
                     'pprice': i.pprice,
-                    'pway': i.pway,
                 }
                 product_list.append(data)
             result = {'code': 200, 'data': product_list}
@@ -171,165 +179,94 @@ class ProductView(GenericAPIView):
         # data = serializer.data
         # return JsonResponse(data, safe=False)
 
-class ProductUPView(GenericAPIView):
-    # def __init__(self):
-    #     self.methods = ['POST','PUT','DELETE']
+@allmethods(trycatch)
+class ProductViewSet(GenericViewSet):
     queryset = ProductProfile.objects.all()
-    serializer_class = ProductSerializer
-    # permission_classes = (IsAuthenticated,)
-    # parser_classes = (FormParser, MultiPartParser)
+    serializer_class = ProductBaseSerializer
+    authentication_classes = [TokenExAuthentication,]
 
-    @auth_swagger_wrapper('','')
-    @login_check('POST')
-    def post(self, request):
-        user = request.user
-        if not user:
-            result = {'code': 410, 'error': 'this user does not exist'}
-            return JsonResponse(result)
-        json_str = request.body
-        if not json_str:
-            result = {'code': 400, 'error': 'please give me data'}
-            return JsonResponse(result)
-        json_obj = json.loads(json_str)
-        pname = json_obj.get('pname')
-        if not pname:
-            result = {'code': 400, 'error': 'please give me product name'}
-            return JsonResponse(result)
-        pkind = json_obj.get('pkind')
-        if not pkind:
-            result = {'code': 400, 'error': 'please give me product kind'}
-            return JsonResponse(result)
-        pcontent = json_obj.get('pcontent')
-        if not pcontent:
-            result = {'code': 400, 'error': 'please give me product content'}
-            return JsonResponse(result)
-        pprice = json_obj.get('pprice')
-        if not pprice:
-            result = {'code': 400, 'error': 'please give me product price'}
-            return JsonResponse(result)
-        pway = json_obj.get('pway')
-        if not pway:
-            result = {'code': 400, 'error': 'please give me product pway'}
-            return JsonResponse(result)
-        user_name = 'jimmy88'
+    def get_serializer_class(self):
+        if self.request.method in ['POST']:
+            return ProductBaseSerializer
+        else:
+            return ProductSerializer
 
-        products = ProductProfile.objects.filter(sales_id=user_name)
-        for i in products:
-            if i.pname == pname:
-                result = {'code': 400, 'error': 'this product is existing'}
-                return JsonResponse(result)
+    # @request_response(response_schema_dict=users_response_dict['POST'])
+    def create(self, request):
+        data = get_json_data(request.body)
+        # data['sales_id'] = request.user
+        get_serializer_data(self, data, request)
+        self.serializer.validated_data['sales_id'] = request.user.username
+        new_product = self.serializer.create(self.serializer.validated_data)
+        result = {'code': status.HTTP_201_CREATED, 'pid':new_product.id}
+        return Response(data=result)
 
-        try:
-            # 避免上傳時網頁出錯 造成上傳不完全
-            ProductProfile.objects.create(pname=pname,
-                                          pkind=pkind,
-                                          pcontent=pcontent,
-                                          pprice=int(pprice),
-                                          pway=int(pway),
-                                          sales_id=user_name)
-        except:
-            result = {'code': 500, 'error': 'System is busy.'}
-            return JsonResponse(result)
-        products = ProductProfile.objects.filter(sales_id=user_name)
-        id = 0
-        for i in products:
-            if i.pname == pname:
-                id = i.id
-        result = {'code': 200, 'pid': id}
-        return JsonResponse(result)
-        # pass
-        # data = request.data
-        # try:
-        #     serializer = self.serializer_class(data=data)
-        #     serializer.is_valid(raise_exception=True)
-        #     with transaction.atomic():
-        #         serializer.save()
-        #     data = serializer.data
-        # except Exception as e:
-        #     data = {'error': str(e)}
-        # return JsonResponse(data)
-    @auth_swagger_wrapper('','')
-    @login_check('PUT')
-    def put(self, request, keyword):
-        if not keyword:
-            result={'code':400,'error':'please give me keyword'}
-            return JsonResponse(result)
-        products = ProductProfile.objects.filter(id=keyword)
-        if not products:
-            result={'code':400,'error':'this product does not exist'}
-            return JsonResponse(result)
-        product=products[0]
-        json_str=request.body
-        if not json_str:
-            result={'code':400,'error':'please give me data'}
-            return JsonResponse(result)
-        json_obj=json.loads(json_str)
-        pname = json_obj.get('pname')
-        #如果沒有 沒有哪一種資料 就不用改哪一種
-        if pname != '':
-            products_check = ProductProfile.objects.filter(pname=pname)
-            #確保修改商品名稱後 不會改成相同的商品
-            if products_check:
-                result={'code':400,'error':'This pname already exist'}
-                return JsonResponse(result)
-            product.pname = pname
-        pkind = json_obj.get('pkind')
-        if pkind !='':
-            product.pkind= pkind
-        pcontent=json_obj.get('pcontent')
-        if pcontent !='':
-            product.pcontent=pcontent
-        pprice = json_obj.get('pprice')
-        if pprice != '':
-            product.pprice=int(pprice)
-        pway = json_obj.get('pway')
-        if pway != 0:
-            product.pway=int(pway)
-        product.save()
-        result={'code':200,'data':{'pname':product.pname}}
-        return JsonResponse(result)
-        # pass
-        # product = self.get_object(id)
-        # data = request.data
-        # serializer = ProductSerializer(product, data=data)
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return JsonResponse(serializer.data)
-        # return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    @auth_swagger_wrapper('','')
+    # @request_response(response_schema_dict=users_response_dict['PATCH'])
+    def partial_update(self, request, pk=None):
+        data = get_json_data(request.body)
+        get_serializer_data(self, data, request, partial=True)
+        product = get_object_or_404(ProductProfile,id=pk)
+        self.serializer.validated_data['user'] = request.user
+        self.serializer.update(instance=product, data=self.serializer.validated_data)
+        result = {'code': status.HTTP_202_ACCEPTED}
+        return Response(data=result)
+
+    def destroy(self, request, pk=None):
+        # 確認是否登入之後
+        # 透過Keyword 找到商品 確認商品跟 登入者帳號是否相同
+        product = get_object_or_404(ProductProfile,id=pk)
+        # 確認訂單中是不是還有此商品
+        if product.sales_id != request.user.username:
+            raise SystemError('操作人員錯誤')
+        order_products = OrderList.objects.filter(product_id=product.id).values('num_list','count')
+        # 若現有訂單無此商品則可以刪除
+        if order_products:
+            # op_list = order_products.values('num_list','count')
+            result = {'code': status.HTTP_400_BAD_REQUEST, 'error': 'This product is in some orders now', 'data': order_products}
+            return Response(data=result)
+        else:
+            product.delete()
+            result = {'code': status.HTTP_204_NO_CONTENT}
+            return Response(data=result)
+
+class ProductUPView(GenericViewSet):
+    queryset = ProductProfile.objects.all()
+    serializer_class = ProductBaseSerializer
+
+    @auth_swagger_wrapper('', '')
     @login_check('DELETE')
-    def delete(self, request,keyword):
-        #確認是否登入之後
-        #透過Keyword 找到商品 確認商品跟 登入者帳號是否相同
+    def delete(self, request, keyword):
+        # 確認是否登入之後
+        # 透過Keyword 找到商品 確認商品跟 登入者帳號是否相同
         products = ProductProfile.objects.filter(id=keyword)
         if not products:
-            result={'code':410,'error':'This product does not exist'}
+            result = {'code': 410, 'error': 'This product does not exist'}
             return JsonResponse(result)
-        #確認訂單中是不是還有此商品
+        # 確認訂單中是不是還有此商品
         order_products = OrderList.objects.filter(product_id=keyword)
-        #若現有訂單無此商品則可以刪除
+        # 若現有訂單無此商品則可以刪除
         if not order_products:
-            #檢視刪除者跟上傳者是否是同一個人
+            # 檢視刪除者跟上傳者是否是同一個人
             sales_name = products[0].sales_id
-            username ='jimmy88'
+            username = 'jimmy88'
             # username = request.user.name
             if sales_name != username:
-                result={'code':401,'error':'Who are you ?'}
+                result = {'code': 401, 'error': 'Who are you ?'}
                 return JsonResponse(result)
             else:
                 products[0].delete()
-                result={'code':200,'data':username}
+                result = {'code': 200, 'data': username}
                 return JsonResponse(result)
         else:
-            op_list=[]
+            op_list = []
             for op in order_products:
                 print(op.num_list.num_list)
-                dict_op ={
-                       'list_num':'jCircle'+ str(op.num_list.num_list),
-                       'count':op.count,
+                dict_op = {
+                    'list_num': 'jCircle' + str(op.num_list.num_list),
+                    'count': op.count,
                 }
                 op_list.append(dict_op)
-            result = {'code':400,'error':'This product is in some orders now','data':op_list}
+            result = {'code': 400, 'error': 'This product is in some orders now', 'data': op_list}
             return JsonResponse(result)
         # pass
         # product = self.get_object(id)
@@ -339,11 +276,11 @@ class ProductUPView(GenericAPIView):
 
 class ProductPhoto(GenericAPIView):
     queryset = ProductProfile.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = ProductBaseSerializer
 
-    @auth_swagger_wrapper('Product_Photo','')
+    @auth_swagger_wrapper('Product_Photo', '')
     @login_check('POST')
-    def post(self,request,keyword):
+    def post(self, request, keyword):
         if request.method != 'POST':
             result = {'code': 400, 'error': 'This is not post request'}
             return JsonResponse(result)
@@ -351,7 +288,6 @@ class ProductPhoto(GenericAPIView):
             result = {'code': 400, 'error': 'please give me keyword'}
             return JsonResponse(result)
         photo = request.FILES.get('photo')
-        print('有photo')
         if not photo:
             result = {'code': 400, 'error': 'please give me photo'}
             return JsonResponse(result)

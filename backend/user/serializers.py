@@ -35,15 +35,15 @@ class RegisterSerializer(UserBaseSerializer):
 
     def validate_phone(self, value):
         if len(value) >= 11:
-            raise serializers.ValidationError("手機號碼長度錯誤")
+            raise SystemError("手機號碼長度錯誤")
         return value
 
     def validate(self, data):
         if data['username'] in data['pwd1']:
-            raise serializers.ValidationError("密碼跟帳號太過相似")
+            raise SystemError("密碼跟帳號太過相似")
         pwd1, pwd2 = data.pop('pwd1'), data.pop('pwd2')
         if pwd1 != pwd2:
-            raise serializers.ValidationError("重複密碼輸入錯誤")
+            raise SystemError("重複密碼輸入錯誤")
         data['password'] = make_complicate(pwd1)
         return data
 
@@ -55,7 +55,7 @@ class UserSerializer(serializers.ModelSerializer, RegisterSerializer):
     birthday = serializers.CharField(default=' ')
     gender = serializers.CharField(default=' ')
     avatar = serializers.ImageField(use_url="media/")
-    limit = serializers.IntegerField(default=0)
+    limit = serializers.IntegerField(default=1)
 
     class Meta:
         model = UserProfile
@@ -71,12 +71,12 @@ class UserSerializer(serializers.ModelSerializer, RegisterSerializer):
             try:
                 int(v)
             except:
-                raise serializers.ValidationError("輸入內容錯誤")
+                raise SystemError("輸入內容錯誤")
 
         if len(value_get) != 3:
-            raise serializers.ValidationError("生日格式錯誤")
+            raise SystemError("生日格式錯誤")
         if len(value_get[0]) != 4 or len(value_get[1]) != 2 or len(value_get[2]) != 2:
-            raise serializers.ValidationError("生日格式錯誤")
+            raise SystemError("生日格式錯誤")
         else:
             return value
 
@@ -98,7 +98,7 @@ class LoginSerializer(serializers.Serializer):
         user = get_object_or_404(UserProfile,username =data['username'])
 
         if make_complicate(data['pwd']) != user.password:
-            raise serializers.ValidationError("輸入密碼錯誤")
+            raise SystemError("輸入密碼錯誤")
         data['token'] = make_token(user.username)
         return data
 

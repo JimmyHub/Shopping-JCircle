@@ -163,7 +163,7 @@
                                     vm.messages[m].msg_show=`${vm.messages[m].user}(${vm.messages[m].con_time.slice(0,10)} ${vm.messages[m].con_time.slice(11,19)}):`
                                 }
                             }
-                        }
+                        }*/
                     })   
                 })
             }else{

@@ -13,15 +13,8 @@ from .response_schema import users_response_dict, login_response_dict
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 from Store.decorator import request_response
 
+from Store.tool import get_json_data, get_serializer_data
 
-def get_serializer_data(viewset_obj, data, request, partial=False):
-    viewset_obj.serializer = viewset_obj.get_serializer(data=data, context={'request': request}, partial=partial)
-    viewset_obj.serializer.is_valid(raise_exception=True)
-
-def get_json_data(data):
-        if not data:
-            return SystemError('請重新發送欲傳送資料')
-        return json.loads(data)
 
 @allmethods(trycatch)
 class UsersViewSet(GenericViewSet):
@@ -34,13 +27,10 @@ class UsersViewSet(GenericViewSet):
         else:
             return UserSerializer
 
-
-
     # 帳號資料瀏覽
     @request_response(response_schema_dict=users_response_dict['GET'], query=True)
     def get_user(self, request):
         data_res = UserSerializer(request.user)
-        print(data_res.data)
         data_res.data['avatar'] = str(data_res.data['avatar'])
         result = {'code': status.HTTP_200_OK, 'data': data_res.data}
         return Response(data=result)
@@ -59,7 +49,7 @@ class UsersViewSet(GenericViewSet):
     def partial_update(self, request, pk=None):
         data = get_json_data(request.body)
         get_serializer_data(self, data, request, partial=True)
-        self.serializer.update(instance=request.user, data=data)
+        self.serializer.update(instance=request.user, data=self.serializer.validated_data)
         result = {'code': status.HTTP_202_ACCEPTED}
         return Response(data=result)
 
@@ -68,7 +58,7 @@ class UsersViewSet(GenericViewSet):
 class UserAvatarView(GenericViewSet):
     queryset = UserProfile.objects.all()
     authentication_classes = [TokenExAuthentication, ]
-    parser_classes = (MultiPartParser, )
+    parser_classes = (MultiPartParser,)
 
     @request_response(response_schema_dict=users_response_dict['POST'])
     def create(self, request):
@@ -76,8 +66,8 @@ class UserAvatarView(GenericViewSet):
         auser = request.user
         auser.avatar = avatar
         auser.save()
-        result = {'code': 200, 'username': auser.username}
-        return JsonResponse(result)
+        result = {'code': status.HTTP_201_CREATED}
+        return Response(data=result)
 
         # drf 存圖片 ??
         # 上傳用戶頭像
@@ -99,13 +89,14 @@ class UserAvatarView(GenericViewSet):
         # 如果上傳自動更新之後 圖片沒有出現 可以先查看圖片地址為何
         # 然後查看 請求中的響應 是否有正確get到數據
 
+
 @allmethods(trycatch)
 class LoginViewSet(GenericViewSet):
     queryset = UserProfile
     serializer_class = LoginSerializer
 
-    @request_response(response_schema_dict=login_response_dict['POST'],query=False)
-    def login(self,request):
+    @request_response(response_schema_dict=login_response_dict['POST'], query=False)
+    def login(self, request):
         data = get_json_data(request.body)
         get_serializer_data(self, data=data, request=request)
         data_valid = self.serializer.validated_data

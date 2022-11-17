@@ -13,6 +13,8 @@ from . import views
 from user.views import UsersViewSet
 from tools import Ecpay
 
+from product.views import ProductViewSet
+
 
 class CustomerGeneratorSchema(OpenAPISchemaGenerator):
     def get_operation(self, *args, **kwargs):
@@ -41,14 +43,14 @@ schema_view = get_schema_view(
     # generator_class=CustomerGeneratorSchema
 )
 
-# router = routers.DefaultRouter(trailing_slash=False)
-# router.register(r'user', UsersViewSet)
+router = routers.DefaultRouter(trailing_slash=False)
+router.register(r'product', ProductViewSet)
 # router.register(r'', LoginViewSet)
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('v1/', include(router.urls)),
+    path('v1/', include(router.urls)),
     # path('',include(router.urls)),
     path('v1/users', include('user.urls')),
     path('v1/index', views.IndexView.as_view()),

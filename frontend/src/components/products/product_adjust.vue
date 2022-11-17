@@ -21,11 +21,11 @@
                 pcontent:'',
                 keyword:'',
                 file:null,
-                pway: [],
-                options: [
-                    { text: '信用卡付款', value: '1',disabled: true },
-                    { text: '超 商  繳 費', value: '2',disabled: true },
-                ],
+                // pway: [],
+                // options: [
+                //     { text: '信用卡付款', value: '1',disabled: true },
+                //     { text: '超 商  繳 費', value: '2',disabled: true },
+                // ],
            }
         },
         methods:{
@@ -34,24 +34,27 @@
             adjust_pinfo(id){
                 let token = get_session('token')
                 let keyword = id
-                let pway = 0
-                for(var i=0;i<this.pway.length;i++){
-                    pway +=parseInt(this.pway[i])
+                let data ={}
+                if(this.pname){
+                    data.pname = this.pname
                 }
-                let data={
-                    'pname':this.pname,
-                    'pkind':this.pkind,
-                    'pprice':this.pprice,
-                    'pcontent':this.pcontent,
-                    'pway':pway,
-                } 
+                if(this.pkind){
+                    data.pkind = this.pkind
+                }
+                if(this.pprice){
+                    data.pprice = this.pprice
+                }
+                if(this.pcontent){
+                    data.pcontent = this.pcontent
+                }
+
                 adjust_p(keyword,JSON.stringify(data),token).then((response)=>{
                     if(response.data.code < 400){
                         alert('修改成功')
                         location.reload()
                     }else{
                         alert('修改失敗,原因:'+ response.data.error)
-                        location.reload()
+                        // location.reload()
                     }
                 })
             },

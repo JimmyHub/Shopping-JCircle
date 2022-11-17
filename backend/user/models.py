@@ -11,7 +11,7 @@ class UserProfile(models.Model):
     gender = models.CharField(verbose_name='性別', max_length=8, null=True)
     email = models.CharField(verbose_name='信箱', max_length=50)
     avatar = models.ImageField(verbose_name='頭像', upload_to='avatar/')
-    limit = models.IntegerField(verbose_name='權限', default=0)
+    limit = models.IntegerField(verbose_name='權限', default=1)
 
     class Meta:
         db_table = 'users'  # 可以更改在數據庫中的顯示
