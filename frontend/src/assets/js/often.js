@@ -30,7 +30,7 @@ export function search(){
     set_Storage('keyword',keyword)
     set_Storage('pattern','search')
     if(window.location.href ==`${url()}/#/product_all`){
-        location.reload()
+        this.reload()
     }else{
         window.location.href='#/product_all'
     }

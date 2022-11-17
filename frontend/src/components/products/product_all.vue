@@ -9,7 +9,7 @@
     import { shoppingcart_show } from '@/api/shoppings.js'
     //import { url, port } from '@/assets/js/set.js'
     import { url } from '@/assets/js/set.js'
-    import { set_Storage, get_Storage, get_session, go_home, go_cart,go_products_all, product_detail, search, logout } from'@/assets/js/often.js'
+    import { set_Storage, get_Storage, get_session, go_home, go_cart,go_products_all, product_detail, logout } from'@/assets/js/often.js'
 
     export default{
         name:'product_all',
@@ -19,13 +19,13 @@
                 list:[],
                 cart:[],
                 record:[],
-                origin_kind:[],
+                list_kind:[],
                 keyword:'',        
                 isCart:false,
             }
         },
         methods:{
-            go_home,go_cart,go_products_all,product_detail,search,logout,
+            go_home,go_cart,go_products_all,product_detail,logout,
             //切換 購物車/瀏覽紀錄
             cart_show(){
                 this.isCart = true
@@ -33,6 +33,43 @@
             //切換 購物車/瀏覽紀錄
             record_show(){
                 this.isCart = false
+            },
+            search(){
+                let keyword = this.keyword.replace(/\s*/g,"")
+                if(window.location.href ==`http://localhost:8080/#/product_all`){
+                    let token = get_session('token')
+                    pinfo(keyword,'search','0',token).then((response)=>{
+                        if(response.data.code < 400){
+                            let list_tmp= response.data.data
+                            for(var i=0;i<list_tmp.length;i++){
+                                if(list_tmp[i].pphoto){
+                                    // list_tmp[i].pphoto =`${url()}/media/${list_tmp.list[i].pphoto}`
+                                    list_tmp[i].pphoto = 'http://127.0.0.1:8000/media/product/milkcoffee.jpg'
+                                }else{
+                                    // list_tmp[i].pphoto = `${url()}/media/product/milkcoffee.jpg`
+                                    list_tmp[i].pphoto = 'http://127.0.0.1:8000/media/product/milkcoffee.jpg'
+                                }
+                            }
+                            this.list = list_tmp
+                            console.log('ok')
+                        }else{
+                            alert('資料搜尋失敗,原因:'+ response.data.error)
+                            location.reload()
+                        }
+                    })
+                }else{
+                    set_Storage('keyword',keyword)
+                    set_Storage('pattern','search')
+                    window.location.href='#/product_all'
+
+                }
+
+                // if(window.location.href ==`http://localhost:8080/#/product_all`){
+                //     this.reload()
+                //     this.restart()
+                // }else{
+                //     window.location.href='#/product_all'
+                // }
             },
         },
         async beforeRouteEnter(to,from,next){

@@ -30,7 +30,7 @@
                 </b-breadcrumb-item>
                 <b-breadcrumb-item active v-if="!list" >無商品
                 </b-breadcrumb-item>
-                <b-breadcrumb-item active v-if="list" >{{ list[0].pkind }}
+                <b-breadcrumb-item active v-if="list" >商品瀏覽
                 </b-breadcrumb-item>
             </b-breadcrumb>
         </div>
@@ -43,7 +43,7 @@
             <div id='products_scan' v-if='list'>
                 <div v-for='item in list'  >
                     <img :src="item.pphoto">
-                    <div v-model='pname'>{{ item.pname }}</div>
+                    <div>{{ item.pname }}</div>
                     <div>商品金額: {{ item.pprice }} 元 </div>
                     <b-button href="#/product" variant="outline-secondary" style="margin-top:5px"size='sm' v-on:click='product_detail(item.pid)'>詳細內容</b-button>
                 </div>
