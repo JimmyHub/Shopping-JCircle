@@ -56,11 +56,11 @@ ul{
     width:4%;
 }
 /*登入註冊超連結*/
-#top>a{
+#top>div>a{
     color: #666;
     text-decoration:none;
 }
-#top>a:hover{
+#top>div>a:hover{
     color:#2828ff;
 }
 #top>div>a>p,#top>div>a>img{
@@ -71,7 +71,7 @@ ul{
     font-size:15px;
     margin-right:7px;
 }
-#top>a>img{
+#top>div>a>img{
     border-radius: 50%;
 }
 /*網頁上方下部分導覽列*/

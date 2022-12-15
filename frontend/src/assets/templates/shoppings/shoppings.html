@@ -61,11 +61,11 @@
             </b-nav>
             <div>
                 <div class='cart_record'>
-                    <div v-for='item in record' class='record_item' v-on:click='product_detail(item.pid)'>
+                    <div v-for='item in record' class='record_item' v-on:click='product_detail(item.id)'>
                         <img :src="item.pphoto">
                         <div v-model='pname'>{{ item.pname }}</div>
                         <div style="font-size:15px">金額{{ item.pprice }}元</div>
-                        <b-button href="#/product" variant="outline-primary"size='sm' @click='product_detail(item.pid)'>詳細資料</b-button>
+                        <b-button href="#/product" variant="outline-primary"size='sm' @click='product_detail(item.id)'>詳細資料</b-button>
                     </div>
                 </div>
             </div>

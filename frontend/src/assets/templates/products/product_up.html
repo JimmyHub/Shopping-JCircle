@@ -31,8 +31,8 @@
                 <img :src="item.pphoto" >
                 <div>{{ item.pname }}</div>
                 <div>商品金額: {{ item.pprice }} 元 </div>
-                <b-button variant="outline-secondary" style="margin-right:20px" size='sm' v-on:click='adjust_p(item.pid)'>修改</b-button>
-                <b-button variant="outline-danger" size='sm' v-on:click='delete_p(item.pid)'>刪除</b-button>
+                <b-button variant="outline-secondary" style="margin-right:20px" size='sm' v-on:click='adjust_p(item.id)'>修改</b-button>
+                <b-button variant="outline-danger" size='sm' v-on:click='delete_p(item.id)'>刪除</b-button>
             </div>
         </div>
         <div id='products_upload' >

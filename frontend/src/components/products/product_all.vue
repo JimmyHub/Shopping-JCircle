@@ -9,7 +9,7 @@
     import { shoppingcart_show } from '@/api/shoppings.js'
     //import { url, port } from '@/assets/js/set.js'
     import { url } from '@/assets/js/set.js'
-    import { set_Storage, get_Storage, get_session, go_home, go_cart,go_products_all, product_detail, logout } from'@/assets/js/often.js'
+    import { set_Storage, get_Storage, get_session, go_home, go_cart,search,go_products_all, product_detail, logout } from'@/assets/js/often.js'
 
     export default{
         name:'product_all',
@@ -17,6 +17,7 @@
             return{
                 info:[],
                 list:[],
+                list_output:[],
                 cart:[],
                 record:[],
                 list_kind:[],
@@ -25,7 +26,7 @@
             }
         },
         methods:{
-            go_home,go_cart,go_products_all,product_detail,logout,
+            go_home,go_cart,search,go_products_all,product_detail,logout,
             //切換 購物車/瀏覽紀錄
             cart_show(){
                 this.isCart = true
@@ -34,43 +35,42 @@
             record_show(){
                 this.isCart = false
             },
-            search(){
-                let keyword = this.keyword.replace(/\s*/g,"")
-                if(window.location.href ==`http://localhost:8080/#/product_all`){
-                    let token = get_session('token')
-                    pinfo(keyword,'search','0',token).then((response)=>{
-                        if(response.data.code < 400){
-                            let list_tmp= response.data.data
-                            for(var i=0;i<list_tmp.length;i++){
-                                if(list_tmp[i].pphoto){
-                                    // list_tmp[i].pphoto =`${url()}/media/${list_tmp.list[i].pphoto}`
-                                    list_tmp[i].pphoto = 'http://127.0.0.1:8000/media/product/milkcoffee.jpg'
-                                }else{
-                                    // list_tmp[i].pphoto = `${url()}/media/product/milkcoffee.jpg`
-                                    list_tmp[i].pphoto = 'http://127.0.0.1:8000/media/product/milkcoffee.jpg'
-                                }
-                            }
-                            this.list = list_tmp
-                            console.log('ok')
-                        }else{
-                            alert('資料搜尋失敗,原因:'+ response.data.error)
-                            location.reload()
-                        }
-                    })
-                }else{
-                    set_Storage('keyword',keyword)
-                    set_Storage('pattern','search')
-                    window.location.href='#/product_all'
+            // search(){
+            //     let keyword = this.keyword.replace(/\s*/g,"")
+            //     if(window.location.href ==`http://localhost:8080/#/product_all`){
+            //         let token = get_session('token')
+            //         pinfo(keyword,'search','0',token).then((response)=>{
+            //             if(response.data.code < 400){
+            //                 let list_tmp = response.data.data
+            //                 for(var i=0;i<list_tmp.length;i++){
+            //                     if(list_tmp[i].pphoto){
+            //                         // list_tmp[i].pphoto =`${url()}/media/${list_tmp.list[i].pphoto}`
+            //                         list_tmp[i].pphoto = 'http://127.0.0.1:8000/media/product/milkcoffee.jpg'
+            //                     }else{
+            //                         // list_tmp[i].pphoto = `${url()}/media/product/milkcoffee.jpg`
+            //                         list_tmp[i].pphoto = 'http://127.0.0.1:8000/media/product/milkcoffee.jpg'
+            //                     }
+            //                 }
+            //                 this.list_output = list_tmp
+            //                 console.log('ok')
+            //             }else{
+            //                 alert('資料搜尋失敗,原因:'+ response.data.error)
+            //                 location.reload()
+            //             }
+            //         })
+            //     }else{
+            //         set_Storage('keyword',keyword)
+            //         set_Storage('pattern','search')
+            //         window.location.href='#/product_all'
+            //     }
 
-                }
-
-                // if(window.location.href ==`http://localhost:8080/#/product_all`){
-                //     this.reload()
-                //     this.restart()
-                // }else{
-                //     window.location.href='#/product_all'
-                // }
-            },
+            //     // if(window.location.href ==`http://localhost:8080/#/product_all`){
+            //     //     this.reload()
+            //     //     this.restart()
+            //     // }else{
+            //     //     window.location.href='#/product_all'
+            //     // }
+            // },
         },
         async beforeRouteEnter(to,from,next){
             let list_key_check = get_Storage('list_key')
@@ -84,7 +84,8 @@
             let list_key = get_Storage('list_key').split(',')
             let record = `${list_key[2]}&${list_key[1]}&${list_key[0]}`
             let pattern = get_Storage('pattern')
-            await Promise.all([index(token),pinfo(keyword,pattern,personal,token),pkind_all(token),precord("record",record,token),shoppingcart_show(token)]).then(([indexResponse,pinfoResponse,pkindResponse,precordResponse,cartResponse]) =>{
+
+            await Promise.all([index(token),pinfo(keyword,'all',personal,token),pkind_all(token),precord("record",record,token),shoppingcart_show(token)]).then(([indexResponse,pinfoResponse,pkindResponse,precordResponse,cartResponse]) =>{
                 next( vm=>{
                     //用戶資料請求
                     if(indexResponse.data.code < 400){
@@ -113,7 +114,18 @@
                                     vm.list[i].pphoto = `${url()}/media/product/a.jpg`
                                 }
                             }
-                            //set_Storage('pattern','pkind_all')
+                            if(pattern == 'search'){
+                                let list_tmp = []
+                                for(var p=0;p<vm.list.length;p++){
+                                    if(vm.list[p].pkind.includes(keyword)){
+                                        list_tmp.splice(0,0,vm.list[p])
+                                    }
+                                }
+                                vm.list_output = list_tmp
+                                console.log(vm.list_output)
+                            }else{
+                                vm.list_output = vm.list
+                            }
                         }
                     }
                     //商品分類請求

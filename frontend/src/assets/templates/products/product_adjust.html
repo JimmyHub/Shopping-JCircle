@@ -33,7 +33,7 @@
                 <p>商品圖片</p>
                 <p><img v-if="list" :src="list.pphoto"></p>
                 <input type="file" name="photo" id="photo" v-on:change="get_file">
-                <b-button variant="outline-dark" @click='upload_ph(list.pid)' size='sm'>上傳</b-button>
+                <b-button variant="outline-dark" @click='upload_ph(list.id)' size='sm'>上傳</b-button>
             </form>
         </div>
         <table>
@@ -72,7 +72,7 @@
                <tr>
                    <td></td>
                    <td><b-button  variant="outline-secondary" size='sm' @click='go_floor()'>返回上頁</b-button></td>
-                   <td><b-button  variant="outline-primary" size='sm' @click='adjust_pinfo(list.pid)' >確認修改</b-button></td>
+                   <td><b-button  variant="outline-primary" size='sm' @click='adjust_pinfo(list.id)' >確認修改</b-button></td>
                </tr>
            </tbody>
         </table>

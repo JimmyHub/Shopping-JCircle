@@ -54,17 +54,17 @@
     			<b-button href="#" variant="outline-primary" size='sm' v-on:click='add_cart(list.pprice)'>加入購物車</b-button>
     		</div>
     	</div>
-        <b-container class='right'>
+        <div class='right'>
             <b-nav card-header tabs fill>
                 <b-nav-item v-if='info' :active='isCart' id='record_cart' @mousemove='cart_show()' >購物車</b-nav-item>
                 <b-nav-item :active='!isCart' id='record' @mousemove='record_show()'>瀏覽紀錄</b-nav-item>
             </b-nav>
             <div v-if="isCart" >
                 <div class='cart_record' id='crecord'>
-                    <div v-for='item in cart' class='cart_item' @click='product_detail(item.pid)'>
+                    <div v-for='item in cart' class='cart_item' @click='product_detail(item.id)'>
                         <img :src="item.pphoto">
                         <div v-model='pname'>{{ item.pname }}</div>
-                        <div style="font-size:15px">金額/數量: {{ item.price }} 元/{{ item.count }} </div>
+                        <div style="font-size:15px">金額/數量: {{ item.pprice }} 元/{{ item.count }} </div>
                     </div>
                 </div>
                 <div class="cart_total">
@@ -74,15 +74,15 @@
             </div>
             <div v-if='!isCart'>
                 <div class='cart_record'>
-                    <div v-for='item in record' class='record_item' v-on:click='product_detail(item.pid)'>
+                    <div v-for='item in record' class='record_item' v-on:click='product_detail(item.id)'>
                         <img :src="item.pphoto">
                         <div v-model='pname'>{{ item.pname }}</div>
                         <div style="font-size:15px">金額{{ item.pprice }}元</div>
-                        <b-button href="#/product" variant="outline-primary"size='sm' @click='product_detail(item.pid)'>詳細資料</b-button>
+                        <b-button href="#/product" variant="outline-primary"size='sm' @click='product_detail(item.id)'>詳細資料</b-button>
                     </div>
                 </div>
             </div>
-        </b-container>
+        </div>
     </div>
     <div id="bottom">
         <div>

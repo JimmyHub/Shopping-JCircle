@@ -19,6 +19,8 @@
                list:[],
                cart:[],
                record:[],
+               list_kind:[],
+               list_output:[],
                list_show:[],
                isCart:false,
                keyword:'',
@@ -83,8 +85,9 @@
                                     vm.list[i].pphoto = `${url()}/media/product/a.jpg`
                                 }
                                 //或取到的商品id都存到list_id裡面
-                                vm.list_id[i]=vm.list[i].pid
+                                vm.list_id[i]=vm.list[i].id
                             }
+                            vm.list_output = vm.list
                             //商品隨機顯示(一開始)
                             vm.list_show=new Array(vm.list_id.length)
                             //隨機產生要顯示的 4個商品位置
@@ -95,7 +98,7 @@
                                     //list_id中依照或取到的順序 儲存各種商品id 
                                     //若num位置的商品id 跟 商品請求獲取到的 商品id 相同 
                                     //將此商品資訊 儲存到 要顯示的list_show裡面
-                                    if(vm.list_id[num] == vm.list[j].pid){
+                                    if(vm.list_id[num] == vm.list[j].id){
                                         vm.list_show[li]=vm.list[j]
                                     }
                                 } 
@@ -109,7 +112,7 @@
                                 for(var li=0;li<vm.list.length;li++){
                                     var num = array_in[li]
                                     for(var j=0;j<vm.list.length;j++){
-                                        if(vm.list_id[num] == vm.list[j].pid){
+                                        if(vm.list_id[num] == vm.list[j].id){
                                             vm.list_show[li]=vm.list[j]
                                         }
                                     } 

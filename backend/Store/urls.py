@@ -43,15 +43,10 @@ schema_view = get_schema_view(
     # generator_class=CustomerGeneratorSchema
 )
 
-router = routers.DefaultRouter(trailing_slash=False)
-router.register(r'product', ProductViewSet)
-# router.register(r'', LoginViewSet)
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('v1/', include(router.urls)),
-    # path('',include(router.urls)),
     path('v1/users', include('user.urls')),
     path('v1/index', views.IndexView.as_view()),
     path('v1/products', include('product.urls')),

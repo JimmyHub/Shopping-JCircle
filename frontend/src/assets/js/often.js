@@ -26,12 +26,19 @@ export function del_session(item){
 
 //搜尋
 export function search(){
+    console.log(this.list)
     let keyword = this.keyword.replace(/\s*/g,"")
-    set_Storage('keyword',keyword)
-    set_Storage('pattern','search')
-    if(window.location.href ==`${url()}/#/product_all`){
-        this.reload()
+    if(window.location.href ==`http://localhost:8080/#/product_all`){
+        let list_tmp = []
+        for(var p=0;p<this.list.length;p++){
+            if(this.list[p].pkind.includes(keyword)){
+                list_tmp.splice(0,0,this.list[p])
+            }
+        }
+        this.list_output = list_tmp
     }else{
+        set_Storage('keyword',keyword)
+        set_Storage('pattern','search')
         window.location.href='#/product_all'
     }
 }
@@ -58,15 +65,41 @@ export function go_back(){
 //前往瀏覽商品
 export function go_products_all(kind){
     set_Storage('keyword',kind)
+    console.log(this.list)
+    let isAll = false
     if(kind == '全部'){
         set_Storage('pattern','all')
+        isAll = true
     }else{
         set_Storage('pattern','search')
+        isAll = false
     }
     if(window.location.href ==`${url()}/#/product_all`){
-        location.reload()
+        // location.reload()
+        if(!isAll){
+            let list_tmp = []
+            for(var p=0;p<this.list.length;p++){
+                if(this.list[p].pkind == kind){
+                    list_tmp.splice(0,0,this.list[p])
+                }
+            }
+            this.list_output = list_tmp
+        }else{
+            this.list_output = this.list
+        }
+        
     }else if(window.location.href ==`http://localhost:8080/#/product_all` ){
-        location.reload()
+        if(!isAll){
+            let list_tmp = []
+            for(var p_=0;p_<this.list.length;p_++){
+                if(this.list[p_].pkind == kind){
+                    list_tmp.splice(0,0,this.list[p_])
+                }
+            }
+            this.list_output = list_tmp
+        }else{
+            this.list_output = this.list
+        }
     }else{
         window.location.href='#/product_all'
     }
