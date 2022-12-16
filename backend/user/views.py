@@ -1,19 +1,16 @@
-import json
-from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from Store.decorator import allmethods, trycatch
+from Store.decorator import allmethods, trycatch, request_response
 from Store.authentication import TokenExAuthentication
+from Store.tool import get_json_data, get_serializer_data
 
 from .models import UserProfile
 from .response_schema import users_response_dict, login_response_dict
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
-from Store.decorator import request_response
 
-from Store.tool import get_json_data, get_serializer_data
 
 
 @allmethods(trycatch)

@@ -2,8 +2,6 @@ from django.db import models
 from user.models import UserProfile
 
 
-# Create your models here.
-
 class OrdersFiles(models.Model):
     num_list = models.IntegerField(verbose_name='訂單編號', primary_key=True)
     num_time = models.CharField(verbose_name='訂單時間', max_length=20)

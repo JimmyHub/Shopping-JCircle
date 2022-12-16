@@ -1,7 +1,8 @@
-from .models import ProductProfile
 from rest_framework import serializers
 
 from user.serializers import UserSerializer
+
+from .models import ProductProfile
 
 
 class ProductBaseSerializer(serializers.ModelSerializer):

@@ -1,223 +1,102 @@
-import json
 from django.http import JsonResponse
-from rest_framework.generics import GenericAPIView
 
-from tools.tokens import login_check
+from rest_framework import status
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+
 from .models import OrdersFiles
 from .serializers import OrderSerializer
+from Store.tool import get_json_data, get_serializer_data
+from Store.decorator import allmethods, trycatch, request_response
 from user.models import UserProfile
 from orderlist.models import OrderList
 from tools.Ecpay import *
 
 
-class OrdersView(GenericAPIView):
+
+@allmethods(trycatch)
+class OrdersView(GenericViewSet):
     queryset = OrdersFiles.objects.all()
     serializer_class = OrderSerializer
 
     # 訂單瀏覽
-    @login_check('GET')
-    def get(self, request, keyword=None, mode=None):
+    # @request_response(response_schema_dict=users_response_dict['PATCH'])
+    def list(self, request, keyword=None, mode=None):
         # 獲取訂單資料(不包含商品資料)
         if keyword == None:
             result = {'code': 400, 'error': 'please give me keyword of list'}
             return JsonResponse(result)
+
         # keyword = 0 > 訂單總攬獲取
         if keyword == '0':
             # 賣場總覽獲取
             if mode == '1':
-                list_g = OrdersFiles.objects.filter(sales_id=request.user.username)
+                order = get_object_or_404(self.queryset, sales_id=request.user.username)
+                list_orders = list(order.values('num_list','num_time','status','status_time','money_total'))
+                # list_orders = list(self.queryset.filter(sales_id=request.user.username).values('num_list','num_time','status','status_time','money_total'))
             # 個人總覽獲取
             elif mode == '0':
-                list_g = OrdersFiles.objects.filter(buyer_id=request.user.username)
-            if list_g:
-                list_orders = []
-                for i in list_g:
-                    products_inOder = OrderList.objects.filter(num_list_id=i.num_list)
-                    if not products_inOder:
-                        result = {'code': 410, 'error': 'Something must be wrong'}
-                        return JsonResponse(result)
-                    item = (products_inOder[0].product.pname, products_inOder[0].count)
-                    data = {
-                        'num_list': i.num_list,
-                        'num_time': i.num_time,
-                        'status': i.status,
-                        'status_time': i.status_time,
-                        'money_total': i.money_total,
-                        'products': item
-                    }
-                    list_orders.append(data)
+                order = get_object_or_404(self.queryset, buyer_id=request.user.username)
+                list_orders = list(order.values('num_list','num_time','status','status_time','money_total'))
+            else:
+                result = {'code': status.HTTP_400_BAD_REQUEST, 'data': '訂單瀏覽模式錯誤'}
+                return Response(data=result)
+
+            if list_orders:
+                for order in list_orders:
+                    products_inOder = get_object_or_404(OrderList, num_list_id=order['num_list'])
+                    order['products'] = (products_inOder[0].product.pname, products_inOder[0].count)
                 result = {'code': 200, 'data': list_orders}
-                return JsonResponse(result)
             else:
                 result = {'code': 200, 'data': 'noorders'}
-                return JsonResponse(result)
+            return Response(data=result)
+
         else:
             # 訂單資料詳細顯示
-            list_g = OrdersFiles.objects.filter(num_list=keyword)
-            if not list_g:
-                result = {'code': 410, 'error': 'This list does not exist'}
-                return JsonResponse(result)
-            data = {
-                'num_list': 'jCircle' + str(list_g[0].num_list),
-                'num_time': list_g[0].num_time,
-                'status': list_g[0].status,
-                'status_time': list_g[0].status_time,
-                'gname': list_g[0].gname,
-                'address': list_g[0].address,
-                'phone': list_g[0].phone,
-                'payway': list_g[0].payway,
-                'content': list_g[0].content,
-                'bonus': list_g[0].bonus,
-                'shipping': list_g[0].shipping,
-                'money_total': list_g[0].money_total,
-                'item': 'jCircle商品一組',
-                'CheckMacValue': ecpay_jc(list_g[0].num_list)
-            }
-            result = {'code': 200, 'data': data}
+            order = get_object_or_404(self.queryset,num_list=keyword)
+            order_data = list(order.values())
+            order_data[0]['item'] = 'jCircle商品一組'
+            order_data[0]['CheckMacValue'] = ecpay_jc(order_data[0]['num_list'])
+            order_data[0]['num_list'] = 'jCircle' + str(order_data[0]['num_list']),
+            result = {'code': 200, 'data': order_data}
             return JsonResponse(result)
 
     # 訂單創立
-    @login_check('POST')
-    def post(self, request, keyword=None, mode=None):
-        json_str = request.body
-        if not json_str:
-            result = {'code': 400, 'error': 'please give data'}
-            return JsonResponse(result)
-        json_obj = json.loads(json_str)
-        # 訂單編號
-        list_num = json_obj.get('list_num')
-        if not list_num:
-            result = {'code': 400, 'error': 'please give number of list'}
-            return JsonResponse(result)
-        # 訂單時間
-        list_time = json_obj.get('list_time')
-        if not list_time:
-            result = {'code': 400, 'error': 'please give time of list'}
-            return JsonResponse(result)
-        # 訂單狀態
-        status = json_obj.get('status')
-        if not status:
-            result = {'code': 400, 'error': 'please give status'}
-            return JsonResponse(result)
-        # 收貨人姓名
-        gname = json_obj.get('gname')
-        if not gname:
-            result = {'code': 400, 'error': 'please give gname'}
-            return JsonResponse(result)
-        # 地址
-        address = json_obj.get('address')
-        if not address:
-            result = {'code': 400, 'error': 'please give address'}
-            return JsonResponse(result)
-        # 手機
-        phone = json_obj.get('phone')
-        if len(phone) != 10:
-            result = {'code': 400, 'error': 'please give real phone number'}
-            return JsonResponse(result)
+    # @request_response(response_schema_dict=users_response_dict['PATCH'])
+    def create(self, request):
+        data = get_json_data(request.body)
+        get_serializer_data(self, data)
 
-        # 付款方式
-        payway = json_obj.get('payway')
-        if not payway:
-            result = {'code': 400, 'error': 'please give payway'}
-            return JsonResponse(result)
-        # 備註
-        content = json_obj.get('content')
-        if not content:
-            result = {'code': 400, 'error': 'please give content'}
-            return JsonResponse(result)
-        # 優惠
-        bonus = json_obj.get('bonus')
-        if int(bonus) < 0:
-            result = {'code': 400, 'error': 'please give bonus'}
-            return JsonResponse(result)
-            # 運費
-        shipping = json_obj.get('shipping')
-        if not shipping:
-            result = {'code': 400, 'error': 'please give shipping'}
-            return JsonResponse(result)
-            # 總金額
-        money_total = json_obj.get('money_total')
-        if not money_total:
-            result = {'code': 400, 'error': 'please give money_total'}
-            return JsonResponse(result)
-        # 購買人
-        buyer = json_obj.get('buyer')
-        if not buyer:
-            result = {'code': 400, 'error': 'please give buyer'}
-            return JsonResponse(result)
-        # 販售人
-        sales = json_obj.get('sales')
-        if not buyer:
-            result = {'code': 400, 'error': 'please give sales'}
-            return JsonResponse(result)
-        user = UserProfile.objects.filter(name=buyer)
-        if not user:
-            result = {'code': 410, 'error': 'This user does not exist'}
-            return JsonResponse(result)
-        sale = UserProfile.objects.filter(name=sales)
-        if not sale:
-            result = {'code': 410, 'error': 'This sale does not exist'}
-            return JsonResponse(result)
-        try:
-            OrdersFiles.objects.create(
-                num_list=list_num,
-                num_time=list_time,
-                status=int(status),
-                gname=gname,
-                address=address,
-                phone=phone,
-                payway=int(payway),
-                content=content,
-                bonus=int(bonus),
-                shipping=int(shipping),
-                money_total=int(money_total),
-                buyer=user[0],
-                sales=sale[0]
-            )
-        except:
-            result = {'code': 500, 'error': 'System is busy'}
-            return JsonResponse(result)
-        result = {'code': 200, 'data': {'list_num': list_num}}
+        user = get_object_or_404(UserProfile, name=data.get('buyer','')).username
+        sale = get_object_or_404(UserProfile, name=data.get('sales','')).username
+        self.serializer.validated_data['buyer_id'] = user
+        self.serializer.validated_data['sales_id'] = sale
+        result = {'code': 200, 'data': {'list_num': self.serializer.validated_data['list_num']}}
         return JsonResponse(result)
 
-    @login_check('PUT')
-    def put(self, request, keyword=None, mode=None):
-        json_str = request.body
-        if not json_str:
-            result = {'code': 400, 'error': 'please give me data'}
-            return JsonResponse(result)
-        json_obj = json.loads(json_str)
-        keyword = json_obj.get('keyword')
-        if not keyword:
-            result = {'code': 400, 'error': 'please give me keyword'}
-            return JsonResponse(result)
-        orders = OrdersFiles.objects.filter(num_list=keyword)
-        if not orders:
-            result = {'code': 410, 'error': 'Something must be wrong'}
-            return JsonResponse(result)
-        try:
-            # 將訂單狀態往下修改一個
+    # @request_response(response_schema_dict=users_response_dict['PATCH'])
+    def partial_update(self, request, pk=None):
+        order = get_object_or_404(self.queryset, num_list=pk)
+        orders = self.queryset.filter(num_list=pk)
+        if orders:
             orders[0].status += 1
-        except:
-            result = {'code': 500, 'error': 'System is busy'}
-            return JsonResponse(result)
-        orders[0].save()
-        result = {'code': 200, 'data': 'ok'}
-        return JsonResponse(result)
-
-    @login_check('DELETE')
-    def delete(self, request, keyword=None, mode=None):
-        if keyword == None:
-            result = {'code': 400, 'error': 'please give me keyword of list'}
-            return JsonResponse(result)
-        orders = OrdersFiles.objects.filter(num_list=keyword)
-        if not orders:
-            result = {'code': 410, 'error': 'Something must be wrong'}
-            return JsonResponse(result)
-        if request.user.username != orders[0].buyer.username:
-            result = {'code': 400, 'error': 'Who are you ?'}
-            return JsonResponse(result)
+            result = {'code': status.HTTP_202_ACCEPTED}
         else:
-            orders[0].delete()
-        result = {'code': 200}
-        return JsonResponse(result)
+            result = {'code': status.HTTP_400_BAD_REQUEST}
+        return Response(data=result)
+
+    # @request_response(response_schema_dict=users_response_dict['PATCH'])
+    def delete(self, request, pk=None):
+
+        order = get_object_or_404(self.queryset, num_list=pk)
+
+        if order:
+            if order.buyer.username == request.user.username:
+                order.delete()
+                result = {'code': status.HTTP_202_ACCEPTED}
+            else:
+                result = {'code': status.HTTP_400_BAD_REQUEST, 'error': 'Who are you ?'}
+        else:
+            result = {'code': status.HTTP_400_BAD_REQUEST, 'error': 'Something must be wrong'}
+        return Response(data=result)

@@ -1,8 +1,8 @@
 import json
 
 
-def get_serializer_data(viewset_obj, data, request, partial=False):
-    viewset_obj.serializer = viewset_obj.get_serializer(data=data, context={'request': request}, partial=partial)
+def get_serializer_data(viewset_obj, data, partial=False):
+    viewset_obj.serializer = viewset_obj.get_serializer(data=data, partial=partial)
     viewset_obj.serializer.is_valid(raise_exception=True)
 
 

@@ -133,14 +133,6 @@ export function product_detail(pid){
         record_key[2]=pid
         //替換完 更新頁面中的list_key
         set_Storage('list_key',record_key)
-
-        /*for(var n=0;n<record_key.length;n++){
-            if(n==2){
-                record_key[n]=pid
-            }else{
-                record_key[n]=record_key[n+1]
-            }
-        }*/
     }
 }
 

@@ -1,23 +1,20 @@
-import json
 import jwt
-from django.forms import model_to_dict
-from django.http import JsonResponse
+
 from rest_framework import status
-from rest_framework.decorators import action
 from rest_framework.generics import GenericAPIView, get_object_or_404
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+
+from Store.decorator import allmethods, trycatch, request_response
+from Store.tool import get_json_data, get_serializer_data
+from Store.authentication import TokenExAuthentication
 from tools.tokens import login_check, auth_swagger_wrapper
 from orderlist.models import OrderList
 
 from .models import ProductProfile
 from .serializers import ProductBaseSerializer, ProductSerializer
-from rest_framework.viewsets import GenericViewSet
 
-from Store.decorator import allmethods, trycatch, request_response
-from Store.tool import get_json_data, get_serializer_data
 
-from Store.authentication import TokenExAuthentication
 
 key = 'a123456'
 
@@ -45,13 +42,11 @@ class ProductViewSet(GenericViewSet):
                 if token:
                     try:
                         token_de = jwt.decode(token, key, algorithms=['HS256'])
-                    except jwt.ExpiredSignatureError as e:
-                        result = {'code': 401, 'error': 'please login one more time!'}
-                        return JsonResponse(result)
+                    except jwt.ExpiredSignatureError:
+                        raise
                     # 或是解密出來 不正確也要中斷
                     except Exception as e:
-                        result = {'code': 401, 'error': 'please login'}
-                        return JsonResponse(result)
+                        raise
                     username = token_de['username']
                     # 賣場老闆發起請求 則是在賣場中瀏覽自己賣場的情況
                     products = self.queryset.filter(sales=username).values()
@@ -59,7 +54,6 @@ class ProductViewSet(GenericViewSet):
                 # 在一般用戶情況下瀏覽商品
                 products = self.queryset.values()
             result = {'code': 200, 'data': list(products)}
-            return JsonResponse(result)
 
         # 透過 pattern 判斷是否請求瀏覽紀錄
         elif pattern == 'record':
@@ -76,29 +70,25 @@ class ProductViewSet(GenericViewSet):
 
             if no_key == 3:
                 result = {'code': 200, 'data': 'norecord'}
-                return JsonResponse(result)
             else:
                 result = {'code': 200, 'data': list(list_record)}
-                return JsonResponse(result)
 
         # 透過 pattern 判斷是否查詢所有類別
         elif pattern == 'allkind':
             list_kind = self.queryset.values('pkind')
             result = {'code': 200, 'data': list(list_kind)}
-            return JsonResponse(result)
         else:
             products = self.queryset.filter(id=keyword).values()
             if products:
                 result = {'code': 200, 'data': list(products)[0]}
-                return Response(data=result)
             else:
                 result = {'code': status.HTTP_400_BAD_REQUEST}
-                return Response(data=result)
+        return Response(data=result)
 
     # @request_response(response_schema_dict=users_response_dict['POST'])
     def create(self, request):
         data = get_json_data(request.body)
-        get_serializer_data(self, data, request)
+        get_serializer_data(self, data)
         self.serializer.validated_data['sales_id'] = request.user.username
         new_product = self.serializer.create(self.serializer.validated_data)
         result = {'code': status.HTTP_201_CREATED, 'pid': new_product.id}
@@ -107,15 +97,14 @@ class ProductViewSet(GenericViewSet):
     # @request_response(response_schema_dict=users_response_dict['PATCH'])
     def partial_update(self, request, pk=None):
         data = get_json_data(request.body)
-        get_serializer_data(self, data, request, partial=True)
-        product = ProductProfile.objects.filter(id=pk)
+        get_serializer_data(self, data, partial=True)
+        product = self.queryset.filter(id=pk)
         if product:
             product.update(**self.serializer.validated_data)
             result = {'code': status.HTTP_202_ACCEPTED}
-            return Response(data=result)
         else:
             result = {'code': status.HTTP_400_BAD_REQUEST}
-            return Response(data=result)
+        return Response(data=result)
 
     def destroy(self, request, pk=None):
         # 確認是否登入之後
@@ -129,11 +118,10 @@ class ProductViewSet(GenericViewSet):
         if order_products:
             result = {'code': status.HTTP_400_BAD_REQUEST, 'error': 'This product is in some orders now',
                       'data': order_products}
-            return Response(data=result)
         else:
             product.delete()
             result = {'code': status.HTTP_204_NO_CONTENT}
-            return Response(data=result)
+        return Response(data=result)
 
 
 class ProductPhoto(GenericAPIView):
@@ -145,25 +133,24 @@ class ProductPhoto(GenericAPIView):
     def post(self, request, keyword):
         if request.method != 'POST':
             result = {'code': 400, 'error': 'This is not post request'}
-            return JsonResponse(result)
+            return Response(data=result)
         if not keyword:
             result = {'code': 400, 'error': 'please give me keyword'}
-            return JsonResponse(result)
+            return Response(data=result)
         photo = request.FILES.get('photo')
         if not photo:
             result = {'code': 400, 'error': 'please give me photo'}
-            return JsonResponse(result)
+            return Response(data=result)
         products = ProductProfile.objects.filter(id=keyword)
         if not products:
             result = {'code': 410, 'error': 'This product does not exist'}
-            return JsonResponse(result)
+            return Response(data=result)
         product = products[0]
-        print('有porduct')
         try:
             product.pphoto = photo
         except:
             result = {'code': 500, 'error': 'the system is busy'}
-            return JsonResponse(result)
+            return Response(data=result)
         product.save()
         result = {'code': 200}
-        return JsonResponse(result)
+        return Response(data=result)

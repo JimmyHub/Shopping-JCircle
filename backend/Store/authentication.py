@@ -27,7 +27,6 @@ class TokenExAuthentication(TokenAuthentication):
         model = self.get_model()
         try:
             user = model.objects.get(username=token_de['username'])
-            # token = model.objects.select_related('user').get(token=key)
         except model.DoesNotExist:
             raise exceptions.AuthenticationFailed(_('Invalid token.'))
 

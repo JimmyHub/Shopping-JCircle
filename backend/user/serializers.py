@@ -1,11 +1,11 @@
+import jwt
 import hashlib
 import time
 
-import jwt
 from rest_framework.generics import get_object_or_404
+from rest_framework import serializers
 
 from .models import UserProfile
-from rest_framework import serializers
 
 
 def make_complicate(password):
