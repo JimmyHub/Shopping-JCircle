@@ -1,9 +1,10 @@
 from order.models import OrdersFiles
 from orderlist.models import OrderList
 from django.http import  JsonResponse,HttpResponse
+
+
 import hashlib ,requests,time, math ,json
 # from django.utils.http import urlquote
-
 
 
 """ 金流驗證相關 模塊"""
@@ -23,10 +24,9 @@ OrderResultURL="http://www.jcircle.ml/#/orders"
 #CheckMacValue 驗證碼生成
 def check_encode(origin):
     # 1.urlencode
-    # a = urlquote(origin)
+    a = urlquote(origin)
     # 2.替換成.net code
     str02 = ''
-    a = origin
     for i in a:
         if i == '/':
             str02 += '%2f'
