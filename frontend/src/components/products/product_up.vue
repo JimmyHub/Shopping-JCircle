@@ -77,7 +77,11 @@
                 delete_p(keyword,token).then((response) =>{
                     if(response.data.code < 400){
                         alert('刪除成功囉')
-                        location.reload()
+                        for(var i =0;i<this.list.length;i++){
+                            if(this.list[i].id == pid){
+                                this.list.splice(i,1)
+                            }
+                        }
                     }else{
                         if(response.data.data){
                             alert('刪除失敗,原因:'+ response.data.error)

@@ -17,17 +17,16 @@ class TokenExAuthentication(TokenAuthentication):
     def authenticate_credentials(self, token):
 
         try:
-            print(token)
             token_de = jwt.decode(token, key="a123456", algorithms=['HS256'])
         except jwt.ExpiredSignatureError:
-            raise exceptions.AuthenticationFailed('Token Expired.')
-        except Exception:
-            raise exceptions.AuthenticationFailed('Invalid token.')
+            raise TimeoutError('Token Expired.')
+        except:
+            raise ValueError('Invalid token.')
 
         model = self.get_model()
         try:
             user = model.objects.get(username=token_de['username'])
         except model.DoesNotExist:
-            raise exceptions.AuthenticationFailed(_('Invalid token.'))
+            raise ValueError('Invalid token.')
 
         return (user, token)

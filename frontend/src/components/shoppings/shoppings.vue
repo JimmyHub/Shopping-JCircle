@@ -16,6 +16,7 @@
             return{
                 info:[],
                 list:[],
+                record:[],
                 keyword:'',
             }
         },
@@ -52,10 +53,14 @@
                 shoppingcart_delete(pid,token).then((response)=>{
                     if(response.data.code < 400){
                         alert('刪除成功')
-                        location.reload()
+                        for(var i =0;i<this.list.length;i++){
+                            if(this.list[i].pid == pid){
+                                this.list.splice(i,1)
+                            }
+                        }
                     }else{
-                        alert('刪除失敗,')
-                        location.reload()
+                        alert('刪除失敗,'+response.data.error)
+                        // location.reload()
                     }
                 })
             },

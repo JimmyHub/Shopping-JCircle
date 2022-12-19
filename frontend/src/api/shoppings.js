@@ -3,7 +3,7 @@ import { url, port } from '@/assets/js/set.js'
 
 //購物車瀏覽
 export function shoppingcart_show(token){
-	return axios.get(`${url()}${port()}/v1/shoppings/0`,{
+	return axios.get(`${url()}${port()}/v1/shoppings/`,{
 		headers:{
 			'AUTHORIZATION':token
 		}
@@ -19,7 +19,7 @@ export function shoppingcart_add(pid,data,token){
 }
 //購物車修改
 export function shoppingcart_change(pid,data,token){
-	return axios.put(`${url()}${port()}/v1/shoppings/${pid}`,data,{
+	return axios.patch(`${url()}${port()}/v1/shoppings/${pid}`,data,{
 		headers:{
 			'AUTHORIZATION':token
 		}

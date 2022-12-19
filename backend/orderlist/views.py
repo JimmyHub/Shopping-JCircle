@@ -8,7 +8,6 @@ from Store.decorator import allmethods, trycatch, request_response
 from Store.authentication import TokenExAuthentication
 from order.models import OrdersFiles
 from shoppingcart.models import ShoppingList
-from tools.Ecpay import *
 
 from .models import OrderList
 from .serializers import OrderListSerializer
@@ -58,14 +57,14 @@ class OrderlistViewSet(GenericViewSet):
     def create(self, request):
         data_orderlist = get_json_data(request.body)
         get_serializer_data(self, data_orderlist)
-        get_object_or_404(OrdersFiles, num_list=self.serializer.validated_data['list_num'])
+        get_object_or_404(OrdersFiles, num_list=self.serializer.validated_data['num_list'])
         self.serializer.create(self.serializer.validated_data)
-        result = {'code': status.HTTP_200_OK, 'data': self.serializer.validated_data['list_num']}
+        result = {'code': status.HTTP_200_OK, 'data': self.serializer.validated_data['num_list']}
         return Response(data=result)
 
     # 訂單商品刪除
-    def destroy(self, request, pk=None, mode=None):
-        products = self.queryset.filter(num_list_id=pk)
+    def destroy(self, request, keyword=None, mode=None):
+        products = self.queryset.filter(num_list_id=keyword)
         for i in products:
             if request.user.username != i.num_list.buyer.username:
                 result = {'code': status.HTTP_400_BAD_REQUEST, 'error': 'you can not do this!'}
@@ -87,5 +86,5 @@ class OrderlistViewSet(GenericViewSet):
                 #     else:
                 #         for m in msgs:
                 #             m.delete()
-        result = {'code': status.HTTP_200_OK}
+        result = {'code': status.HTTP_202_ACCEPTED}
         return Response(data=result)

@@ -14,7 +14,9 @@
         name:'product',
         data(){
             return{
+                info:'',
                 list:[],
+                list_kind:[],
                 cart:[],
                 record:[],
                 number:1,

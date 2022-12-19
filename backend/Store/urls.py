@@ -11,7 +11,7 @@ from drf_yasg.generators import OpenAPISchemaGenerator
 
 from . import views
 from user.views import UsersViewSet
-from tools import Ecpay
+from .views import EcpayTrade
 
 from product.views import ProductViewSet
 
@@ -54,8 +54,8 @@ urlpatterns = [
     path('v1/orders', include('order.urls')),
     path('v1/orderlists', include('orderlist.urls')),
     # path('v1/messages',include('message.urls')),
-    path('v1/CheckMacValue/<int:list_id>', Ecpay.CheckMacValue),
-    path('v1/orderCheck/<int:keyword>', Ecpay.orderCheck),
+    path('v1/CheckMacValue/<int:list_id>', EcpayTrade.check_pay_already),
+    path('v1/orderCheck/<int:keyword>', EcpayTrade.ordercheck),
 
 ]
 urlpatterns += [

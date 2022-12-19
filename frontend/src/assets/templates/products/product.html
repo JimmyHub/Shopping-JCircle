@@ -55,8 +55,8 @@
     		</div>
     	</div>
         <div class='right'>
-            <b-nav card-header tabs fill>
-                <b-nav-item v-if='info' :active='isCart' id='record_cart' @mousemove='cart_show()' >購物車</b-nav-item>
+            <b-nav tabs fill>
+                <b-nav-item v-if='info' :active='isCart' @mousemove='cart_show()' >購物車</b-nav-item>
                 <b-nav-item :active='!isCart' id='record' @mousemove='record_show()'>瀏覽紀錄</b-nav-item>
             </b-nav>
             <div v-if="isCart" >

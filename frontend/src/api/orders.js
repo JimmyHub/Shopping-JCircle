@@ -34,7 +34,7 @@ export function msgs(keyword,token){
 /*POST*/
 /*訂單創建*/
 export function checkout(data,token){
-     return axios.post(`${url()}${port()}/v1/orders/0/2`,data,{
+     return axios.post(`${url()}${port()}/v1/orders/`,data,{
           headers:{
                'AUTHORIZATION':token
           }
@@ -43,7 +43,7 @@ export function checkout(data,token){
 }
 /*訂單商品清單創建*/
 export function checkout_list(data,token){
-     return axios.post(`${url()}${port()}/v1/orderlists/0/2`,data,{
+     return axios.post(`${url()}${port()}/v1/orderlists/`,data,{
           headers:{
                'AUTHORIZATION':token
           }
@@ -87,7 +87,7 @@ export function orders_status(data,token){
 /*DELETE*/
 /*訂單刪除 keyword = num_list*/
 export function orders_del(keyword,token){
-     return axios.delete(`${url()}${port()}/v1/orders/${keyword}/2`,{
+     return axios.delete(`${url()}${port()}/v1/orders/${keyword}`,{
           headers:{
                'AUTHORIZATION':token
           }

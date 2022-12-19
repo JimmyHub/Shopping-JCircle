@@ -26,7 +26,7 @@ export function pkind_all(token){
 }
 //上傳商品
 export function upload_p(data,token){
-	return axios.post(`${url()}${port()}/v1/product`,data,{
+	return axios.post(`${url()}${port()}/v1/products/`,data,{
 		headers:{
 			"AUTHORIZATION":token
 		}
@@ -44,7 +44,7 @@ export function upload_photo(pid,formData,token){
 
 //修改商品資料
 export function adjust_p(pid,data,token){
-	return axios.patch(`${url()}${port()}/v1/product/${pid}`,data,{
+	return axios.patch(`${url()}${port()}/v1/products/${pid}`,data,{
 		headers:{
 			"AUTHORIZATION":token
 		}
@@ -53,7 +53,7 @@ export function adjust_p(pid,data,token){
 
 //刪除商品
 export function delete_p(keyword,token){
-    return axios.delete(`${url()}${port()}/v1/product/${keyword}`,{
+    return axios.delete(`${url()}${port()}/v1/products/${keyword}`,{
         headers:{
             "AUTHORIZATION":token
         }
