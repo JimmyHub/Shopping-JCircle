@@ -35,42 +35,6 @@
             record_show(){
                 this.isCart = false
             },
-            // search(){
-            //     let keyword = this.keyword.replace(/\s*/g,"")
-            //     if(window.location.href ==`http://localhost:8080/#/product_all`){
-            //         let token = get_session('token')
-            //         pinfo(keyword,'search','0',token).then((response)=>{
-            //             if(response.data.code < 400){
-            //                 let list_tmp = response.data.data
-            //                 for(var i=0;i<list_tmp.length;i++){
-            //                     if(list_tmp[i].pphoto){
-            //                         // list_tmp[i].pphoto =`${url()}/media/${list_tmp.list[i].pphoto}`
-            //                         list_tmp[i].pphoto = 'http://127.0.0.1:8000/media/product/milkcoffee.jpg'
-            //                     }else{
-            //                         // list_tmp[i].pphoto = `${url()}/media/product/milkcoffee.jpg`
-            //                         list_tmp[i].pphoto = 'http://127.0.0.1:8000/media/product/milkcoffee.jpg'
-            //                     }
-            //                 }
-            //                 this.list_output = list_tmp
-            //                 console.log('ok')
-            //             }else{
-            //                 alert('資料搜尋失敗,原因:'+ response.data.error)
-            //                 location.reload()
-            //             }
-            //         })
-            //     }else{
-            //         set_Storage('keyword',keyword)
-            //         set_Storage('pattern','search')
-            //         window.location.href='#/product_all'
-            //     }
-
-            //     // if(window.location.href ==`http://localhost:8080/#/product_all`){
-            //     //     this.reload()
-            //     //     this.restart()
-            //     // }else{
-            //     //     window.location.href='#/product_all'
-            //     // }
-            // },
         },
         async beforeRouteEnter(to,from,next){
             let list_key_check = get_Storage('list_key')

@@ -39,7 +39,7 @@
         <form method="POST" accept-charset="UTF-8" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5" enctype="application/x-www-form-urlencoded ">
             <div>
                 <span>訂單編號:</span>
-                <input  type="text" name="MerchantTradeNo" :value="order.num_list">
+                <input  type="text" name="MerchantTradeNo" :value="order.num_show">
             </div>
             <div><span>訂單時間:</span>
                 <input  type="text" name="MerchantTradeDate" :value="order.num_time">
@@ -78,6 +78,7 @@
             <div><span>驗證號碼:</span>
                 <input  type="text" name="CheckMacValue" :value="order.CheckMacValue">
             </div>
+
             <div>
                 <span>
                 </span>
@@ -90,7 +91,7 @@
                 <tbody>
                    <tr>
                        <th>訂單編號:</th>
-                       <td>{{ order.num_list }}</td>
+                       <td>{{ order.num_show }}</td>
                        <th>訂單時間:</th>
                        <td>{{ order.num_time }}</td>
                    </tr>
@@ -128,11 +129,11 @@
                 <img class="col-1"  :src='item.photo' >
                 <p class="col-2">{{ item.price }} 元</p>
                 <p class="col-2">{{ item.count }}</p>
-                <p class="col-2" :id='item.list_id'>{{ item.item_total }} 元</p>
+                <p class="col-2" :id='item.num_list'>{{ item.item_total }} 元</p>
             </div>
         </div>
         <div class='left_bot'>
-            <b-button  variant="outline-secondary" size='sm'@click="delete_l(order.list_id)" >返回上頁</b-button>
+            <b-button  variant="outline-secondary" size='sm'@click="delete_l(order.num_list)" >返回上頁</b-button>
         </div>
     </div>
     <div id="bottom">

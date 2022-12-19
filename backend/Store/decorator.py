@@ -20,7 +20,7 @@ def allmethods(decorator):
     return dectheclass
 
 
-def make_validationerror_msg(ve_dict,ve_list):
+def make_validationerror_msg(ve_dict, ve_list):
     for item, msg in ve_dict.items():
         if isinstance(msg, dict):
             make_validationerror_msg(msg, ve_list)
@@ -38,7 +38,7 @@ def trycatch(func):
                 return func(*args, **kwargs)
 
         except ValidationError as ve:
-            ve_res = make_validationerror_msg(ve.__dict__['detail'],[])
+            ve_res = make_validationerror_msg(ve.__dict__['detail'], [])
             result = {'status': status.HTTP_400_BAD_REQUEST, 'error': f'{" ,".join(ve_res)}'}
             return Response(data=result)
 
@@ -79,4 +79,5 @@ def request_response(response_schema_dict, query=True):
             def wrapper(*args, **kwargs):
                 return func(*args, **kwargs)
         return wrapper
+
     return token_query

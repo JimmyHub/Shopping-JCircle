@@ -34,8 +34,8 @@
             checkout(){
                 let token = get_session('token')
                 let data={
-                    'list_num':this.list.list_num,
-                    'list_time':this.list.list_time,
+                    'num_list':this.list.num_list,
+                    'num_time':this.list.list_time,
                     'status':1,
                     'gname':this.gname,
                     'address':this.address,
@@ -48,6 +48,7 @@
                     'buyer':this.info.username,
                     'sales':this.list[0].sales
                 }
+                console.log(this.list)
                 checkout(JSON.stringify(data),token).then((response)=>{
                     if(response.data.code == 200){
                         let list_id=[]
@@ -62,7 +63,7 @@
                             'list_id':list_id, 
                             'counts':counts,
                             'products':products,
-                            'list_num':response.data.data.list_num,
+                            'num_list':response.data.data.list_num,
                         }
                         checkout_list(JSON.stringify(data_l),token).then((response)=>{
                             if(response.data.code == 200){
@@ -103,7 +104,7 @@
                             vm.list.bonus_kind=''
                             vm.list.shipping=60
                             //訂單編號 : 115101 + 購物車內商品 存在購物車資料表商品的ID 
-                            vm.list.list_num = 155101+ parseInt(vm.list[0].list_id)
+                            vm.list.num_list = 155101+ parseInt(vm.list[0].list_id)
                             for(var i=0;i<vm.list.length;i++){
                                 if(vm.list[i].pphoto){
                                     vm.list[i].pphoto =`${url()}/media/${vm.list[i].pphoto}`
@@ -141,6 +142,7 @@
                             let s = date.getSeconds()
                             s = s < 10 ? ('0' + s) : s
                             vm.list.list_time =  y + '/' + Mo + '/' + d + ' ' + h + ':' + m + ':' + s
+
                         }
                     })    
                 })

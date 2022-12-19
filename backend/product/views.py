@@ -37,19 +37,8 @@ class ProductViewSet(GenericViewSet):
             # 如果是請求整體商品資訊
             # 判斷瀏覽是在個人賣場內部(personal=1) 還是 一般用戶情況(personal=0)
             if personal == '1':
-                # 判斷是由 哪個賣場老闆發起請求
-                token = request.META.get('HTTP_AUTHORIZATION')
-                if token:
-                    try:
-                        token_de = jwt.decode(token, key, algorithms=['HS256'])
-                    except jwt.ExpiredSignatureError:
-                        raise
-                    # 或是解密出來 不正確也要中斷
-                    except Exception as e:
-                        raise
-                    username = token_de['username']
-                    # 賣場老闆發起請求 則是在賣場中瀏覽自己賣場的情況
-                    products = self.queryset.filter(sales=username).values()
+                # 賣場老闆發起請求 則是在賣場中瀏覽自己賣場的情況
+                products = self.queryset.filter(sales=request.user.username).values()
             else:
                 # 在一般用戶情況下瀏覽商品
                 products = self.queryset.values()

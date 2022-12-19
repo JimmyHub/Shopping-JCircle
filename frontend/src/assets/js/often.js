@@ -65,7 +65,6 @@ export function go_back(){
 //前往瀏覽商品
 export function go_products_all(kind){
     set_Storage('keyword',kind)
-    console.log(this.list)
     let isAll = false
     if(kind == '全部'){
         set_Storage('pattern','all')
@@ -126,6 +125,7 @@ export function product_detail(pid){
             num+=1
         }
     }
+    console.log(record_key)
     if(num == 0){
         //替換 瀏覽紀錄的商品id
         record_key[0]=record_key[1]

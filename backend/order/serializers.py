@@ -4,11 +4,12 @@ from .models import OrdersFiles
 
 
 class OrderSerializer(serializers.Serializer):
-    list_num = serializers.IntegerField()
-    list_time = serializers.DateTimeField()
+    num_list = serializers.IntegerField()
+    num_time = serializers.CharField()
     status = serializers.IntegerField()
     gname = serializers.CharField(max_length=20)
     address = serializers.CharField(max_length=60)
+    phone = serializers.CharField(max_length=11)
     payway = serializers.IntegerField()
     content = serializers.CharField(max_length=60)
     bonus = serializers.IntegerField()

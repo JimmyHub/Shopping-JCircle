@@ -1,162 +1,203 @@
-import hashlib
-
-from django.http import JsonResponse, HttpResponse
-from rest_framework.generics import GenericAPIView
 import jwt
-from rest_framework.viewsets import GenericViewSet
+import time
+import math
+import hashlib
+import urllib.parse
+
+from django.http import HttpResponse
+from rest_framework import status
+from rest_framework.generics import GenericAPIView, get_object_or_404
+from rest_framework.response import Response
 
 from user.models import UserProfile
 from user.serializers import UserSerializer
-from tools.tokens import auth_swagger_wrapper
+from Store.decorator import allmethods, trycatch
 
 from order.models import OrdersFiles
-from orderlist.models import OrderList
-from django.http import JsonResponse, HttpResponse
 
-IP = 'http://localhost'
+IP = 'http://61.216.85.86'
 PORT = 8080
 key = 'a123456'
 # 綠界API
-url = "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5"
+url = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5'
 
 
 class IndexView(GenericAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializer
 
-    @auth_swagger_wrapper('', '')
     def get(self, request):
         token = request.META.get('HTTP_AUTHORIZATION')
-        if token == "null":
+        if token == 'null':
             result = {'code': 200, 'data': 'nouser'}
-            return JsonResponse(result)
+            return Response(data=result)
         else:
             try:
                 token_de = jwt.decode(token, key, algorithms=['HS256'])
             except jwt.ExpiredSignatureError as e:
                 result = {'code': 401, 'error': 'please login one more time!'}
-                return JsonResponse(result)
+                return Response(data=result)
             username_de = token_de['username']
             auser = UserProfile.objects.filter(username=username_de)
             if not auser:
                 result = {'code': 410, 'error': 'This user do not exist !'}
-                return JsonResponse(result)
+                return Response(data=result)
             if auser[0].username:
                 username = auser[0].username
                 avatar = str(auser[0].avatar)
                 limit = auser[0].limit
-                result = {'code': 200, 'data': {"username": username,
-                                                "avatar": avatar,
-                                                "limit": limit}}
-                return JsonResponse(result)
+                result = {'code': 200, 'data': {'username': username,
+                                                'avatar': avatar,
+                                                'limit': limit}}
+                return Response(data=result)
             else:
                 result = {'code': 410, 'error': 'This user do not exist !'}
-                return JsonResponse(result)
+                return Response(data=result)
 
 
-class EcpayTrade:
+# CheckMacValue 驗證碼生成
+def checkvalue_encode(origin):
+    # 1.urlencode
+    origin_encode = urllib.parse.quote(origin)
+    # 2.替換成.net code
+    origin_tmp = ''
+    for i in origin_encode:
+        if i == '/':
+            origin_tmp += '%2f'
+        else:
+            origin_tmp += i
+    origin_replace = origin_tmp.replace('%20', '+')
+    # 3.轉換成小寫
+    origin_lower = origin_replace.lower()
+    # 4.進行 SHA256緊湊
+    m = hashlib.sha256()
+    m.update(origin_lower.encode())
+    origin_hex = m.hexdigest()
+    # 5.轉成大寫
+    origin_final = origin_hex.upper()
+    return origin_final
+
+
+@allmethods(trycatch)
+class EcpayTrade(GenericAPIView):
+    queryset = OrdersFiles.objects.all()
+
     def __init__(self):
-        self.dict = {
-            # KEY要加頭
-            "HashKey": "5294y06JbISpM5x9",
-            "ChoosePayment": "",
-            "ClientBackURL": f"{IP}:{PORT}/#/orders",
-            "EncryptType": 1,
-            "ItemName": "",
-            "MerchantID": "2000132",
-            "MerchantTradeDate": "",
-            "MerchantTradeNo": "",
-            "OrderResultURL": f"{IP}:{PORT}/#/orders",
-            "PaymentType": "aio",
-            "ReturnURL": "",
-            "TotalAmount": 0,
-            "TradeDesc": "JCshoppingmall",
-            # IV加尾吧
-            "HashIV": "v77hoKGq4kWxNNIS"}
+        self.hash_key = '5294y06JbISpM5x9'
+        self.hash_iv = 'v77hoKGq4kWxNNIS'
 
-    # CheckMacValue 驗證碼生成
-    def check_encode(self, origin):
-        # 1.urlencode
-        origin_encode = urlquote(origin)
-        # 2.替換成.net code
-        origin_tmp = ''
-        for i in origin_encode:
-            if i == '/':
-                origin_tmp += '%2f'
-            else:
-                origin_tmp += i
-        origin_replace = origin_tmp.replace('%20', '+')
-        # 3.轉換成小寫
-        origin_lower = origin_replace.lower()
-        # 4.進行 SHA256緊湊
-        m = hashlib.sha256()
-        m.update(origin_lower.encode())
-        origin_hex = m.hexdigest()
-        # 5.轉成大寫
-        origin_final = origin_hex.upper()
-        return origin_final
+    def checkvalue_make(self, item_dict):
+        check_list = [f'{k}={v}' for k, v in item_dict.items()]
+        check_origin = '&'.join(check_list)
+        CheckMacValue = checkvalue_encode(check_origin)
+        return CheckMacValue
 
     # 驗證碼生成  前置數據生成
     def ecpay_jc(self, list_num):
         # 透過order id 從現有OrdersFiles 數據庫 拿數據出來
+
         orders = OrdersFiles.objects.filter(num_list=list_num)
         if not orders:
-            result = {'code': 410, 'error': 'This list does not exist'}
-            return JsonResponse(result)
+            result = {'code': status.HTTP_400_BAD_REQUEST, 'error': 'This list does not exist'}
+            return Response(data=result)
         if orders[0].payway == 1:
-            ChoosePayment = "Credit"
+            ChoosePayment = 'Credit'
         elif orders[0].payway == 2:
-            ChoosePayment = "BARCODE"
+            ChoosePayment = 'BARCODE'
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
         # 透過API獲得參數數值後，根據參數查找資料庫的數據，直接用資料庫內查到的值作替代
         list_num_db = orders[0].num_list
-        self.dict["MerchantTradeNo"] = "jCircle" + str(list_num_db)
-        self.dict["MerchantTradeDate"] = orders[0].num_time[0:10] + ' ' + orders[0].num_time[11:19]
-        self.dict["TotalAmount"] = orders[0].money_total
-        self.dict["ItemName"] = 'jCircle商品一組'
-        self.dict["ReturnURL"] = "http://www.jcircle.ml/api/v1/CheckMacValue/" + str(list_num_db)
-        check_list = [f'{k}={v}' for k, v in self.dict.items()]
-        check_origin = '&'.join(check_list)
-        CheckMacValue = self.check_encode(check_origin)
-        return CheckMacValue
+        item_dict = {
+            'HashKey': self.hash_key,
+            'ChoosePayment': ChoosePayment,
+            'ClientBackURL': f'{IP}:{PORT}/#/orders',
+            'EncryptType': 1,
+            'ItemName': 'jCircle商品一組',
+            'MerchantID': '2000132',
+            'MerchantTradeDate': orders[0].num_time[0:10] + ' ' + orders[0].num_time[11:19],
+            'MerchantTradeNo': 'jCircle' + str(list_num_db),
+            'OrderResultURL': f'{IP}:{PORT}/#/orders',
+            'PaymentType': 'aio',
+            'ReturnURL': 'http://www.jcircle.ml/api/v1/CheckMacValue/' + str(list_num_db),
+            # 'ReturnURL': 'http://61.216.85.86/api/v1/CheckMacValue/' + str(list_num_db),
+            'TotalAmount': orders[0].money_total,
+            'TradeDesc': 'JCshoppingmall',
+            # IV加尾吧
+            'HashIV': self.hash_iv}
+        return self.checkvalue_make(item_dict)
 
     # 訂單繳費成立回調
-    def CheckMacValue(self,request, list_num):
-        if request.method == "POST":
+
+    def check_pay_already(self, request, list_num):
+        if request.method == 'POST':
             if not list_num:
-                result = {'code': 400, 'error': 'please give me list_num'}
-                return JsonResponse(result)
-            list_item = ['MerchantID', 'MerchantTradeNo', 'PaymentDate', 'PaymentType', 'PaymentTypeChargeFee',
-                         'RtnCode', 'RtnMsg', 'SimulatePaid', 'StoreID', 'TradeAmt', 'TradeDate', 'TradeNo']
-            check_origin = 'HashKey=%s&CustomField1=&CustomField2=&CustomField3=&CustomField4=&' % HashKey
-            for i in range(len(list_item)):
-                get = request.POST.get(list_item[i], '')
-                if i == len(list_item) - 1:
-                    check_origin += list_item[i] + '=' + str(get) + ("&HashIV=%s" % HashIV)
-                else:
-                    check_origin += list_item[i] + '=' + str(get) + "&"
-            # print(check_encode(check_origin))
-            CheckMacValue_o = check_encode(check_origin)
-            CheckMac_get = request.POST.get('CheckMacValue', None)
-            # print(CheckMac_get)
+                result = {'code': status.HTTP_400_BAD_REQUEST, 'error': 'please give me list_num'}
+                return Response(data=result)
+            item_dict = {
+                'HashKey': self.hash_key,
+                'CustomField1': '',
+                'CustomField2': '',
+                'CustomField3': '',
+                'CustomField4': '',
+                'MerchantID': '',
+                'MerchantTradeNo': '',
+                'PaymentDate': '',
+                'PaymentType': '',
+                'PaymentTypeChargeFee': '',
+                'RtnCode': '',
+                'RtnMsg': '',
+                'SimulatePaid': '',
+                'StoreID': '',
+                'TradeAmt': '',
+                'TradeDate': '',
+                'TradeNo': '',
+                'HashIV': self.hash_iv
+            }
+            for item in item_dict:
+                item_dict[item] = request.POST.get(item, '')
+            checkvalue_old = self.checkvalue_make(item_dict)
+            checkvalue_get = request.POST.get('CheckMacValue', None)
             RtnCode = request.POST.get('RtnCode', 0)
             # 務必判斷交易狀態[RtnCode]是否為1，若非1 時請勿對該筆交易做出貨動作，並取得交易訊息[RtnMsg] 記錄失敗原因。
-            if RtnCode == "1":
+            if RtnCode == '1':
                 print('交易成功')
-                if CheckMac_get == CheckMacValue_o:
+                if checkvalue_get == checkvalue_old:
+                    # product = get_object_or_404(OrdersFiles, id=pk)
                     orders = OrdersFiles.objects.filter(num_list=list_num)
                     if not orders:
-                        result = {'code': 400, 'error': 'please give me data'}
-                        return JsonResponse(result)
-                    try:
-                        orders[0].status = 1
-                        orders[0].save()
-                    except:
-                        result = {'code': 500, 'error': 'System is busy'}
-                        return JsonResponse(result)
+                        result = {'code': status.HTTP_400_BAD_REQUEST, 'error': 'please give me data'}
+                        return Response(data=result)
+                    orders[0].status = 1
+                    orders[0].save()
                     return HttpResponse('1|OK')
             else:
-                result = {'code': 400, 'error': 'the deal does not success'}
-                return JsonResponse(result)
+                result = {'code': status.HTTP_400_BAD_REQUEST, 'error': 'the deal does not success'}
+                return Response(data=result)
         else:
-            result = {'code': 400, 'error': 'please use post method'}
-            return JsonResponse(result)
+            result = {'code': status.HTTP_400_BAD_REQUEST, 'error': 'please use post method'}
+            return Response(data=result)
+
+    # 訂單創建成立查詢
+    def ordercheck(self, request, list_num):
+        if not list_num:
+            result = {'code': status.HTTP_400_BAD_REQUEST, 'error': 'please give me list number'}
+            return Response(data=result)
+        orders = OrdersFiles.objects.filter(num_list=list_num)
+        if not orders:
+            result = {'code': status.HTTP_400_BAD_REQUEST, 'error': 'This order don`t exist'}
+            return Response(data=result)
+        item_dict = {
+            'HashKey': self.hash_key,
+            'MerchantID': '2000132',
+            'MerchantTradeNo': 'jCircle' + str(orders[0].num_list),
+            'TimeStamp': math.floor(time.time()),
+            'HashIV': self.hash_iv,
+        }
+        CheckMacValue = self.checkvalue_make(item_dict)
+        result = {'code': status.HTTP_200_OK, 'data': {'check': CheckMacValue, 'time': item_dict['TimeStamp']}}
+        return Response(data=result)
+
+
+Ecpay = EcpayTrade()

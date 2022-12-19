@@ -109,7 +109,8 @@
         },
         async beforeRouteEnter(to,from,next){
             let token =get_session('token')
-            let num = get_Storage('list_id')
+            let num = get_Storage('num_list')
+            console.log(num)
             let mode = get_Storage('mode')
             if(token){
                 await Promise.all([info(token),orders(num,mode,token),porders(num,mode,token)]).then(([infoResponse,orderResponse,pordersResponse])=>{
@@ -141,6 +142,7 @@
                                 vm.order.payway = '超 商 繳 費'
                             }
                             vm.order.mode=parseInt(mode)
+                            console.log(vm.order)
                         }
                         //商品資料請求
                         if(pordersResponse.data.code < 400 ){

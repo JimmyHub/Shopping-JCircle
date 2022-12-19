@@ -42,7 +42,7 @@
         },
         async beforeRouteEnter(to,from,next){
             let token = get_session('token')
-            let num = get_Storage('list_id')
+            let num = get_Storage('num_list')
             let mode = get_Storage('mode')
             if(token){
                 await Promise.all([info(token),orders(num,mode,token),porders(num,mode,token)]).then(([infoResponse,ordersResponse,pordersResponse])=>{
@@ -59,10 +59,14 @@
                         //訂單資料請求
                         if(ordersResponse.data.code < 400){
                             vm.order=ordersResponse.data.data
-                            vm.order.url=`http://www.jcircle.ml/api/v1/CheckMacValue/${vm.order.list_id}`
+                            // vm.order.url=`http://www.jcircle.ml/api/v1/CheckMacValue/${vm.order.list_id}`
+                            // vm.order.url_c=`http://www.jcircle.ml/#/orders`
+                            // vm.order.url_o=`http://www.jcircle.ml/#/orders`
+                            vm.order.url=`http://www.jcircle.ml/api/v1/CheckMacValue/${vm.order.num_list}`
                             vm.order.url_c=`http://www.jcircle.ml/#/orders`
                             vm.order.url_o=`http://www.jcircle.ml/#/orders`
                             vm.order.num_time= `${vm.order.num_time.slice(0,10)} ${vm.order.num_time.slice(11,19)}`
+                            console.log(vm.order)
                         }
                         //訂單商品資料請求
                         if(pordersResponse.data.code < 400 ){
