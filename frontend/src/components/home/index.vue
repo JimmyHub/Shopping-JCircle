@@ -61,7 +61,6 @@
                     //用戶資料請求
                     if(indexResponse.data.code < 400){
                         if(indexResponse.data.data == 'nouser'){
-                            console.log('nouser')
                             vm.info=''
                         }else{
                             vm.info= indexResponse.data.data

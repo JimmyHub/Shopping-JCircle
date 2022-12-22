@@ -46,7 +46,18 @@
                     shoppingcart_add(pid,JSON.stringify(data),token).then((response)=>{
                         if(response.data.code < 400){
                             alert('成功加入購物車')
-                            location.reload()
+                            shoppingcart_show(token).then((response)=>{
+                                let cart = response.data.data
+                                cart.cart_total = response.data.cart_total
+                                for(var c=0;c<cart.length;c++){
+                                    if(cart[c].pphoto){
+                                        cart[c].pphoto =`${url()}/media/${cart[c].pphoto}`
+                                    }else{
+                                        cart[c].pphoto = `${url()}/media/product/a.jpg`
+                                    }
+                                }
+                                this.cart = cart
+                            })
                         }else{
                             alert('加入購物車失敗，原因:'+ response.data.error)
                         }
@@ -122,14 +133,14 @@
                     //購物車資料請求
                     if(cartResponse.data.code < 400){
                         vm.cart = cartResponse.data.data
-                        vm.cart.cart_total=0
+                        vm.cart.cart_total = cartResponse.data.cart_total
+                        console.log(vm.cart.cart_total)
                         for(var c=0;c<vm.cart.length;c++){
                             if(vm.cart[c].pphoto){
                                 vm.cart[c].pphoto =`${url()}/media/${vm.cart[c].pphoto}`
                             }else{
                                 vm.cart[c].pphoto = `${url()}/media/product/a.jpg`
                             }
-                            vm.cart.cart_total += vm.cart[c].count * vm.cart[c].price
                         }
                     }else{
                         vm.cart.cart_total=0

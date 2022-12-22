@@ -40,18 +40,18 @@
                 <p class="col-2">小記</p>
                 <p class="col-1"></p>
             </div>
-            <div class="list" v-for='item in list'>
+            <div class="list" v-for='(item,index) in list'>
                 <p class="col-4" >{{ item.pname }}</p>
                 <img class="col-1"  :src='item.pphoto' >
                 <p class="col-2">{{ item.price }} 元</p>
                 <p><b-form-spinbutton  wrap min="1"  v-if='item' v-model='item.count' @change='count_change(item.list_id,item.count)'></b-form-spinbutton></p>
                 <p class="col-2" :id='item.list_id'>{{ item.item_total }} 元</p>
-                <b-button class="col-1" href="#" variant="outline-danger" size='sm' @click='delete_l(item.pid)'>刪除</b-button>
+                <b-button class="col-1" href="#" variant="outline-danger" size='sm' @click='delete_l(index)'>刪除</b-button>
             </div>
         </div>
         <div class='left_bot'>
             <p class="col-2">總金額:</p>
-            <p class="col-4" id='total' v-if="list">{{ list.list_total }} 元</p>
+            <p class="col-4" id='total' v-if="list" >{{ list.list_total }} 元</p>
             <b-button class="col-3" href="#/index" variant="outline-secondary" size='sm'>繼續購物</b-button>
             <b-button class="col-3" href="#/shoppings_checkout" variant="outline-primary" size='sm' v-if="list.list_total !== 0">結帳</b-button>
         </div>

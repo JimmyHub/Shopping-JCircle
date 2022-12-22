@@ -48,19 +48,16 @@
                 })
             },
             //刪除購物車商品
-            delete_l(pid){
+            delete_l(index){
                 let token = get_session('token')
-                shoppingcart_delete(pid,token).then((response)=>{
+                let item = this.list[index]
+                shoppingcart_delete(item.pid,token).then((response)=>{
                     if(response.data.code < 400){
                         alert('刪除成功')
-                        for(var i =0;i<this.list.length;i++){
-                            if(this.list[i].pid == pid){
-                                this.list.splice(i,1)
-                            }
-                        }
+                        this.list.list_total = this.list.list_total - item.item_total
+                        this.list.splice(index,1)
                     }else{
                         alert('刪除失敗,'+response.data.error)
-                        // location.reload()
                     }
                 })
             },

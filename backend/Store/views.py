@@ -15,7 +15,9 @@ from Store.decorator import allmethods, trycatch
 
 from order.models import OrdersFiles
 
-IP = 'http://61.216.85.86'
+from .authentication import TokenExAuthentication
+
+IP = 'http://127.0.0.1'
 PORT = 8080
 key = 'a123456'
 # 綠界API
@@ -25,34 +27,19 @@ url = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5'
 class IndexView(GenericAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializer
+    authentication_classes = [TokenExAuthentication, ]
 
     def get(self, request):
-        token = request.META.get('HTTP_AUTHORIZATION')
-        if token == 'null':
-            result = {'code': 200, 'data': 'nouser'}
+        auser = request.user
+        if hasattr(request.user,'limit'):
+            result = {'code': status.HTTP_200_OK, 'data': {'username': auser.username,
+                                            'avatar': str(auser.avatar),
+                                            'limit': auser.limit}}
             return Response(data=result)
         else:
-            try:
-                token_de = jwt.decode(token, key, algorithms=['HS256'])
-            except jwt.ExpiredSignatureError as e:
-                result = {'code': 401, 'error': 'please login one more time!'}
-                return Response(data=result)
-            username_de = token_de['username']
-            auser = UserProfile.objects.filter(username=username_de)
-            if not auser:
-                result = {'code': 410, 'error': 'This user do not exist !'}
-                return Response(data=result)
-            if auser[0].username:
-                username = auser[0].username
-                avatar = str(auser[0].avatar)
-                limit = auser[0].limit
-                result = {'code': 200, 'data': {'username': username,
-                                                'avatar': avatar,
-                                                'limit': limit}}
-                return Response(data=result)
-            else:
-                result = {'code': 410, 'error': 'This user do not exist !'}
-                return Response(data=result)
+            result = {'code': status.HTTP_200_OK, 'data': 'nouser'}
+            return Response(data=result)
+
 
 
 # CheckMacValue 驗證碼生成
@@ -121,7 +108,6 @@ class EcpayTrade(GenericAPIView):
             'OrderResultURL': f'{IP}:{PORT}/#/orders',
             'PaymentType': 'aio',
             'ReturnURL': 'http://www.jcircle.ml/api/v1/CheckMacValue/' + str(list_num_db),
-            # 'ReturnURL': 'http://61.216.85.86/api/v1/CheckMacValue/' + str(list_num_db),
             'TotalAmount': orders[0].money_total,
             'TradeDesc': 'JCshoppingmall',
             # IV加尾吧

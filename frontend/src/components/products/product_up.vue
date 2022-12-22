@@ -71,17 +71,13 @@
                 window.location.href='#/product_adjust'
             },
             //刪除商品
-            delete_p(pid){
+            delete_p(index){
                 let token = get_session('token')
-                let keyword = pid
+                let keyword = this.list[index].id
                 delete_p(keyword,token).then((response) =>{
                     if(response.data.code < 400){
                         alert('刪除成功囉')
-                        for(var i =0;i<this.list.length;i++){
-                            if(this.list[i].id == pid){
-                                this.list.splice(i,1)
-                            }
-                        }
+                        this.list.splice(index,1)
                     }else{
                         if(response.data.data){
                             alert('刪除失敗,原因:'+ response.data.error)

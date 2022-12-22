@@ -46,7 +46,7 @@ export function search(){
 export function logout(){
     del_session('token')
     del_session('username')
-    if(window.location.href ==`${url()}/#/index`){
+    if(window.location.href =='http://localhost:8080/#/index'){
         location.reload()
     }else{
         window.location.href='#/index'

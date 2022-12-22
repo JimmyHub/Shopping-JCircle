@@ -26,6 +26,7 @@ class ShoppingViewSet(GenericViewSet):
             result = {'code': status.HTTP_200_OK, 'data': []}
             return Response(data=result)
         data = []
+        cart_total = 0
         for i in carts:
             dic_cart = {
                 'list_id': i.id,
@@ -33,12 +34,13 @@ class ShoppingViewSet(GenericViewSet):
                 'pid': i.product.id,
                 'pkind': i.product.pkind,
                 'pphoto': str(i.product.pphoto),
-                'price': i.product.pprice,
+                'pprice': i.product.pprice,
                 'count': i.count,
                 'sales': i.product.sales_id
             }
+            cart_total += i.product.pprice * i.count
             data.append(dic_cart)
-        result = {'code': 200, 'data': data}
+        result = {'code': 200, 'data': data, 'cart_total': cart_total}
         return Response(data=result)
 
     # 購物車加入

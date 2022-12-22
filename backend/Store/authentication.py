@@ -9,8 +9,8 @@ class TokenExAuthentication(TokenAuthentication):
     model = UserProfile
 
     def authenticate(self, request):
-        token = request.META.get('HTTP_AUTHORIZATION')
-        if not token:
+        token = request.META.get('HTTP_AUTHORIZATION', ' ')
+        if token == 'null':
             return None
         return self.authenticate_credentials(token)
 

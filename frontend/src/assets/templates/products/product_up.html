@@ -27,12 +27,12 @@
             </b-breadcrumb>
         </div>
         <div id='products_scan' >
-            <div v-for='item in list'>
+            <div v-for='(item,index) in list'>
                 <img :src="item.pphoto" >
                 <div>{{ item.pname }}</div>
                 <div>商品金額: {{ item.pprice }} 元 </div>
                 <b-button variant="outline-secondary" style="margin-right:20px" size='sm' v-on:click='adjust_p(item.id)'>修改</b-button>
-                <b-button variant="outline-danger" size='sm' v-on:click='delete_p(item.id)'>刪除</b-button>
+                <b-button variant="outline-danger" size='sm' v-on:click='delete_p(index)'>刪除</b-button>
             </div>
         </div>
         <div id='products_upload' >
