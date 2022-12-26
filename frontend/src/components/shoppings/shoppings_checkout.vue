@@ -97,7 +97,7 @@
                         //購物車資料請求
                         if(cartResponse.data.code == 200){
                             vm.list=cartResponse.data.data
-                            vm.list.list_total=0
+                            vm.list.list_total = cartResponse.data.cart_total
                             vm.list.bonus_20=0
                             vm.list.bonus_25=0
                             vm.list.bonus_total=0
@@ -111,8 +111,6 @@
                                 }else{
                                     vm.list[i].pphoto =`${url()}/media/product/milkcoffee.jpg`
                                 }
-                                vm.list[i].item_total = vm.list[i].price * vm.list[i].count
-                                vm.list.list_total+= vm.list[i].item_total
                                 //優惠種類
                                 if(vm.list[i].pkind =='茶類'){
                                    vm.list.bonus_kind ='20元以上茶類飲料同價錢第二件六折'

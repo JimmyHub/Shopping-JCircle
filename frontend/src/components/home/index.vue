@@ -144,14 +144,13 @@
                     //獲取購物車資料
                     if(cartResponse.data.code < 400){
                         vm.cart = cartResponse.data.data
-                        vm.cart.cart_total=0
+                        vm.cart.cart_total = cartResponse.data.cart_total
                         for(var c=0;c<vm.cart.length;c++){
                             if(vm.cart[c].pphoto){
                                 vm.cart[c].pphoto = `${url()}/media/${vm.cart[c].pphoto}`
                             }else{
                                 vm.cart[c].pphoto =`${url()}/media/product/a.jpg`
                             }
-                            vm.cart.cart_total += vm.cart[c].count * vm.cart[c].price
                         }
                     }else{
                         vm.cart.cart_total=0

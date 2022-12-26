@@ -57,9 +57,10 @@ class OrdersViewSet(GenericViewSet):
             # 訂單資料詳細顯示
             order = self.queryset.filter(num_list=keyword)
             order_data = list(order.values())
-            order_data[0]['item'] = 'jCircle商品一組'
-            order_data[0]['CheckMacValue'] = Ecpay.ecpay_jc(order_data[0]['num_list'])
-            order_data[0]['num_show'] = 'jCircle' + str(order_data[0]['num_list'])
+            checkvalue, item_dict = Ecpay.ecpay_jc(order_data[0]['num_list'])
+            order_data[0]['CheckMacValue'] = checkvalue
+            order_data[0]['ecpay_item'] = item_dict
+            # order_data[0]['list_name'] = item_dict['MerchantTradeNo']
             result = {'code': status.HTTP_200_OK, 'data': order_data[0]}
             return Response(data=result)
 

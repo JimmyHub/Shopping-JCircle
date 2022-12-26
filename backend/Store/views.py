@@ -70,8 +70,8 @@ class EcpayTrade(GenericAPIView):
     queryset = OrdersFiles.objects.all()
 
     def __init__(self):
-        self.hash_key = '5294y06JbISpM5x9'
-        self.hash_iv = 'v77hoKGq4kWxNNIS'
+        self.hash_key = 'pwFHCqoQZGmho4w6'
+        self.hash_iv = 'EkRm7iFT261dpevs'
 
     def checkvalue_make(self, item_dict):
         check_list = [f'{k}={v}' for k, v in item_dict.items()]
@@ -102,17 +102,17 @@ class EcpayTrade(GenericAPIView):
             'ClientBackURL': f'{IP}:{PORT}/#/orders',
             'EncryptType': 1,
             'ItemName': 'jCircle商品一組',
-            'MerchantID': '2000132',
+            'MerchantID': '3002607',
             'MerchantTradeDate': orders[0].num_time[0:10] + ' ' + orders[0].num_time[11:19],
             'MerchantTradeNo': 'jCircle' + str(list_num_db),
             'OrderResultURL': f'{IP}:{PORT}/#/orders',
             'PaymentType': 'aio',
-            'ReturnURL': 'http://www.jcircle.ml/api/v1/CheckMacValue/' + str(list_num_db),
+            'ReturnURL': 'http://127.0.0.1:8000/api/v1/CheckMacValue/' + str(list_num_db),
             'TotalAmount': orders[0].money_total,
             'TradeDesc': 'JCshoppingmall',
             # IV加尾吧
             'HashIV': self.hash_iv}
-        return self.checkvalue_make(item_dict)
+        return self.checkvalue_make(item_dict), item_dict
 
     # 訂單繳費成立回調
 

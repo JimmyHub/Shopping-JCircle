@@ -77,7 +77,7 @@
                     <div v-for='item in cart' class='cart_item' @click='product_detail(item.id)'>
                         <img :src="item.pphoto">
                         <div>{{ item.pname }}</div>
-                        <div style="font-size:15px">金額/數量: {{ item.price }} 元/{{ item.count }} </div>
+                        <div style="font-size:15px">金額/數量: {{ item.pprice }} 元/{{ item.count }} </div>
                     </div>
                 </div>
                 <div class="cart_total">

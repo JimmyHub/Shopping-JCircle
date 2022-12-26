@@ -39,21 +39,21 @@
         <form method="POST" accept-charset="UTF-8" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5" enctype="application/x-www-form-urlencoded ">
             <div>
                 <span>訂單編號:</span>
-                <input  type="text" name="MerchantTradeNo" :value="order.num_show">
+                <input  type="text" name="MerchantTradeNo" :value="order.ecpay_item.MerchantTradeNo">
             </div>
             <div><span>訂單時間:</span>
-                <input  type="text" name="MerchantTradeDate" :value="order.num_time">
+                <input  type="text" name="MerchantTradeDate" :value="order.ecpay_item.MerchantTradeDate">
             </div>
             <div><span>店家代號:</span>
-                <input  type="text" name="MerchantID" value="2000132"></div>
+                <input  type="text" name="MerchantID" :value="order.ecpay_item.MerchantID"></div>
             <div><span>店家名稱:</span>
-                <input  type="text" name="TradeDesc" value="JCshoppingmall">
+                <input  type="text" name="TradeDesc" :value="order.ecpay_item.TradeDesc">
             </div>
             <div><span>訂單內容:</span>
-                <input  type="text" name="ItemName" :value=" order.item">
+                <input  type="text" name="ItemName" :value="order.ecpay_item.ItemName">
             </div>
             <div><span>訂單金額:</span>
-                <input  type="text" name="TotalAmount" :value=" order.money_total">
+                <input  type="text" name="TotalAmount" :value="order.money_total">
             </div>
             <div><span>付款方式:</span>
                 <input  type="text" name="ChoosePayment" value="Credit"  v-if="order.payway === 1" >
@@ -65,15 +65,15 @@
             </div>
             <div>
                 <span>客戶回歸網址:</span>
-                <input  type="text" name="ClientBackURL" :value="order.url_c">
+                <input  type="text" name="ClientBackURL" :value="order.ecpay_item.OrderResultURL">
             </div>
             <div>
                 <span>繳費回調網址:</span>
-                <input  type="text" name="OrderResultURL" :value="order.url_o">
+                <input  type="text" name="OrderResultURL" :value="order.ecpay_item.OrderResultURL">
             </div>
             <div>
                 <span>已繳費通知網址:</span>
-                <input  type="text" name="ReturnURL" :value=" order.url">
+                <input  type="text" name="ReturnURL" :value=" order.ecpay_item.ReturnURL">
             </div>
             <div><span>驗證號碼:</span>
                 <input  type="text" name="CheckMacValue" :value="order.CheckMacValue">
@@ -91,7 +91,7 @@
                 <tbody>
                    <tr>
                        <th>訂單編號:</th>
-                       <td>{{ order.num_show }}</td>
+                       <td>{{ order.ecpay_item.MerchantTradeNo }}</td>
                        <th>訂單時間:</th>
                        <td>{{ order.num_time }}</td>
                    </tr>

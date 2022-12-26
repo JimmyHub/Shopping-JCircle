@@ -74,9 +74,9 @@
             <div class="list" v-for='item in list'>
                 <p class="col-4" >{{ item.pname }}</p>
                 <img class="col-1"  :src='item.pphoto' >
-                <p class="col-2">{{ item.price }} 元</p>
+                <p class="col-2">{{ item.pprice }} 元</p>
                 <p class="col-2">{{ item.count }}</p>
-                <p class="col-2" :id='item.list_id'>{{ item.item_total }} 元</p>
+                <p class="col-2" :id='item.list_id'>{{ item.total_price }} 元</p>
             </div>
         </div>
         <div class='left_bot'>

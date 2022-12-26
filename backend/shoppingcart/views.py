@@ -36,9 +36,10 @@ class ShoppingViewSet(GenericViewSet):
                 'pphoto': str(i.product.pphoto),
                 'pprice': i.product.pprice,
                 'count': i.count,
-                'sales': i.product.sales_id
+                'sales': i.product.sales_id,
+                'total_price': i.product.pprice * i.count
             }
-            cart_total += i.product.pprice * i.count
+            cart_total += dic_cart['total_price']
             data.append(dic_cart)
         result = {'code': 200, 'data': data, 'cart_total': cart_total}
         return Response(data=result)
