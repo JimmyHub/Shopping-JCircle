@@ -58,6 +58,7 @@ class ShoppingViewSet(GenericViewSet):
         # 若購物車內還沒有此商品就加入購物車
         else:
             self.serializer.validated_data['product_id'] = product.id
+            self.serializer.validated_data['pprice'] = product.pprice
             self.serializer.validated_data['user_id'] = request.user.username
             self.serializer.create(self.serializer.validated_data)
         result = {'code': 200}

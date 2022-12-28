@@ -9,6 +9,7 @@ class ShoppingList(models.Model):
     count = models.IntegerField(verbose_name='商品數量')
     #刪除 商品 或是 賣家不存在時 購物車的內容也會不見
     product = models.ForeignKey(ProductProfile,on_delete=models.CASCADE)
+    pprice = models.IntegerField()
     user = models.ForeignKey(UserProfile,on_delete=models.CASCADE)
     class Meta:
        db_table='shoppinglists'

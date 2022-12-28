@@ -51,7 +51,7 @@
                 porders_del(list_id,mode,token).then((response)=>{
                     if(response.data.code < 400){
                         orders_del(list_id,token).then((response)=>{
-                            if(response.data.code == 200){
+                            if(response.data.code < 400){
                                 alert('刪除成功!')
                                 window.history.go(-1)
                             }else{

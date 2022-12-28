@@ -54,15 +54,19 @@
                         let list_id=[]
                         let counts=[]
                         let products=[]
+                        let pprices=[]
                         for(var c=0;c<this.list.length;c++){
                             list_id[c]=this.list[c].list_id
                             counts[c]=this.list[c].count
                             products[c]=this.list[c].pid
+                            pprices[c] = this.list[c].pprice
+
                         }
                         let data_l={
                             'list_id':list_id, 
                             'counts':counts,
                             'products':products,
+                            'pprices':pprices,
                             'num_list':response.data.data.list_num,
                         }
                         checkout_list(JSON.stringify(data_l),token).then((response)=>{

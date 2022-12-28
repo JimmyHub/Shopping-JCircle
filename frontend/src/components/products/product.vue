@@ -35,12 +35,14 @@
                 this.isCart = false
             },
             //將商品加入購物車
-            add_cart(){
+            add_cart(pprice){
                 let pid = get_Storage('keyword')
                 let token = get_session('token')
                 let count = this.number
                 let data={
                     'count':count,
+                    'pprice':pprice
+
                 }
                 if(token){
                     shoppingcart_add(pid,JSON.stringify(data),token).then((response)=>{
